@@ -1,5 +1,12 @@
 module Ginkgo
 
-# Write your package code here.
+export func
 
-end
+
+func(x) = 2x + 1
+
+# TODO: using an example yet, add the low-level API generated from Ginkgo accordingly
+include("api.jl")
+export integrate, get_version
+
+end # module Ginkgo
