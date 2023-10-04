@@ -2,7 +2,8 @@ module API
 
 using CEnum
 
-libsimpson = joinpath(ENV["LIBSIMPSON_DIR"], "libsimpson.so")
+# libsimpson = joinpath(ENV["LIBSIMPSON_DIR"], "libsimpson.so")
+libsimpson = nothing
 
 """
     integrate(a, b, bins, _function)
