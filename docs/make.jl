@@ -18,10 +18,15 @@ makedocs(;
     pages=[
         "Home" => "index.md",
         "Programmer Guide" => 
-        [   "use_ginkgo_in_julia.md",
-            "ginkgo_c_library_api.md",
+        [   
+            "programmer-guide/use-ginkgo-in-julia.md",
+            "programmer-guide/ginkgo-c-library-api.md",
         ],
-        "Reference" => "api.md",
+        "Reference" => 
+        [   
+            "reference/ginkgo-api.md",
+            "reference/low-level-api.md",
+        ],
         "Index" => "reindex.md",
     ],
 )

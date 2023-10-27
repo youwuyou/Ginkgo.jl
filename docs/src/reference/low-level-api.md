@@ -5,5 +5,5 @@ While these functions are not intended for general usage, they are useful for ca
 
 ```@autodocs
 Modules = [Ginkgo.API]
-Order = [:function]
+Order = [:function, :type]
 ```
