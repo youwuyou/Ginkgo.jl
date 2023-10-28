@@ -5,8 +5,6 @@ using Debugger
 
 hidden = true
 
-# FIXME: desirable to specify executor just once here
-# then to be able to have identical codes for various back-ends
 
 
 # TODO: 
@@ -43,19 +41,27 @@ Ginkgo.get_version()
 #     const auto exec = exec_map.at(executor_string)();  // throws if not valid
 # end
 
-exec = Ginkgo.create!(:reference)
-typeof(exec)
+# exec = Ginkgo.create!(:reference)
+exec = Ginkgo.create!(:hey)
 
-# gko::array<T> x(exec,2);
-A = Ginkgo.Array{Float64}(undef, exec, 2)
-
-B = Ginkgo.Array{Int64}(undef, exec, 2)
-
-C = Ginkgo.Array{String}(undef, exec, 2, 3)
 
 # auto A = gko::share(gko::read<mtx>(std::ifstream("data/A.mtx"), exec));
+
 # auto b = gko::read<vec>(std::ifstream("data/b.mtx"), exec);
 # auto x = gko::read<vec>(std::ifstream("data/x0.mtx"), exec);
+
+# gko::array<T> x(exec,2);
+# auto A = gko::array<T>(exec,2);
+A = Ginkgo.Array{Float64}(undef, exec, 2)
+
+# B = Ginkgo.Array{Int64}(undef, exec, 2)
+
+# C = Ginkgo.Array{String}(undef, exec, 2, 3)
+
+# std::unique_ptr<gko::Dense<double>> b = gko::read<vec>(std::ifstream("data/b.mtx"), exec);
+# std::unique_ptr<gko::Dense<double>> x = gko::read<vec>(std::ifstream("data/x0.mtx"), exec);
+
+# b = Ginkgo.read!(, )
 
 
 # TODO:

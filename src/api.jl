@@ -8,70 +8,38 @@ using CEnum
 # use it for local lib
 libginkgo = joinpath(ENV["LIBGINKGO_DIR"], "libginkgod.so")
 
+"""
+Struct containing the shared pointer to a ginkgo executor
+"""
+mutable struct gko_executor_st end
+
+"""
+Type of the pointer to the wrapped [`gko_executor_st`](@ref) struct
+"""
+const gko_executor = Ptr{gko_executor_st}
+
 @cenum _GKO_DATATYPE_CONST::Int32 begin
     GKO_NONE = -1
-    GKO_INT = 0
-    GKO_INT64 = 1
-    GKO_DOUBLE = 2
-    GKO_STRING = 3
+    GKO_SHORT = 0
+    GKO_INT = 1
+    GKO_LONG_LONG = 2
+    GKO_FLOAT = 3
+    GKO_DOUBLE = 4
+    GKO_COMPLEX_FLOAT = 5
+    GKO_COMPLEX_DOUBLE = 6
 end
 
-@cenum _GKO_EXECUTORTYPE::UInt32 begin
-    OMP = 0
-    CUDA = 1
-    HIP = 2
-    DPCPP = 3
-    REFERENCE = 4
-end
-
-mutable struct gko_executor_omp_st end
-
-const gko_executor_omp = Ptr{gko_executor_omp_st}
-
-mutable struct gko_executor_reference_st end
-
-const gko_executor_reference = Ptr{gko_executor_reference_st}
-
-"""
-    ginkgo_create_array(datatype, raw_exec, size)
-
-Allocates memory for an array of the given size and type on targeted device.
-
-### Parameters
-* `datatype`: Type of the array elements
-* `raw_exec`: Raw pointer to the executor for targeted device
-* `size`: Size of the array
-### Returns
-void* Pointer to the allocated array
-"""
-function ginkgo_create_array(datatype, raw_exec, size)
-    ccall((:ginkgo_create_array, libginkgo), Ptr{Cvoid}, (_GKO_DATATYPE_CONST, Ptr{Cvoid}, Cint), datatype, raw_exec, size)
-end
-
-"""
-    ginkgo_delete_array(datatype, array)
-
-Deallocates memory for an array of the given size and type on targeted device.
-
-### Parameters
-* `datatype`: Type of the array elements
-* `array`: Pointer to the array to be deallocated
-"""
-function ginkgo_delete_array(datatype, array)
-    ccall((:ginkgo_delete_array, libginkgo), Cvoid, (_GKO_DATATYPE_CONST, Ptr{Cvoid}), datatype, array)
-end
-
-# no prototype is found for this function at c_api.h:90:18, please use with caution
+# no prototype is found for this function at c_api.h:94:14, please use with caution
 """
     ginkgo_create_executor_omp()
 
 Allocates memory for an omp executor on targeted device.
 
 ### Returns
-[`gko_executor_omp`](@ref) Raw pointer to the shared pointer of the omp executor
+[`gko_executor`](@ref) Raw pointer to the shared pointer of the omp executor
 """
 function ginkgo_create_executor_omp()
-    ccall((:ginkgo_create_executor_omp, libginkgo), gko_executor_omp, ())
+    ccall((:ginkgo_create_executor_omp, libginkgo), gko_executor, ())
 end
 
 """
@@ -83,20 +51,20 @@ Deallocates memory for an omp executor on targeted device.
 * `ptr`: Raw pointer to the shared pointer of the omp executor to be deleted
 """
 function ginkgo_delete_executor_omp(ptr)
-    ccall((:ginkgo_delete_executor_omp, libginkgo), Cvoid, (gko_executor_omp,), ptr)
+    ccall((:ginkgo_delete_executor_omp, libginkgo), Cvoid, (gko_executor,), ptr)
 end
 
-# no prototype is found for this function at c_api.h:121:24, please use with caution
+# no prototype is found for this function at c_api.h:166:14, please use with caution
 """
     ginkgo_create_executor_reference()
 
-Allocates memory for a reference executor on target device
+Allocates memory for a reference executor on targeted device.
 
 ### Returns
-[`gko_executor_reference`](@ref) Raw pointer to the shared pointer of the reference executor
+[`gko_executor`](@ref) Raw pointer to the shared pointer of the reference executor
 """
 function ginkgo_create_executor_reference()
-    ccall((:ginkgo_create_executor_reference, libginkgo), gko_executor_reference, ())
+    ccall((:ginkgo_create_executor_reference, libginkgo), gko_executor, ())
 end
 
 """
@@ -108,10 +76,110 @@ Deallocates memory for a reference executor on targeted device.
 * `ptr`: Raw pointer to the shared pointer of the reference executor to be deleted
 """
 function ginkgo_delete_executor_reference(ptr)
-    ccall((:ginkgo_delete_executor_reference, libginkgo), Cvoid, (gko_executor_reference,), ptr)
+    ccall((:ginkgo_delete_executor_reference, libginkgo), Cvoid, (gko_executor,), ptr)
 end
 
-# no prototype is found for this function at c_api.h:147:6, please use with caution
+mutable struct gko_array_i16_st end
+
+const gko_array_i16 = Ptr{gko_array_i16_st}
+
+function ginkgo_create_array_i16(exec_st_ptr, size)
+    ccall((:ginkgo_create_array_i16, libginkgo), gko_array_i16, (gko_executor, Cint), exec_st_ptr, size)
+end
+
+function ginkgo_create_view_array_i16(exec_st_ptr, size, data_ptr)
+    ccall((:ginkgo_create_view_array_i16, libginkgo), gko_array_i16, (gko_executor, Cint, Ptr{Cshort}), exec_st_ptr, size, data_ptr)
+end
+
+function ginkgo_delete_array_i16(array_st_ptr)
+    ccall((:ginkgo_delete_array_i16, libginkgo), Cvoid, (gko_array_i16,), array_st_ptr)
+end
+
+function ginkgo_get_num_elems_i16(array_st_ptr)
+    ccall((:ginkgo_get_num_elems_i16, libginkgo), Cint, (gko_array_i16,), array_st_ptr)
+end
+
+mutable struct gko_array_i32_st end
+
+const gko_array_i32 = Ptr{gko_array_i32_st}
+
+function ginkgo_create_array_i32(exec_st_ptr, size)
+    ccall((:ginkgo_create_array_i32, libginkgo), gko_array_i32, (gko_executor, Cint), exec_st_ptr, size)
+end
+
+function ginkgo_create_view_array_i32(exec_st_ptr, size, data_ptr)
+    ccall((:ginkgo_create_view_array_i32, libginkgo), gko_array_i32, (gko_executor, Cint, Ptr{Cint}), exec_st_ptr, size, data_ptr)
+end
+
+function ginkgo_delete_array_i32(array_st_ptr)
+    ccall((:ginkgo_delete_array_i32, libginkgo), Cvoid, (gko_array_i32,), array_st_ptr)
+end
+
+function ginkgo_get_num_elems_i32(array_st_ptr)
+    ccall((:ginkgo_get_num_elems_i32, libginkgo), Cint, (gko_array_i32,), array_st_ptr)
+end
+
+mutable struct gko_array_i64_st end
+
+const gko_array_i64 = Ptr{gko_array_i64_st}
+
+function ginkgo_create_array_i64(exec_st_ptr, size)
+    ccall((:ginkgo_create_array_i64, libginkgo), gko_array_i64, (gko_executor, Cint), exec_st_ptr, size)
+end
+
+function ginkgo_create_view_array_i64(exec_st_ptr, size, data_ptr)
+    ccall((:ginkgo_create_view_array_i64, libginkgo), gko_array_i64, (gko_executor, Cint, Ptr{Clonglong}), exec_st_ptr, size, data_ptr)
+end
+
+function ginkgo_delete_array_i64(array_st_ptr)
+    ccall((:ginkgo_delete_array_i64, libginkgo), Cvoid, (gko_array_i64,), array_st_ptr)
+end
+
+function ginkgo_get_num_elems_i64(array_st_ptr)
+    ccall((:ginkgo_get_num_elems_i64, libginkgo), Cint, (gko_array_i64,), array_st_ptr)
+end
+
+mutable struct gko_array_f32_st end
+
+const gko_array_f32 = Ptr{gko_array_f32_st}
+
+function ginkgo_create_array_f32(exec_st_ptr, size)
+    ccall((:ginkgo_create_array_f32, libginkgo), gko_array_f32, (gko_executor, Cint), exec_st_ptr, size)
+end
+
+function ginkgo_create_view_array_f32(exec_st_ptr, size, data_ptr)
+    ccall((:ginkgo_create_view_array_f32, libginkgo), gko_array_f32, (gko_executor, Cint, Ptr{Cfloat}), exec_st_ptr, size, data_ptr)
+end
+
+function ginkgo_delete_array_f32(array_st_ptr)
+    ccall((:ginkgo_delete_array_f32, libginkgo), Cvoid, (gko_array_f32,), array_st_ptr)
+end
+
+function ginkgo_get_num_elems_f32(array_st_ptr)
+    ccall((:ginkgo_get_num_elems_f32, libginkgo), Cint, (gko_array_f32,), array_st_ptr)
+end
+
+mutable struct gko_array_f64_st end
+
+const gko_array_f64 = Ptr{gko_array_f64_st}
+
+function ginkgo_create_array_f64(exec_st_ptr, size)
+    ccall((:ginkgo_create_array_f64, libginkgo), gko_array_f64, (gko_executor, Cint), exec_st_ptr, size)
+end
+
+function ginkgo_create_view_array_f64(exec_st_ptr, size, data_ptr)
+    ccall((:ginkgo_create_view_array_f64, libginkgo), gko_array_f64, (gko_executor, Cint, Ptr{Cdouble}), exec_st_ptr, size, data_ptr)
+end
+
+function ginkgo_delete_array_f64(array_st_ptr)
+    ccall((:ginkgo_delete_array_f64, libginkgo), Cvoid, (gko_array_f64,), array_st_ptr)
+end
+
+function ginkgo_get_num_elems_f64(array_st_ptr)
+    ccall((:ginkgo_get_num_elems_f64, libginkgo), Cint, (gko_array_f64,), array_st_ptr)
+end
+
+# no prototype is found for this function at c_api.h:201:6, please use with caution
 """
     ginkgo_get_version()
 
