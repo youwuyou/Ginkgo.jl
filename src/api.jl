@@ -29,7 +29,7 @@ const gko_executor = Ptr{gko_executor_st}
     GKO_COMPLEX_DOUBLE = 6
 end
 
-# no prototype is found for this function at c_api.h:94:14, please use with caution
+# no prototype is found for this function at c_api.h:135:14, please use with caution
 """
     ginkgo_create_executor_omp()
 
@@ -54,7 +54,7 @@ function ginkgo_delete_executor_omp(ptr)
     ccall((:ginkgo_delete_executor_omp, libginkgo), Cvoid, (gko_executor,), ptr)
 end
 
-# no prototype is found for this function at c_api.h:166:14, please use with caution
+# no prototype is found for this function at c_api.h:207:14, please use with caution
 """
     ginkgo_create_executor_reference()
 
@@ -179,7 +179,39 @@ function ginkgo_get_num_elems_f64(array_st_ptr)
     ccall((:ginkgo_get_num_elems_f64, libginkgo), Cint, (gko_array_f64,), array_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:201:6, please use with caution
+mutable struct gko_dim2_st end
+
+const gko_dim2 = Ptr{gko_dim2_st}
+
+function ginkgo_delete_dim2(dim_st_ptr)
+    ccall((:ginkgo_delete_dim2, libginkgo), Cvoid, (gko_dim2,), dim_st_ptr)
+end
+
+function ginkgo_ifequal_dim2(st_ptr1, st_ptr2)
+    ccall((:ginkgo_ifequal_dim2, libginkgo), Cint, (gko_dim2, gko_dim2), st_ptr1, st_ptr2)
+end
+
+mutable struct gko_dim3_st end
+
+const gko_dim3 = Ptr{gko_dim3_st}
+
+function ginkgo_delete_dim3(dim_st_ptr)
+    ccall((:ginkgo_delete_dim3, libginkgo), Cvoid, (gko_dim3,), dim_st_ptr)
+end
+
+function ginkgo_ifequal_dim3(st_ptr1, st_ptr2)
+    ccall((:ginkgo_ifequal_dim3, libginkgo), Cint, (gko_dim3, gko_dim3), st_ptr1, st_ptr2)
+end
+
+function ginkgo_create_dim2(first, second)
+    ccall((:ginkgo_create_dim2, libginkgo), gko_dim2, (Cint, Cint), first, second)
+end
+
+function ginkgo_create_dim3(first, second, third)
+    ccall((:ginkgo_create_dim3, libginkgo), gko_dim3, (Cint, Cint, Cint), first, second, third)
+end
+
+# no prototype is found for this function at c_api.h:259:6, please use with caution
 """
     ginkgo_get_version()
 

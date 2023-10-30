@@ -1,5 +1,6 @@
 const SUPPORTED_ELEMENT_TYPE = [Int16, Int32, Int64, Float32, Float64, #= Complex{Float32}, Complex{Float64}=#]
 
+# Subtype our gko::array<T> as subtype of one-dimensional arrays (or array-like types) with elements of type T. 
 abstract type AbstractGkoVector{T} <: AbstractVector{T} end
 scalartype(::AbstractGkoVector{T}) where {T} = T
 
@@ -7,9 +8,9 @@ mutable struct Array{T} <: AbstractGkoVector{T}
     ptr::Ptr{Cvoid}
     executor::Ptr{Cvoid}  # Pointer to the struct wrapping the executor shared ptr
 
-    # Inner constructor
+    # Constructor
     function Array{T}(::UndefInitializer, executor::Ptr{G}, dims::Int...) where {T, G}
-        # Type
+        # Element type check
         T in SUPPORTED_ELEMENT_TYPE || throw(ArgumentError("unsupported element type $T"))
 
         # Dimension check
@@ -25,10 +26,13 @@ mutable struct Array{T} <: AbstractGkoVector{T}
             return new{T}(ptr, executor)
         end
     end
+
+    # Destructor
+    # TODO: choose according to types?
+
 end
 
-# TODO: use the finalizer to prevent memory leak on both
-# array and the executor!
+# TODO: use the finalizer to prevent memory leak on both the array and the executor!
 
 
 # Overloading operations

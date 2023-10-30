@@ -1,4 +1,4 @@
-const EXECUTOR_SYMBOLS = [:omp, :reference#=, :cuda, :hip, :dpcpp=#]
+const SUPPORTED_EXECUTOR_TYPE = [:omp, :reference#=, :cuda, :hip, :dpcpp=#]
 
 """
     create!(executor_type::Symbol)
@@ -6,12 +6,10 @@ const EXECUTOR_SYMBOLS = [:omp, :reference#=, :cuda, :hip, :dpcpp=#]
 Creation of the executor of a specified executor type.
 
 # Arguments
-- `executor_type::Symbol`: One of the executor types to create out of `EXECUTOR_SYMBOLS`
-
-# Returns
+- `executor_type::Symbol`: One of the executor types to create out of $SUPPORTED_EXECUTOR_TYPE
 """
 function create!(executor_type::Symbol)
-    executor_type in EXECUTOR_SYMBOLS || throw(ArgumentError("unsupported executor type $executor_type"))
+    executor_type in SUPPORTED_EXECUTOR_TYPE || throw(ArgumentError("unsupported executor type $executor_type"))
 
     function_name = Symbol("ginkgo_create_executor_", executor_type)
     @info "Creating $executor_type executor"

@@ -3,50 +3,25 @@ using Ginkgo
 using Debugger
 
 
-hidden = true
-
-
-
-# TODO: 
+# TODO: types to be wrapped
 # using RealValueType = gko::remove_complex<double>;
+
 # using vec = gko::matrix::Dense<double>;
 # using real_vec = gko::matrix::Dense<RealValueType>;
 # using mtx = gko::matrix::Csr<double, int>;
+
 # using cg = gko::solver::Cg<double>;
 
-# print ginkgo library version
+# Print ginkgo library version
 Ginkgo.get_version()
 
-# if hidden
-#     const auto executor_string = argc >= 2 ? argv[1] : "reference";
-#     std::map<std::string, std::function<std::shared_ptr<gko::Executor>()>>
-#         exec_map{
-#             {"omp", [] { return gko::OmpExecutor::create(); }},
-#             {"cuda",
-#              [] {
-#                  return gko::CudaExecutor::create(0,
-#                                                   gko::OmpExecutor::create());
-#              }},
-#             {"hip",
-#              [] {
-#                  return gko::HipExecutor::create(0, gko::OmpExecutor::create());
-#              }},
-#             {"dpcpp",
-#              [] {
-#                  return gko::DpcppExecutor::create(0,
-#                                                    gko::OmpExecutor::create());
-#              }},
-#             {"reference", [] { return gko::ReferenceExecutor::create(); }}};
-    
-#     const auto exec = exec_map.at(executor_string)();  // throws if not valid
-# end
-
-# exec = Ginkgo.create!(:reference)
-exec = Ginkgo.create!(:hey)
+# Obtain executor with a specific backend
+exec = Ginkgo.create!(:omp)
 
 
+
+# Read matrix and vector from mtk files
 # auto A = gko::share(gko::read<mtx>(std::ifstream("data/A.mtx"), exec));
-
 # auto b = gko::read<vec>(std::ifstream("data/b.mtx"), exec);
 # auto x = gko::read<vec>(std::ifstream("data/x0.mtx"), exec);
 
@@ -54,14 +29,20 @@ exec = Ginkgo.create!(:hey)
 # auto A = gko::array<T>(exec,2);
 A = Ginkgo.Array{Float64}(undef, exec, 2)
 
-# B = Ginkgo.Array{Int64}(undef, exec, 2)
 
-# C = Ginkgo.Array{String}(undef, exec, 2, 3)
+mtx_stream = open("data/b.mtx", "r")
+
+# std::unique_ptr to gko::matrix::Dense<double>
+# b = read(mtx_stream, exec)
+
+
+
+
+
 
 # std::unique_ptr<gko::Dense<double>> b = gko::read<vec>(std::ifstream("data/b.mtx"), exec);
 # std::unique_ptr<gko::Dense<double>> x = gko::read<vec>(std::ifstream("data/x0.mtx"), exec);
 
-# b = Ginkgo.read!(, )
 
 
 # TODO:
@@ -79,8 +60,8 @@ A = Ginkgo.Array{Float64}(undef, exec, 2)
 
 # solver->apply(b, x);
 
-# std::cout << "Solution (x):\n";
 println("Solution (x):")
+
 
 
 # write(std::cout, x);
@@ -94,7 +75,6 @@ println("Solution (x):")
 # A->apply(one, x, neg_one, b);
 # b->compute_norm2(res);
 
-# std::cout << "Residual norm sqrt(r^T r):\n";
 println("Residual norm sqrt(r^T r):")
 
 
