@@ -35,14 +35,12 @@ For maintaining the consistency of our code, we propose following convections [^
 > should be provided
 
 
-### FIXME: NOTES FOR ME 
+## Naming Conventions
 
-
->**Naming Conventions**
->
 >Use a consistent prefix for all API functions to avoid >naming collisions. For instance, if your library is named >"Foo", your functions could be named foo_function_name.
 >Use snake_case for function names and all-uppercase for >macros and defines, as this is more conventional in C.
 
+## Others
 >**Error Handling**
 >
 >Consider returning error codes from functions instead of >throwing exceptions (which C does not support).
@@ -107,3 +105,9 @@ TODO: [debugging with escaping problem](https://discourse.julialang.org/t/undefv
 
 
 [^1]: Complying with the C API programming convention from the ["Extending the C API"](https://docs.lammps.org/Library_add.html) section of the LAMMPS library documentation.
+
+#### Two approaches to wrap ginkgo classes
+
+- for C compatible classes, eg. `gko::dim<2>` => wrapping on julia side and pass back the object
+
+- for others, wrap within a struct using forward declaration.

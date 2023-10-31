@@ -21,6 +21,7 @@ makedocs(;
         [   
             "programmer-guide/use-ginkgo-in-julia.md",
             "programmer-guide/ginkgo-c-library-api.md",
+            "programmer-guide/debugging.md",
         ],
         "Reference" => 
         [   

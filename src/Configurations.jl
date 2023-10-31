@@ -5,5 +5,5 @@ Obtain the version information and the supported modules of the underlying Ginkg
 """
 function get_version()
     @info "Using precompiled Ginkgo library from C++ source code"
-    API.ginkgo_get_version()
+    API.ginkgo_version_get()
 end

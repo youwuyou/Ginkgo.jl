@@ -1,0 +1,1 @@
+gcc -o play_field play_field.c -L/home/youwuyou/workspace/HS23/ICL_Tennessee/forked_ginkgo/ginkgo/build/lib -lginkgod -Wl,-rpath=/home/youwuyou/workspace/HS23/ICL_Tennessee/forked_ginkgo/ginkgo/build/lib -lginkgo_ompd -lginkgo_cudad -lginkgo_referenced -lginkgo_hipd -lginkgo_dpcppd -lginkgo_deviced /usr/lib/libhwloc.so /usr/lib/libmpi_cxx.so /usr/lib/libmpi.so

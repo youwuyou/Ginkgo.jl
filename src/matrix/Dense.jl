@@ -1,5 +1,24 @@
 # gko::matrix::Dense<double>
 
+# function read(filename::AbstractString, exec::Ptr{API.gko_executor_st})
+#     TODO: error handling checking if a file with the name
+#     exists on current path
+#     return API.ginkgo_matrix_dense_f32_read(filename, exec)
+# end
+
+
+# function get_num_stored_elements(mat::Dense{T}) where T
+#     return API.ginkgo_matrix_dense_f32_get_num_stored_elements(mat)
+# end
+
+# Conversion
+# Base.cconvert(::Type{API.std_ifstream_st}, obj::std_) = API.gko_dim2_st(obj.rows, obj.cols)
+
+
+
+
+
+
 
 # Issue: problematic to pass std::initializer_list
 # eg. auto a = {1.0, 2.0};
@@ -10,7 +29,6 @@
 # Approach: using create for each matrix instead?
 # auto m2 = gko::matrix::Dense<TypeParam>::create(this->exec, gko::dim<2>{2, 1}, 2);
 # auto original_data = m2->get_values();
-
 
 # TYPED_TEST(Dense, ComputesNorm2)
 # {
@@ -90,9 +108,36 @@
 #     }
 
 
-
-
-
 # TODO:
 # This can be realize by setting a default fot the Real abstract type
 # using real_vec = gko::matrix::Dense<RealValueType>;
+
+
+# /**
+# * Creates a Dense matrix from an already allocated (and initialized) array.
+# *
+# * @tparam ValuesArray  type of array of values
+# *
+# * @param exec  Executor associated to the matrix
+# * @param size  size of the matrix
+# * @param values  array of matrix values
+# * @param stride  stride of the rows (i.e. offset between the first
+# *                  elements of two consecutive rows, expressed as the
+# *                  number of matrix elements)
+# *
+# * @note If `values` is not an rvalue, not an array of ValueType, or is on
+# *       the wrong executor, an internal copy will be created, and the
+# *       original array data will not be used in the matrix.
+# */
+# template <typename ValuesArray>
+# Dense(std::shared_ptr<const Executor> exec, const dim<2>& size,
+#      ValuesArray&& values, size_type stride)
+#    : EnableLinOp<Dense>(exec, size),
+#      values_{exec, std::forward<ValuesArray>(values)},
+#      stride_{stride}
+# {
+#    if (size[0] > 0 && size[1] > 0) {
+#        GKO_ENSURE_IN_BOUNDS((size[0] - 1) * stride + size[1] - 1,
+#                             values_.get_num_elems());
+#    }
+# }

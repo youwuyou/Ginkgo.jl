@@ -6,6 +6,8 @@ include("api.jl")
 # Import high-level Julia API
 include("Configurations.jl")
 include("Type.jl")
+include("IO.jl")
+
 
 export 
     get_version

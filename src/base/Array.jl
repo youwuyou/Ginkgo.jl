@@ -19,7 +19,7 @@ mutable struct Array{T} <: AbstractGkoVector{T}
 
         # Call the ginkgo_create_array function to get the ptr
         @GC.preserve executor begin
-            function_name = Symbol("ginkgo_create_array_", gko_type(T))
+            function_name = Symbol("ginkgo_array_", gko_type(T), "_create")
             ptr = eval(:($API.$function_name($executor, $size)))
 
             # Call the default constructor
@@ -46,11 +46,16 @@ Base.unsafe_convert(::Type{Ptr{Cvoid}}, obj::AbstractGkoVector) =
 Base.eltype(::AbstractGkoVector{T}) where {T} = T
 
 function Base.size(array::AbstractGkoVector{T}) where {T}
-    function_name = Symbol("ginkgo_get_num_elems_", gko_type(T))
+    function_name = Symbol("ginkgo_array_", gko_type(T), "_get_num_elems")
     return eval(:($API.$function_name($array.ptr)))
 end
 
 function Base.isempty(array::AbstractGkoVector{T}) where {T}
-    function_name = Symbol("ginkgo_get_num_elems_", gko_type(T))
+    function_name = Symbol("ginkgo_array_", gko_type(T), "_get_num_elems")
     return eval(:($API.$function_name($array.ptr))) == 0
 end
+
+
+# gko::array<T> x(exec,2);
+# auto A = gko::array<T>(exec,2);
+# A = Ginkgo.Array{Float64}(undef, exec, 2)

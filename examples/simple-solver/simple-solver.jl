@@ -25,17 +25,11 @@ exec = Ginkgo.create!(:omp)
 # auto b = gko::read<vec>(std::ifstream("data/b.mtx"), exec);
 # auto x = gko::read<vec>(std::ifstream("data/x0.mtx"), exec);
 
-# gko::array<T> x(exec,2);
-# auto A = gko::array<T>(exec,2);
-A = Ginkgo.Array{Float64}(undef, exec, 2)
-
-
-mtx_stream = open("data/b.mtx", "r")
 
 # std::unique_ptr to gko::matrix::Dense<double>
-# b = read(mtx_stream, exec)
-
-
+# A = read("data/A.mtx", exec)
+# b = read("data/b.mtx", exec)
+# x = read("data/x0.mtx", exec)
 
 
 
@@ -56,6 +50,7 @@ mtx_stream = open("data/b.mtx", "r")
 #                        gko::stop::ResidualNorm<double>::build()
 #                            .with_reduction_factor(reduction_factor))
 #         .on(exec);
+
 # auto solver = solver_gen->generate(A);
 
 # solver->apply(b, x);
@@ -69,8 +64,6 @@ println("Solution (x):")
 # auto one = gko::initialize<vec>({1.0}, exec);
 # auto neg_one = gko::initialize<vec>({-1.0}, exec);
 # auto res = gko::initialize<real_vec>({0.0}, exec);
-
-
 
 # A->apply(one, x, neg_one, b);
 # b->compute_norm2(res);
