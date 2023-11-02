@@ -18,6 +18,16 @@ Type of the pointer to the wrapped [`gko_executor_st`](@ref) struct
 """
 const gko_executor = Ptr{gko_executor_st}
 
+"""
+    gko_dim2_st
+
+Struct implements the gko::dim<2> type
+"""
+struct gko_dim2_st
+    rows::Csize_t
+    cols::Csize_t
+end
+
 @cenum _GKO_DATATYPE_CONST::Int32 begin
     GKO_NONE = -1
     GKO_SHORT = 0
@@ -41,7 +51,7 @@ function ginkgo_executor_delete(exec_st_ptr)
     ccall((:ginkgo_executor_delete, libginkgo), Cvoid, (gko_executor,), exec_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:120:14, please use with caution
+# no prototype is found for this function at c_api.h:216:14, please use with caution
 """
     ginkgo_executor_omp_create()
 
@@ -54,7 +64,7 @@ function ginkgo_executor_omp_create()
     ccall((:ginkgo_executor_omp_create, libginkgo), gko_executor, ())
 end
 
-# no prototype is found for this function at c_api.h:164:14, please use with caution
+# no prototype is found for this function at c_api.h:260:14, please use with caution
 """
     ginkgo_executor_reference_create()
 
@@ -168,16 +178,6 @@ function ginkgo_array_f64_get_num_elems(array_st_ptr)
 end
 
 """
-    gko_dim2_st
-
-Struct implements the gko::dim<2> type
-"""
-struct gko_dim2_st
-    rows::Csize_t
-    cols::Csize_t
-end
-
-"""
     ginkgo_dim2_create(rows, cols)
 
 Allocates memory for a C-based reimplementation of the gko::dim<2> type
@@ -228,12 +228,20 @@ function ginkgo_matrix_dense_f32_create(exec, size)
     ccall((:ginkgo_matrix_dense_f32_create, libginkgo), gko_matrix_dense_f32, (gko_executor, gko_dim2_st), exec, size)
 end
 
-function ginkgo_matrix_delete(mat_st_ptr)
-    ccall((:ginkgo_matrix_delete, libginkgo), Cvoid, (gko_matrix_dense_f32,), mat_st_ptr)
+function ginkgo_matrix_dense_f32_delete(mat_st_ptr)
+    ccall((:ginkgo_matrix_dense_f32_delete, libginkgo), Cvoid, (gko_matrix_dense_f32,), mat_st_ptr)
 end
 
 function ginkgo_matrix_dense_f32_fill(mat_st_ptr, value)
     ccall((:ginkgo_matrix_dense_f32_fill, libginkgo), Cvoid, (gko_matrix_dense_f32, Cfloat), mat_st_ptr, value)
+end
+
+function ginkgo_matrix_dense_f32_at(mat_st_ptr, row, col)
+    ccall((:ginkgo_matrix_dense_f32_at, libginkgo), Cfloat, (gko_matrix_dense_f32, Csize_t, Csize_t), mat_st_ptr, row, col)
+end
+
+function ginkgo_matrix_dense_f32_get_size(mat_st_ptr)
+    ccall((:ginkgo_matrix_dense_f32_get_size, libginkgo), gko_dim2_st, (gko_matrix_dense_f32,), mat_st_ptr)
 end
 
 function ginkgo_matrix_dense_f32_get_num_stored_elements(mat_st_ptr)
@@ -244,11 +252,79 @@ function ginkgo_matrix_dense_f32_get_stride(mat_st_ptr)
     ccall((:ginkgo_matrix_dense_f32_get_stride, libginkgo), Csize_t, (gko_matrix_dense_f32,), mat_st_ptr)
 end
 
+function ginkgo_matrix_dense_f32_compute_dot(mat_st_ptr1, mat_st_ptr2, mat_st_ptr_res)
+    ccall((:ginkgo_matrix_dense_f32_compute_dot, libginkgo), Cvoid, (gko_matrix_dense_f32, gko_matrix_dense_f32, gko_matrix_dense_f32), mat_st_ptr1, mat_st_ptr2, mat_st_ptr_res)
+end
+
+function ginkgo_matrix_dense_f32_compute_norm1(mat_st_ptr1, mat_st_ptr2)
+    ccall((:ginkgo_matrix_dense_f32_compute_norm1, libginkgo), Cvoid, (gko_matrix_dense_f32, gko_matrix_dense_f32), mat_st_ptr1, mat_st_ptr2)
+end
+
+function ginkgo_matrix_dense_f32_compute_norm2(mat_st_ptr1, mat_st_ptr2)
+    ccall((:ginkgo_matrix_dense_f32_compute_norm2, libginkgo), Cvoid, (gko_matrix_dense_f32, gko_matrix_dense_f32), mat_st_ptr1, mat_st_ptr2)
+end
+
 function ginkgo_matrix_dense_f32_read(str_ptr, exec)
     ccall((:ginkgo_matrix_dense_f32_read, libginkgo), gko_matrix_dense_f32, (Ptr{Cchar}, gko_executor), str_ptr, exec)
 end
 
-# no prototype is found for this function at c_api.h:248:6, please use with caution
+function ginkgo_matrix_dense_f32_write_mtx(mat_st_ptr)
+    ccall((:ginkgo_matrix_dense_f32_write_mtx, libginkgo), Ptr{Cchar}, (gko_matrix_dense_f32,), mat_st_ptr)
+end
+
+mutable struct gko_matrix_dense_f64_st end
+
+const gko_matrix_dense_f64 = Ptr{gko_matrix_dense_f64_st}
+
+function ginkgo_matrix_dense_f64_create(exec, size)
+    ccall((:ginkgo_matrix_dense_f64_create, libginkgo), gko_matrix_dense_f64, (gko_executor, gko_dim2_st), exec, size)
+end
+
+function ginkgo_matrix_dense_f64_delete(mat_st_ptr)
+    ccall((:ginkgo_matrix_dense_f64_delete, libginkgo), Cvoid, (gko_matrix_dense_f64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_dense_f64_fill(mat_st_ptr, value)
+    ccall((:ginkgo_matrix_dense_f64_fill, libginkgo), Cvoid, (gko_matrix_dense_f64, Cdouble), mat_st_ptr, value)
+end
+
+function ginkgo_matrix_dense_f64_at(mat_st_ptr, row, col)
+    ccall((:ginkgo_matrix_dense_f64_at, libginkgo), Cdouble, (gko_matrix_dense_f64, Csize_t, Csize_t), mat_st_ptr, row, col)
+end
+
+function ginkgo_matrix_dense_f64_get_size(mat_st_ptr)
+    ccall((:ginkgo_matrix_dense_f64_get_size, libginkgo), gko_dim2_st, (gko_matrix_dense_f64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_dense_f64_get_num_stored_elements(mat_st_ptr)
+    ccall((:ginkgo_matrix_dense_f64_get_num_stored_elements, libginkgo), Csize_t, (gko_matrix_dense_f64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_dense_f64_get_stride(mat_st_ptr)
+    ccall((:ginkgo_matrix_dense_f64_get_stride, libginkgo), Csize_t, (gko_matrix_dense_f64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_dense_f64_compute_dot(mat_st_ptr1, mat_st_ptr2, mat_st_ptr_res)
+    ccall((:ginkgo_matrix_dense_f64_compute_dot, libginkgo), Cvoid, (gko_matrix_dense_f64, gko_matrix_dense_f64, gko_matrix_dense_f64), mat_st_ptr1, mat_st_ptr2, mat_st_ptr_res)
+end
+
+function ginkgo_matrix_dense_f64_compute_norm1(mat_st_ptr1, mat_st_ptr2)
+    ccall((:ginkgo_matrix_dense_f64_compute_norm1, libginkgo), Cvoid, (gko_matrix_dense_f64, gko_matrix_dense_f64), mat_st_ptr1, mat_st_ptr2)
+end
+
+function ginkgo_matrix_dense_f64_compute_norm2(mat_st_ptr1, mat_st_ptr2)
+    ccall((:ginkgo_matrix_dense_f64_compute_norm2, libginkgo), Cvoid, (gko_matrix_dense_f64, gko_matrix_dense_f64), mat_st_ptr1, mat_st_ptr2)
+end
+
+function ginkgo_matrix_dense_f64_read(str_ptr, exec)
+    ccall((:ginkgo_matrix_dense_f64_read, libginkgo), gko_matrix_dense_f64, (Ptr{Cchar}, gko_executor), str_ptr, exec)
+end
+
+function ginkgo_matrix_dense_f64_write_mtx(mat_st_ptr)
+    ccall((:ginkgo_matrix_dense_f64_write_mtx, libginkgo), Ptr{Cchar}, (gko_matrix_dense_f64,), mat_st_ptr)
+end
+
+# no prototype is found for this function at c_api.h:342:6, please use with caution
 """
     ginkgo_version_get()
 

@@ -2,7 +2,6 @@ using Ginkgo
 using Test
 
 include("test-configurations.jl")
-include("test-io.jl")
 
 # include("base/test-array.jl")
 include("base/test-dim.jl")
@@ -10,6 +9,5 @@ include("base/test-dim.jl")
 
 
 # include("matrix/test-csr.jl")
-# include("matrix/test-dense.jl")
-
+include("matrix/test-dense.jl")
 # include("solver/test-cg.jl")
