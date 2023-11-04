@@ -8,6 +8,6 @@ include("base/test-dim.jl")
 # include("base/test-executor.jl")
 
 
-# include("matrix/test-csr.jl")
+include("matrix/test-csr.jl")
 include("matrix/test-dense.jl")
 # include("solver/test-cg.jl")

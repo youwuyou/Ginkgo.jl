@@ -3,7 +3,7 @@
 
 ## C API Design Principle
 
-For maintaining the consistency of our code, we propose following convections [^1] when one wants to add new C language wrapper functions in `c_api.hpp` and `c_api.cpp`. 
+For maintaining the consistency of our code, we propose following convections [^1] when one wants to add new C language wrapper functions in `c_api.h` and `c_api.cpp`. 
 
 >**Prerequisite**
 >
@@ -15,7 +15,7 @@ For maintaining the consistency of our code, we propose following convections [^
 
 >**Compatibility to C**
 >
-> The `library.h` file should be kept compatible to C code 
+> The `c_api.h` file should be kept compatible to C code 
 > at a level similar to C89. Its interfaces may not 
 > reference any custom data types that are only known inside of Ginkgo
 
@@ -35,79 +35,119 @@ For maintaining the consistency of our code, we propose following convections [^
 > should be provided
 
 
+---
 ## Naming Conventions
 
->Use a consistent prefix for all API functions to avoid >naming collisions. For instance, if your library is named >"Foo", your functions could be named foo_function_name.
->Use snake_case for function names and all-uppercase for >macros and defines, as this is more conventional in C.
-
-## Others
->**Error Handling**
->
->Consider returning error codes from functions instead of >throwing exceptions (which C does not support).
->You can also provide a foo_get_last_error() function to >retrieve detailed error information after a function call.
-
->**Memory Management**
->
->Clearly document who is responsible for allocating and >deallocating memory. If a function returns a pointer, state >whether the caller should free it and how (e.g., with free
->() or a custom function like foo_free_data()).
->Avoid returning raw pointers. Instead, use opaque pointers >or handles, which are essentially pointers but without >exposing the underlying structure to the user.
-
->**Data Structures**
->
->Hide C++ classes behind opaque structs in the C API. The >users don't need to know the details, only the typedef.
->For instance, instead of exposing a std::vector, you might >provide functions like foo_vector_size(), foo_vector_get(), >etc.
-
->**Function Signatures**
->
->Use plain-old-data (POD) types as function arguments and >return values, avoiding C++ specific features.
->Consider using structs to pass multiple parameters to a >function or to return multiple values.
-
->**Object Lifecycle**
->
->For every C++ object that needs to be exposed, provide >creation and destruction functions in your C API, e.g., >foo_object_create() and foo_object_destroy().
-
->**Callback Mechanisms**
->
->If your library uses callbacks, expose them as function >pointers in the C API.
->Ensure that you provide a way to pass user context (usually >a void* user_data) to the callback, as C does not have >closures.
+Following are some naming conventions used for the Ginkgo C API.
 
 
+### 1. Types
 
->**Versioning**
->
->Provide functions to retrieve the library's version at >runtime, e.g., foo_version().
->Consider semantic versioning to make it clear when breaking >changes are introduced.
+For consistency, following is a list of system independent types and their naming conventions that must be used in our Ginkgo C API.
 
+#### System Independent Types
 
+| C name | Standard Julia Alias | Julia Base Type | C API name |
+| --- | --- | --- | --- |
+| `short` | `Cshort` | `Int16` | `i16` |
+| `int`,`BOOL`(C, typical) | `Cint` | `Int32` | `i32` |
+| `long long` | `Clonglong` | `Int64` | `i64` |
+| `float` | `Cfloat` | `Float32` | `f32` |
+| `double` | `Cdouble` | `Float64` | `f64` |
+| `complex float` | `ComplexF32` | `Complex{Float32}` | `cf32` |
+| `complex double` | `ComplexF64` | `Complex{Float64}` | `cf64` |
 
+### 2. Struct and pointer to struct
 
-
-
-
-### Correctly wrapping C++ functions
-
-#### How are C++ types represented in Julia
-
-TODO: talk about the macro approach (metaprogramming)
-
-<!-- Julia offers metaprogramming capabilities where you can define macros to abstract away certain repetitive tasks. For instance, you could define a macro that automatically generates the needed cfunction code: -->
-
-We notice the 4th argument is of type `Ptr{Cvoid}`, which represents a generic pointer in Julia, analogous to `void*` in C. In fact, when interfacing with C libraries in Julia, function pointers are typically represented using the more generic type`Ptr{Cvoid}`, allowing better callback flexibility.
-
-
-TODO: [debugging with escaping problem](https://discourse.julialang.org/t/undefvarerror-x-not-defined-when-calling-a-macro-outside-of-its-module/20201)
+> If a wrapper struct is defined with `struct gko_executor_st;`, then
+>the pointer to the wrapper struct is called `typedef struct gko_executor_st* gko_executor;`
 
 
-#### How to handle C++-specific language features
+### 3. Functions
+
+>Functions are named using the pattern `ginkgo_classname_typename_fname`,
+>for more complicated member functions like `gko::matrix::Csr<float, int>` that involves two template parameters for both `ValueType` and `IndexType`, we stack the templated types one after another such as for gko::matrix::Csr<float, int>, the entry in the C API is named as `gko_matrix_csr_f32_i32_st`.
 
 
-#### How to exploit the power of meta programming in Julia for API
+### 4. C++ Template
+
+>In order to avoid repeating similar code for different concrete types of
+>a specific templated class, we use macros to generate wrappers for concrete types
+>specifically.
+
+In the following example, we define macros to generate wrappers using selected concrete types for a templated class and (member) functions involved.
 
 
+```C
+// c_api.h
+
+
+// Define macros to generating declarations within the header file
+#define DECLARE_ARRAY_OVERLOAD(_ctype, _cpptype, _name)                       \
+    struct gko_array_##_name##_st;                                            \
+    typedef struct gko_array_##_name##_st* gko_array_##_name;                 \
+    gko_array_##_name ginkgo_array_##_name##_create(gko_executor exec_st_ptr, \
+                                                    size_t size);             \
+    gko_array_##_name ginkgo_array_##_name##_create_view(                     \
+        gko_executor exec_st_ptr, size_t size, _ctype* data_ptr);             \
+    void ginkgo_array_##_name##_delete(gko_array_##_name array_st_ptr);       \
+    size_t ginkgo_array_##_name##_get_num_elems(gko_array_##_name array_st_ptr);
+
+// Define macros for generating implementations within the source file
+#define DEFINE_ARRAY_OVERLOAD(_ctype, _cpptype, _name)                         \
+    struct gko_array_##_name##_st {                                            \
+        gko::array<_cpptype> arr;                                              \
+    };                                                                         \
+                                                                               \
+    typedef gko_array_##_name##_st* gko_array_##_name;                         \
+                                                                               \
+    gko_array_##_name ginkgo_array_##_name##_create(gko_executor exec_st_ptr,  \
+                                                    size_t size)               \
+    {                                                                          \
+        return new gko_array_##_name##_st{                                     \
+            gko::array<_cpptype>{exec_st_ptr->shared_ptr, size}};              \
+    }                                                                          \
+                                                                               \
+    gko_array_##_name ginkgo_array_##_name##_create_view(                      \
+        gko_executor exec_st_ptr, size_t size, _ctype* data_ptr)               \
+    {                                                                          \
+        return new gko_array_##_name##_st{gko::make_array_view(                \
+            exec_st_ptr->shared_ptr, size, static_cast<_cpptype*>(data_ptr))}; \
+    }                                                                          \
+                                                                               \
+    void ginkgo_array_##_name##_delete(gko_array_##_name array_st_ptr)         \
+    {                                                                          \
+        delete array_st_ptr;                                                   \
+    }                                                                          \
+                                                                               \
+    size_t ginkgo_array_##_name##_get_num_elems(                               \
+        gko_array_##_name array_st_ptr)                                        \
+    {                                                                          \
+        return (*array_st_ptr).arr.get_num_elems();                            \
+    }
+
+
+// Apply the declare overload macros to declare in within the header
+DECLARE_ARRAY_OVERLOAD(short, short, i16);
+DECLARE_ARRAY_OVERLOAD(int, int, i32);
+DECLARE_ARRAY_OVERLOAD(long long, long long, i64);
+DECLARE_ARRAY_OVERLOAD(float, float, f32);
+DECLARE_ARRAY_OVERLOAD(double, double, f64);
+DECLARE_ARRAY_OVERLOAD(float complex, std::complex<float>, cf32);
+DECLARE_ARRAY_OVERLOAD(double complex, std::complex<double>, cf64);
+```
+
+```C++
+// c_api.cpp
+// Apply the define overload macros to declare in within the header
+DEFINE_ARRAY_OVERLOAD(short, short, i16);
+DEFINE_ARRAY_OVERLOAD(int, int, i32);
+DEFINE_ARRAY_OVERLOAD(long long, long long, i64);
+DEFINE_ARRAY_OVERLOAD(float, float, f32);
+DEFINE_ARRAY_OVERLOAD(double, double, f64);
+DEFINE_ARRAY_OVERLOAD(float _Complex, std::complex<float>, cf32);
+DEFINE_ARRAY_OVERLOAD(double _Complex, std::complex<double>, cf64);
+```
+
+---
 [^1]: Complying with the C API programming convention from the ["Extending the C API"](https://docs.lammps.org/Library_add.html) section of the LAMMPS library documentation.
-
-#### Two approaches to wrap ginkgo classes
-
-- for C compatible classes, eg. `gko::dim<2>` => wrapping on julia side and pass back the object
-
-- for others, wrap within a struct using forward declaration.

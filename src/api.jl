@@ -39,6 +39,53 @@ end
     GKO_COMPLEX_DOUBLE = 6
 end
 
+function c_char_ptr_free(ptr)
+    ccall((:c_char_ptr_free, libginkgo), Cvoid, (Ptr{Cchar},), ptr)
+end
+
+"""
+    ginkgo_dim2_create(rows, cols)
+
+Allocates memory for a C-based reimplementation of the gko::dim<2> type
+
+### Parameters
+* `rows`: First dimension
+* `cols`: Second dimension
+### Returns
+[`gko_dim2_st`](@ref) C struct that contains members of the gko::dim<2> type
+"""
+function ginkgo_dim2_create(rows, cols)
+    ccall((:ginkgo_dim2_create, libginkgo), gko_dim2_st, (Csize_t, Csize_t), rows, cols)
+end
+
+"""
+    ginkgo_dim2_rows_get(dim)
+
+Obtains the value of the first element of a gko::dim<2> type
+
+### Parameters
+* `dim`: An object of [`gko_dim2_st`](@ref) type
+### Returns
+size\\_t First dimension
+"""
+function ginkgo_dim2_rows_get(dim)
+    ccall((:ginkgo_dim2_rows_get, libginkgo), Csize_t, (gko_dim2_st,), dim)
+end
+
+"""
+    ginkgo_dim2_cols_get(dim)
+
+Obtains the value of the second element of a gko::dim<2> type
+
+### Parameters
+* `dim`: An object of [`gko_dim2_st`](@ref) type
+### Returns
+size\\_t Second dimension
+"""
+function ginkgo_dim2_cols_get(dim)
+    ccall((:ginkgo_dim2_cols_get, libginkgo), Csize_t, (gko_dim2_st,), dim)
+end
+
 """
     ginkgo_executor_delete(exec_st_ptr)
 
@@ -51,28 +98,12 @@ function ginkgo_executor_delete(exec_st_ptr)
     ccall((:ginkgo_executor_delete, libginkgo), Cvoid, (gko_executor,), exec_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:216:14, please use with caution
-"""
-    ginkgo_executor_omp_create()
-
-Allocates memory for an omp executor on targeted device.
-
-### Returns
-[`gko_executor`](@ref) Raw pointer to the shared pointer of the omp executor
-"""
+# no prototype is found for this function at c_api.h:307:14, please use with caution
 function ginkgo_executor_omp_create()
     ccall((:ginkgo_executor_omp_create, libginkgo), gko_executor, ())
 end
 
-# no prototype is found for this function at c_api.h:260:14, please use with caution
-"""
-    ginkgo_executor_reference_create()
-
-Allocates memory for a reference executor on targeted device.
-
-### Returns
-[`gko_executor`](@ref) Raw pointer to the shared pointer of the reference executor
-"""
+# no prototype is found for this function at c_api.h:311:14, please use with caution
 function ginkgo_executor_reference_create()
     ccall((:ginkgo_executor_reference_create, libginkgo), gko_executor, ())
 end
@@ -175,49 +206,6 @@ end
 
 function ginkgo_array_f64_get_num_elems(array_st_ptr)
     ccall((:ginkgo_array_f64_get_num_elems, libginkgo), Csize_t, (gko_array_f64,), array_st_ptr)
-end
-
-"""
-    ginkgo_dim2_create(rows, cols)
-
-Allocates memory for a C-based reimplementation of the gko::dim<2> type
-
-### Parameters
-* `rows`: First dimension
-* `cols`: Second dimension
-### Returns
-[`gko_dim2_st`](@ref) C struct that contains members of the gko::dim<2> type
-"""
-function ginkgo_dim2_create(rows, cols)
-    ccall((:ginkgo_dim2_create, libginkgo), gko_dim2_st, (Csize_t, Csize_t), rows, cols)
-end
-
-"""
-    ginkgo_dim2_rows_get(dim)
-
-Obtains the value of the first element of a gko::dim<2> type
-
-### Parameters
-* `dim`: An object of [`gko_dim2_st`](@ref) type
-### Returns
-size\\_t First dimension
-"""
-function ginkgo_dim2_rows_get(dim)
-    ccall((:ginkgo_dim2_rows_get, libginkgo), Csize_t, (gko_dim2_st,), dim)
-end
-
-"""
-    ginkgo_dim2_cols_get(dim)
-
-Obtains the value of the second element of a gko::dim<2> type
-
-### Parameters
-* `dim`: An object of [`gko_dim2_st`](@ref) type
-### Returns
-size\\_t Second dimension
-"""
-function ginkgo_dim2_cols_get(dim)
-    ccall((:ginkgo_dim2_cols_get, libginkgo), Csize_t, (gko_dim2_st,), dim)
 end
 
 mutable struct gko_matrix_dense_f32_st end
@@ -324,7 +312,71 @@ function ginkgo_matrix_dense_f64_write_mtx(mat_st_ptr)
     ccall((:ginkgo_matrix_dense_f64_write_mtx, libginkgo), Ptr{Cchar}, (gko_matrix_dense_f64,), mat_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:342:6, please use with caution
+mutable struct gko_matrix_csr_f32_i32_st end
+
+const gko_matrix_csr_f32_i32 = Ptr{gko_matrix_csr_f32_i32_st}
+
+function ginkgo_matrix_csr_f32_i32_create(exec, size, nnz)
+    ccall((:ginkgo_matrix_csr_f32_i32_create, libginkgo), gko_matrix_csr_f32_i32, (gko_executor, gko_dim2_st, Csize_t), exec, size, nnz)
+end
+
+function ginkgo_matrix_csr_f32_i32_delete(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i32_delete, libginkgo), Cvoid, (gko_matrix_csr_f32_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i32_read(str_ptr, exec)
+    ccall((:ginkgo_matrix_csr_f32_i32_read, libginkgo), gko_matrix_csr_f32_i32, (Ptr{Cchar}, gko_executor), str_ptr, exec)
+end
+
+function ginkgo_matrix_csr_f32_i32_get_num_stored_elements(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i32_get_num_stored_elements, libginkgo), Csize_t, (gko_matrix_csr_f32_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i32_get_num_srow_elements(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i32_get_num_srow_elements, libginkgo), Csize_t, (gko_matrix_csr_f32_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i32_get_size(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i32_get_size, libginkgo), gko_dim2_st, (gko_matrix_csr_f32_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i32_get_const_values(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i32_get_const_values, libginkgo), Ptr{Cfloat}, (gko_matrix_csr_f32_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i32_get_const_col_idxs(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i32_get_const_col_idxs, libginkgo), Ptr{Cint}, (gko_matrix_csr_f32_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i32_get_const_row_ptrs(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i32_get_const_row_ptrs, libginkgo), Ptr{Cint}, (gko_matrix_csr_f32_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i32_get_const_srow(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i32_get_const_srow, libginkgo), Ptr{Cint}, (gko_matrix_csr_f32_i32,), mat_st_ptr)
+end
+
+"""
+    ginkgo_matrix_csr_f32_i32_apply(mat_st_ptr, alpha, x, beta, y)
+
+Performs an SpMM product
+
+### Parameters
+* `mat_st_ptr`:
+* `alpha`:
+* `x`:
+* `beta`:
+* `y`:
+"""
+function ginkgo_matrix_csr_f32_i32_apply(mat_st_ptr, alpha, x, beta, y)
+    ccall((:ginkgo_matrix_csr_f32_i32_apply, libginkgo), Cvoid, (gko_matrix_csr_f32_i32, gko_matrix_dense_f32, gko_matrix_dense_f32, gko_matrix_dense_f32, gko_matrix_dense_f32), mat_st_ptr, alpha, x, beta, y)
+end
+
+function ginkgo_solver_cg_solve(exec_st_ptr, A_st_ptr, b_st_ptr, x_st_ptr, maxiter, reduction)
+    ccall((:ginkgo_solver_cg_solve, libginkgo), Cvoid, (gko_executor, gko_matrix_csr_f32_i32, gko_matrix_dense_f32, gko_matrix_dense_f32, Cint, Cdouble), exec_st_ptr, A_st_ptr, b_st_ptr, x_st_ptr, maxiter, reduction)
+end
+
+# no prototype is found for this function at c_api.h:391:6, please use with caution
 """
     ginkgo_version_get()
 

@@ -12,6 +12,6 @@ function create(executor_type::Symbol)
     executor_type in SUPPORTED_EXECUTOR_TYPE || throw(ArgumentError("unsupported executor type $executor_type"))
 
     function_name = Symbol("ginkgo_executor_", executor_type, "_create")
-    @info "Creating $executor_type executor"
+    # @info "Creating $executor_type executor"
     return eval(:($API.$function_name()))
 end

@@ -1,5 +1,5 @@
 # // Instantiate a CUDA executor
-# auto gpu = gko::CudaExecutor::create(0, gko::OmpExecutor::create());
+# TODO:"auto gpu = gko::CudaExecutor::create(0, gko::OmpExecutor::create());
 # // Read data
 # auto A = gko::read<gko::matrix::Csr<>>(std::cin, gpu);
 # auto b = gko::read<gko::matrix::Dense<>>(std::cin, gpu);

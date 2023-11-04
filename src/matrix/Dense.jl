@@ -1,13 +1,13 @@
 # gko::matrix::Dense<T>
 const implemented = false
 
-SUPPORTED_MATRIX_TYPE = [Float32, Float64]
+SUPPORTED_DENSE_ELTYPE = [Float32, Float64]
 
 """
     Dense{T} <: AbstractMatrix{T}
 
 A type for representing dense matrix and vectors. Alias for `gko_matrix_dense_eltype_st` in C API.
-    where `elementtype` is one of the $SUPPORTED_MATRIX_TYPE. For constructing a dense matrix, it is
+    where `eltype` is one of the $SUPPORTED_DENSE_ELTYPE. For constructing a matrix, it is
     necessary to provide an executor using the [`create`](@ref) method.
 
 ### Examples
@@ -38,28 +38,28 @@ mutable struct Dense{T} <: AbstractMatrix{T}
     
     # Constructors for matrix with uninitialized values
     function Dense{T}(executor::Ptr{Ginkgo.API.gko_executor_st}, m::Integer, n::Integer) where T
-        @warn "Constructing $(m) x $(n) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
+        # @warn "Constructing $(m) x $(n) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($executor, $Dim{2}($m,$n))))
         return new{T}(ptr, executor)
     end
 
     function Dense{T}(executor::Ptr{Ginkgo.API.gko_executor_st}, size::Integer) where T
-        @warn "Constructing $(size) x $(size) square matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
+        # @warn "Constructing $(size) x $(size) square matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($executor, $Dim{2}($size,$size))))
         return new{T}(ptr, executor)
     end
 
     function Dense{T}(executor::Ptr{Ginkgo.API.gko_executor_st}, m::Tuple{Integer, Integer}) where T
-        @warn "Constructing $(m[1]) x $(m[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
+        # @warn "Constructing $(m[1]) x $(m[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($executor, $m)))
         return new{T}(ptr, executor)
     end
 
     function Dense{T}(executor::Ptr{Ginkgo.API.gko_executor_st}, size::Ginkgo.Dim2) where T
-        @warn "Constructing $(size[1]) x $(size[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
+        # @warn "Constructing $(size[1]) x $(size[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($executor, $size)))
         return new{T}(ptr, executor)
@@ -67,6 +67,7 @@ mutable struct Dense{T} <: AbstractMatrix{T}
 
     # Constructors for matrix with initialized values
     function Dense{T}(filename::String, executor::Ptr{Ginkgo.API.gko_executor_st}) where T
+        !isfile(filename) && error("File not found: $filename")        
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_read")
         ptr = eval(:($API.$function_name($filename, $executor)))
         return new{T}(ptr, executor)
@@ -86,7 +87,7 @@ end
 
 # TODO: Overload element-wise access
 # function Base.setindex!(M::Dense{T}, value, i::Int, j::Int) where T
-    
+
 # end
 
 """
@@ -121,7 +122,7 @@ end
 Fill the given matrix for all matrix elements with the provided value `val`
 """
 function Base.fill!(mat::Dense{T}, val::G) where {T, G}
-    T == G && @warn("Type mismatch of the element type of the matrix and the value passed to the function")
+    T != G && @warn("Type mismatch of the eltype(mat) and the typeof(val) passed to the function")
     @info "Filling the matrix with constant values $val"
     function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_fill")
     eval(:($API.$function_name($mat.ptr, $val)))
@@ -176,11 +177,9 @@ function norm2!(from::Dense{T}, to::Dense{G}) where {T, G}
     eval(:($API.$function_name($from.ptr, $to.ptr)))
 end
 
-# Display
-# [Deprecated] Base.show(io::IO, ::MIME"text/plain", mat::Dense{T}) where T = print(io, mtx_buffer_str(mat))
 
 """
-    mtx_buffer_str(mat::Dense{T}) where T
+mtx_buffer_str(mat::Dense{T}) where T
 
 Intermediate step that calls `gko::write` within C level wrapper. Allocates memory temporarily
 and returns a string pointer in C, then we utilize an IOBuffer to obtain a copy of the allocated cstring
@@ -194,6 +193,9 @@ function mtx_buffer_str(mat::Dense{T}) where T
     return String(take!(buf))
 end
 
+# Display
+# FIXME: way faster than the usual one
+Base.show(io::IO, ::MIME"text/plain", mat::Dense{T}) where T = print(io, mtx_buffer_str(mat))
 
 if implemented
     # overload element-wise access
@@ -289,6 +291,3 @@ if implemented
     # Ginkgo.Dense{Float64}(exec, nothing, m, n)
     # M = Ginkgo.Dense{Float64}(exec, missing, m, n)
 end
-
-
-
