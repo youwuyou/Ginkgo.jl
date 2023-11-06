@@ -52,7 +52,6 @@ mutable struct Dim2 <: Dim{2}
         return new(dim[1], dim[2])
     end
 
-
     # Conversion
     Base.cconvert(::Type{API.gko_dim2_st}, obj::Dim{2}) = API.gko_dim2_st(obj.m, obj.n)
     Base.cconvert(::Type{API.gko_dim2_st}, obj::Tuple{Integer, Integer}) = API.gko_dim2_st(obj[1], obj[2])

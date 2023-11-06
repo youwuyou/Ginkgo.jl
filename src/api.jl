@@ -3,10 +3,13 @@ module API
 using CEnum
 
 # Prologue can be added under /res/prologue.jl
-# import ginkgo_jll: libginkgo
+import ginkgo_jll: libginkgo
 
-# use it for local lib
-libginkgo = joinpath(ENV["LIBGINKGO_DIR"], "libginkgod.so")
+# use it for local lib in debug mode
+# libginkgo = joinpath(ENV["LIBGINKGO_DIR"], "libginkgod.so")
+
+
+
 
 """
 Struct containing the shared pointer to a ginkgo executor
@@ -98,12 +101,17 @@ function ginkgo_executor_delete(exec_st_ptr)
     ccall((:ginkgo_executor_delete, libginkgo), Cvoid, (gko_executor,), exec_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:307:14, please use with caution
+# no prototype is found for this function at c_api.h:337:14, please use with caution
 function ginkgo_executor_omp_create()
     ccall((:ginkgo_executor_omp_create, libginkgo), gko_executor, ())
 end
 
-# no prototype is found for this function at c_api.h:311:14, please use with caution
+# no prototype is found for this function at c_api.h:338:14, please use with caution
+function ginkgo_executor_cuda_create()
+    ccall((:ginkgo_executor_cuda_create, libginkgo), gko_executor, ())
+end
+
+# no prototype is found for this function at c_api.h:341:14, please use with caution
 function ginkgo_executor_reference_create()
     ccall((:ginkgo_executor_reference_create, libginkgo), gko_executor, ())
 end
@@ -376,7 +384,7 @@ function ginkgo_solver_cg_solve(exec_st_ptr, A_st_ptr, b_st_ptr, x_st_ptr, maxit
     ccall((:ginkgo_solver_cg_solve, libginkgo), Cvoid, (gko_executor, gko_matrix_csr_f32_i32, gko_matrix_dense_f32, gko_matrix_dense_f32, Cint, Cdouble), exec_st_ptr, A_st_ptr, b_st_ptr, x_st_ptr, maxiter, reduction)
 end
 
-# no prototype is found for this function at c_api.h:391:6, please use with caution
+# no prototype is found for this function at c_api.h:428:6, please use with caution
 """
     ginkgo_version_get()
 

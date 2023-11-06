@@ -6,11 +6,13 @@ version = "1.0.0-DEV"
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 CEnum = "fa961155-64e5-5f13-b03f-caf6b980ea82"
+CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
 Debugger = "31a5f54b-26ea-5ae9-a837-f05ce5417438"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 LiveServer = "16fef848-5104-11e9-1b77-fb7a48bbb589"
 ReferenceTests = "324d217c-45ce-50fc-942e-d289b448e8cf"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+ginkgo_jll = "e4326e8b-370f-5d90-bbd6-f077a22d5a69"
 
 [compat]
 julia = "1.9.1"

@@ -28,6 +28,7 @@ makedocs(;
             "reference/ginkgo-api.md",
             "reference/low-level-api.md",
         ],
+        "Performance" => "performance.md",
         "Index" => "reindex.md",
     ],
 )
