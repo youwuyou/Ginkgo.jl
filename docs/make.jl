@@ -11,6 +11,7 @@ makedocs(;
     sitename="Ginkgo.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
+	repolink="https://github.com/youwuyou/Ginkgo.jl",
         canonical="https://youwuyou.github.io/Ginkgo.jl",
         edit_link="main",
         assets=String[],
