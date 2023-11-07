@@ -30,8 +30,8 @@ jobs:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
       - uses: julia-actions/cache@v1
-      # - uses: julia-actions/julia-buildpkg@v1
       - name: Instantiate and Precompile
+      - uses: julia-actions/julia-buildpkg@v1
         run: julia --project=@. -e '
               using Pkg
               # Pkg.develop(PackageSpec(; name = "ginkgo_jll",  uuid = "e4326e8b-370f-5d90-bbd6-f077a22d5a69", url = "https://github.com/youwuyou/ginkgo_jll.jl"))
