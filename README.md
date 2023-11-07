@@ -1,4 +1,4 @@
-# Ginkgo
+# Ginkgo.jl
 
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://youwuyou.github.io/Ginkgo.jl/dev/)
 [![Build Status](https://github.com/youwuyou/Ginkgo.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/youwuyou/Ginkgo.jl/actions/workflows/CI.yml?query=branch%3Amain)

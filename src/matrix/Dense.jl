@@ -154,7 +154,7 @@ end
 """
     norm1!(from::Dense{T}, to::Dense{T})
 
-Computes the column-wise Euclidian (L²) norm of this matrix.
+Computes the column-wise Euclidian (L¹) norm of this matrix.
 
 # External links
 $(_doc_external("void gko::matrix::Dense< ValueType >::compute_norm1", "classgko_1_1matrix_1_1Dense.html#a11c59175fcc040d99afe3acb39cbcb3e"))
@@ -196,98 +196,3 @@ end
 # Display
 # FIXME: way faster than the usual one
 Base.show(io::IO, ::MIME"text/plain", mat::Dense{T}) where T = print(io, mtx_buffer_str(mat))
-
-if implemented
-    # overload element-wise access
-        
-        # LinearAlgebra.lmult!(a::Number, B::Ginkgo.Dense), rmult!(a::Number, B::Ginkgo.Dense) calls scale()
-        # LinearAlgebra.BLAS.scal(a::Number, X::Dense{T}) calls scale()
-        # ?write
-        
-        # Base.transpose(A) calls transpose() 
-
-
-    # Conversion
-    # function LinearAlgebra.lmult!(a::Number, B::Dense)
-    #     # Call scale()
-        
-    # end
-
-    # function LinearAlgebra.rmult!(a::Number, B::Dense)
-    #             # Call scale()
-        
-    # end
-
-    # function Dense{T}(exec::Ptr{Ginkgo.API.gko_executor_st}, ::UndefInitializer, m::Int, n::Int) where T
-    
-    # end
-
-
-    # Base.ones(Float64, n) calls create_ones()
-    # Base.fill(value, m) calls  void gko::matrix::Dense< ValueType >::fill(const ValueType value)	
-
-
-    # Computation
-    # => compute_mean()
-    # => extract_diagonal
-
-    # For both matrix and vector
-
-    # Base.ndims(A::Ginkgo.DenseArray{T, N}) -> Int
-    # Base.size(A::Ginkgo.DenseArray{T, N}, [dim]) -> Int
-    # Base.conj!(A::Ginkgo.DenseArray{T, N))
-    # Base.stride(A::Ginkgo.DenseArray{T, N), k::Int)
-    # julia> A = fill(1, (3,4,5));
-
-    # julia> stride(A,2)
-    # 3
-
-    # julia> stride(A,3)
-    # 12
-
-    # Base.strides(A::Ginkgo.DenseArray{T,N}) ??
-    # julia> A = fill(1, (3,4,5));
-
-    # julia> strides(A)
-    # (1, 3, 12)
-
-
-    # Base.Broadcast
-    # Base.setindex!
-
-
-
-
-    # SubArrays 
-    # Base.view print the matrix
-    # Base.reshape(A, dims)
-    # Base.permutedims => column_permute()?
-    # Base.invperm
-
-
-
-    # Array functions
-    # rotl/rotr 90/180
-    # reverse!
-    # Base.accumulate
-    # cumprod,cumsum,
-    # Base.diff
-
-    # TODO: ask Valentin if rather using AbstractArray or AbstractMatrix
-    # struct DenseArray{T, N} <: AbstractArray{T, N}
-    #     ...
-    # end
-
-    # # todo create alias for Ginkgo.DenseVector{T} and Ginkgo.Dense{T}
-    # DenseVector = DenseArray{T, 1}
-    # Dense = DenseArray{T, 2}
-
-    # todo create union type
-    # Ginkgo.DenseVecOrMat = Union{Ginkgo.DenseArray{T, 1}, Ginkgo.DenseArray{T, 2}
-    # Ginkgo.DenseVector{Float64}(missing, m)
-
-
-    # Ginkgo.Dense{Float64}(exec, undef, m, n)
-    # Ginkgo.Dense{Float64}(exec, nothing, m, n)
-    # M = Ginkgo.Dense{Float64}(exec, missing, m, n)
-end
