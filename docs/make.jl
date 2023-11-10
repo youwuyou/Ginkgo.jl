@@ -1,4 +1,3 @@
-push!(LOAD_PATH,"../src/")
 using Ginkgo
 using Documenter
 
@@ -18,8 +17,9 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
-        "Programmer Guide" => 
+        "Programmer Guide" =>
         [   
+            "programmer-guide/CONTRIBUTING.md",
             "programmer-guide/use-ginkgo-in-julia.md",
             "programmer-guide/ginkgo-c-library-api.md",
             "programmer-guide/debugging.md",
