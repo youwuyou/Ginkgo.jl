@@ -59,6 +59,7 @@ jobs:
         run: |
           julia --project=docs/ -e '
             using Pkg
+            Pkg.develop(PackageSpec(name="ginkgo_jll", uuid="e4326e8b-370f-5d90-bbd6-f077a22d5a69", url="https://github.com/youwuyou/ginkgo_jll.jl"))
             Pkg.develop(PackageSpec(path=pwd()))
             Pkg.instantiate()'
       # - uses: julia-actions/julia-buildpkg@v1
