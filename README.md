@@ -1,4 +1,4 @@
-# Ginkgo.jl
+![logo_light_horizontal](https://github.com/youwuyou/Ginkgo.jl/assets/82619264/b97413cc-82fc-4861-8939-a885c1caec9f)<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://youwuyou.github.io/Ginkgo.jl/dev/)
 [![Build Status](https://github.com/youwuyou/Ginkgo.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/youwuyou/Ginkgo.jl/actions/workflows/CI.yml?query=branch%3Amain)
