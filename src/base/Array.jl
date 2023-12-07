@@ -4,6 +4,10 @@ const SUPPORTED_ELEMENT_TYPE = [Int16, Int32, Int64, Float32, Float64, #= Comple
 abstract type AbstractGkoVector{T} <: AbstractVector{T} end
 scalartype(::AbstractGkoVector{T}) where {T} = T
 
+
+# gko::array<T> x(exec,2);
+# auto A = gko::array<T>(exec,2);
+# A = Ginkgo.Array{Float64}(undef, exec, 2)
 mutable struct Array{T} <: AbstractGkoVector{T}
     ptr::Ptr{Cvoid}
     executor::Ptr{Cvoid}  # Pointer to the struct wrapping the executor shared ptr
@@ -17,23 +21,19 @@ mutable struct Array{T} <: AbstractGkoVector{T}
         size = prod(dims)
         size < 0 && throw(ArgumentError("invalid Array dimensions"))
 
-        # Call the ginkgo_create_array function to get the ptr
-        @GC.preserve executor begin
-            function_name = Symbol("ginkgo_array_", gko_type(T), "_create")
-            ptr = eval(:($API.$function_name($executor, $size)))
-
-            # Call the default constructor
-            return new{T}(ptr, executor)
-        end
+        # Calling ginkgo to initialize the array
+        function_name = Symbol("ginkgo_array_", gko_type(T), "_create")
+        ptr = eval(:($API.$function_name($executor, $size)))
+        finalizer(delete_array, new{T}(ptr, executor))
     end
 
     # Destructor
-    # TODO: choose according to types?
-
+    function delete_array(arr::Array{T}) where T
+        @warn "Calling the destructor for Array{$T}!"
+        function_name = Symbol("ginkgo_array_", gko_type(T), "_delete")        
+        eval(:($API.$function_name($arr.ptr)))
+    end
 end
-
-# TODO: use the finalizer to prevent memory leak on both the array and the executor!
-
 
 # Overloading operations
 # allows us to pass XXVec objects directly into Cvoid ccall signatures
@@ -54,8 +54,3 @@ function Base.isempty(array::AbstractGkoVector{T}) where {T}
     function_name = Symbol("ginkgo_array_", gko_type(T), "_get_num_elems")
     return eval(:($API.$function_name($array.ptr))) == 0
 end
-
-
-# gko::array<T> x(exec,2);
-# auto A = gko::array<T>(exec,2);
-# A = Ginkgo.Array{Float64}(undef, exec, 2)

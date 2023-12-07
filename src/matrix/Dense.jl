@@ -41,28 +41,28 @@ mutable struct Dense{T} <: AbstractMatrix{T}
         # @warn "Constructing $(m) x $(n) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($executor, $Dim{2}($m,$n))))
-        return new{T}(ptr, executor)
+        finalizer(delete_dense_matrix, new{T}(ptr, executor))
     end
 
     function Dense{T}(executor::Ptr{Ginkgo.API.gko_executor_st}, size::Integer) where T
         # @warn "Constructing $(size) x $(size) square matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($executor, $Dim{2}($size,$size))))
-        return new{T}(ptr, executor)
+        return finalizer(delete_dense_matrix, new{T}(ptr, executor))        
     end
 
     function Dense{T}(executor::Ptr{Ginkgo.API.gko_executor_st}, m::Tuple{Integer, Integer}) where T
         # @warn "Constructing $(m[1]) x $(m[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($executor, $m)))
-        return new{T}(ptr, executor)
+        finalizer(delete_dense_matrix, new{T}(ptr, executor))        
     end
 
     function Dense{T}(executor::Ptr{Ginkgo.API.gko_executor_st}, size::Ginkgo.Dim2) where T
         # @warn "Constructing $(size[1]) x $(size[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($executor, $size)))
-        return new{T}(ptr, executor)
+        finalizer(delete_dense_matrix, new{T}(ptr, executor))        
     end
 
     # Constructors for matrix with initialized values
@@ -70,15 +70,15 @@ mutable struct Dense{T} <: AbstractMatrix{T}
         !isfile(filename) && error("File not found: $filename")        
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_read")
         ptr = eval(:($API.$function_name($filename, $executor)))
-        return new{T}(ptr, executor)
+        finalizer(delete_dense_matrix, new{T}(ptr, executor))
     end
 
     # Destructor
-    # TODO: this looks weird... maybe create a delete function for all matrices
-    # and delete? Maybe necessary to put matrix types as gko_matrix_dense_f32
-    # function ginkgo_matrix_delete(mat_st_ptr)
-    #     ccall((:ginkgo_matrix_delete, libginkgo), Cvoid, (gko_matrix_dense_f32,), mat_st_ptr)
-    # end
+    function delete_dense_matrix(mat::Dense{T}) where T
+        @warn "Calling the destructor for Dense{$T}!"
+        function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_delete")
+        eval(:($API.$function_name($mat.ptr)))
+    end
 end
 
 

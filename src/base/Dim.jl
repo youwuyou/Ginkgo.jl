@@ -54,7 +54,6 @@ mutable struct Dim2 <: Dim{2}
 
     # Conversion
     Base.cconvert(::Type{API.gko_dim2_st}, obj::Dim{2}) = API.gko_dim2_st(obj.m, obj.n)
-    Base.cconvert(::Type{API.gko_dim2_st}, obj::Tuple{Integer, Integer}) = API.gko_dim2_st(obj[1], obj[2])
 
     # Base.unsafe_convert(::Type{Ptr{Ginkgo.API.gko_dim2_st}}, obj::Ginkgo.Dim2) =
     #     convert(Ptr{API.gko_dim2_st}, pointer_from_objref(obj))

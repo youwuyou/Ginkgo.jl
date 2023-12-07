@@ -43,7 +43,7 @@ mutable struct SparseMatrixCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
         !isfile(filename) && error("File not found: $filename")
         function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_read")
         ptr = eval(:($API.$function_name($filename, $executor)))
-        return new{Tv,Ti}(ptr, executor)
+        finalizer(delete_csr_matrix, new{Tv,Ti}(ptr, executor))
     end
     
 
@@ -57,11 +57,12 @@ mutable struct SparseMatrixCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
 
 
     # Destructor
-    # TODO: this looks weird... maybe create a delete function for all matrices
-    # and delete? Maybe necessary to put matrix types as gko_matrix_dense_f32
-    # function ginkgo_matrix_delete(mat_st_ptr)
-    #     ccall((:ginkgo_matrix_delete, libginkgo), Cvoid, (gko_matrix_dense_f32,), mat_st_ptr)
-    # end
+    function delete_csr_matrix(mat::SparseMatrixCsr{Tv,Ti}) where {Tv, Ti}
+        @warn "Calling the destructor for SparseMatrixCsr{$Tv,$Ti}!"
+        function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_delete")
+        eval(:($API.$function_name($mat.ptr)))
+    end
+    
 end
 
 
@@ -72,7 +73,6 @@ end
 Returns the size of the sparse matrix/vector as a tuple
 """
 function Base.size(mat::SparseMatrixCsr{Tv,Ti}) where {Tv,Ti}
-    # ginkgo_matrix_csr_f32_i32_get_num_stored_elements_get_size(mat_st_ptr)
     function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_size")
     dim =  (eval(:($API.$function_name($mat.ptr))))
     return (Cint(dim.rows), Cint(dim.cols))
