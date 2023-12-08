@@ -28,20 +28,20 @@ include("solver/CG.jl")
 
 # Export types
 export 
-    Array  # minimal working
-    Dim    # completely wrapped but bool operator
-    Dense
-    SparseMatrixCsr
+    GkoArray,  # minimal working
+    GkoDim,    # completely wrapped but bool operator
+    GkoDense,
+    GkoCsr
 
 export
-    create # executor
-    number # create 1x1 matrix
-    elements
-    norm1!
-    norm2!
-    nnz
-    cg!
-
+    version, # binary version info
+    create,  # executor
+    number,  # create 1x1 matrix
+    elements,
+    norm1!,
+    norm2!,
+    nnz,
+    cg!,
     spmm!
     # axpby! # BLAS-like apply
 

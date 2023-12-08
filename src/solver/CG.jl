@@ -2,7 +2,7 @@
 
 
 
-function cg!(exec::Ptr{Ginkgo.API.gko_executor_st}, x::Ginkgo.Dense{Tv}, A::Ginkgo.SparseMatrixCsr{Tv, Ti}, b::Ginkgo.Dense{Tv};
+function cg!(exec::Ptr{Ginkgo.API.gko_executor_st}, x::Ginkgo.GkoDense{Tv}, A::Ginkgo.GkoCsr{Tv, Ti}, b::Ginkgo.GkoDense{Tv};
     abstol::Real = zero(real(eltype(b))),
     reltol::Real = sqrt(eps(real(eltype(b)))),
     reduction::Real = 1e-3,

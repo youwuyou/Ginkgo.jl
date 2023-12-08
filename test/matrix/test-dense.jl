@@ -9,11 +9,11 @@ exec = create(:omp)
 
 for T in types
     # Create unitialized matrix, will trigger warnings
-    M    = Ginkgo.Dense{T}(exec, Ginkgo.Dim{2}(2, 3))
-    N    = Ginkgo.Dense{T}(exec, 8)
+    M    = Ginkgo.GkoDense{T}(exec, Ginkgo.GkoDim{2}(2, 3))
+    N    = Ginkgo.GkoDense{T}(exec, 8)
 
     # Create initialized vector
-    vec1 = Ginkgo.Dense{T}(exec, 3, 1)
+    vec1 = Ginkgo.GkoDense{T}(exec, 3, 1)
     fill!(vec1, T(1.0))
 
     @testset "Unit test: gko::matrix::Dense<$T> size                " begin

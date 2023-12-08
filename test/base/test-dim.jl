@@ -1,21 +1,21 @@
 # Equivalent to `gko::dim<2> d1{};`
-d1 = Ginkgo.Dim{2}()  # Assuming that a default constructed gko::dim<2> object has dimensions (0, 0)
+d1 = Ginkgo.GkoDim{2}()  # Assuming that a default constructed gko::dim<2> object has dimensions (0, 0)
 
 # Equivalent to `gko::dim<2> d2{2, 3};`
-d2 = Ginkgo.Dim{2}(2, 3)
-d3 = Ginkgo.Dim{2}(3, 2)
+d2 = Ginkgo.GkoDim{2}(2, 3)
+d3 = Ginkgo.GkoDim{2}(3, 2)
 
 # Equivalent to `gko::dim<2> d2{6};`
-d4 = Ginkgo.Dim{2}(6)
-d5 = Ginkgo.Dim{2}(2, 5)
-d6 = Ginkgo.Dim{2}(2, 0)
+d4 = Ginkgo.GkoDim{2}(6)
+d5 = Ginkgo.GkoDim{2}(2, 5)
+d6 = Ginkgo.GkoDim{2}(2, 0)
 
 @testset "Unit test: gko::dim<2> indexing                      " begin
     @test d2[1] == 2
     @test d2[2] == 3
     @test d4[1] == 6    
 
-    to_be_set    = Ginkgo.Dim{2}(0, 0)
+    to_be_set    = Ginkgo.GkoDim{2}(0, 0)
     to_be_set[1] = 3
     to_be_set[2] = 5
 

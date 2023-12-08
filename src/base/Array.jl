@@ -8,12 +8,12 @@ scalartype(::AbstractGkoVector{T}) where {T} = T
 # gko::array<T> x(exec,2);
 # auto A = gko::array<T>(exec,2);
 # A = Ginkgo.Array{Float64}(undef, exec, 2)
-mutable struct Array{T} <: AbstractGkoVector{T}
+mutable struct GkoArray{T} <: AbstractGkoVector{T}
     ptr::Ptr{Cvoid}
     executor::Ptr{Cvoid}  # Pointer to the struct wrapping the executor shared ptr
 
     # Constructor
-    function Array{T}(::UndefInitializer, executor::Ptr{G}, dims::Int...) where {T, G}
+    function GkoArray{T}(::UndefInitializer, executor::Ptr{G}, dims::Int...) where {T, G}
         # Element type check
         T in SUPPORTED_ELEMENT_TYPE || throw(ArgumentError("unsupported element type $T"))
 
@@ -28,7 +28,7 @@ mutable struct Array{T} <: AbstractGkoVector{T}
     end
 
     # Destructor
-    function delete_array(arr::Array{T}) where T
+    function delete_array(arr::GkoArray{T}) where T
         @warn "Calling the destructor for Array{$T}!"
         function_name = Symbol("ginkgo_array_", gko_type(T), "_delete")        
         eval(:($API.$function_name($arr.ptr)))

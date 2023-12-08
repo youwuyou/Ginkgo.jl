@@ -6,7 +6,7 @@ Ti = Int32
 @testset "Integration test: gko::matrix::Csr<$Tv, $Ti> read from file and retrieve information            " begin
 
     exec = create(:omp)
-    A = Ginkgo.SparseMatrixCsr{Tv, Ti}("matrix/data/A.mtx", exec)
+    A = Ginkgo.GkoCsr{Tv, Ti}("matrix/data/A.mtx", exec)
 
     # Retrive dimensions
     @test Ginkgo.size(A)  == (19, 19)
