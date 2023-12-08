@@ -1,8 +1,8 @@
 # gko::matrix::Csr<double, int>
 const implemented = false
 
-SUPPORTED_CSR_ELTYPE    = [Float32, Float64]
-SUPPORTED_CSR_INDEXTYPE = [Int16, Int32, Int64]
+SUPPORTED_CSR_ELTYPE    = [Float32]
+SUPPORTED_CSR_INDEXTYPE = [Int32]
 
 """
     GkoCsr{Tv, Ti} <: AbstractMatrix{Tv, Ti}
@@ -22,41 +22,17 @@ $(_doc_external("gko::matrix::Csr<ValueType, IndexType>", "classgko_1_1matrix_1_
 """
 mutable struct GkoCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
     ptr::Ptr{Cvoid}
-    executor::Ptr{API.gko_executor_st}  # Pointer to the struct wrapping the executor shared ptr
+    executor::GkoExecutor  # Pointer to the struct wrapping the executor shared ptr
     
-    # Constructors for matrix with uninitialized values
-    # function SparseMatrixCsr{T}(executor::Ptr{API.gko_executor_st}, m::Integer, n::Integer) where T
-    #     @warn "Constructing $(m) x $(n) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
-    #     function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
-    #     ptr = eval(:($API.$function_name($executor, $Dim{2}($m,$n))))
-    #     return new{T}(ptr, executor)
-    # end
-
-    # function SparseMatrixCsr{T}(executor::Ptr{API.gko_executor_st}, size::Dim2) where T
-    #     @warn "Constructing $(size[1]) x $(size[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
-    #     function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
-    #     ptr = eval(:($API.$function_name($executor, $size)))
-    #     return new{T}(ptr, executor)
-    # end
-
     # Constructors for matrix with initialized values
-    function GkoCsr{Tv,Ti}(filename::String, executor::Ptr{API.gko_executor_st}) where {Tv,Ti}
+    function GkoCsr{Tv,Ti}(filename::String, executor::GkoExecutor) where {Tv,Ti}
         !isfile(filename) && error("File not found: $filename")
         function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_read")
-        ptr = eval(:($API.$function_name($filename, $executor)))
+        # Pass the void pointer to executor_st to C API
+        ptr = eval(:($API.$function_name($filename, $executor.ptr)))
         finalizer(delete_csr_matrix, new{Tv,Ti}(ptr, executor))
     end
     
-
-    # size_t*
-    # ASSERT_EQ(m->get_const_col_idxs(), nullptr);
-    # ASSERT_NE(m->get_const_row_ptrs(), nullptr);
-    # ASSERT_EQ(m->get_const_srow(), nullptr);
-
-    # valuetype*
-    # ASSERT_EQ(m->get_const_values(), nullptr);
-
-
     # Destructor
     function delete_csr_matrix(mat::GkoCsr{Tv,Ti}) where {Tv, Ti}
         @warn "Calling the destructor for GkoCsr{$Tv,$Ti}!"

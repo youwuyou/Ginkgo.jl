@@ -1,13 +1,9 @@
 # gko::matrix::Dense<T>
 
-# Type alias
-types = [Float32, Float64]
-
 # Create executor
 exec = create(:omp)
 
-
-for T in types
+for T in SUPPORTED_DENSE_ELTYPE
     # Create unitialized matrix, will trigger warnings
     M    = Ginkgo.GkoDense{T}(exec, Ginkgo.GkoDim{2}(2, 3))
     N    = Ginkgo.GkoDense{T}(exec, 8)

@@ -29,7 +29,7 @@ mutable struct GkoArray{T} <: AbstractGkoVector{T}
 
     # Destructor
     function delete_array(arr::GkoArray{T}) where T
-        @warn "Calling the destructor for Array{$T}!"
+        @warn "Calling the destructor for GkoArray{$T}!"
         function_name = Symbol("ginkgo_array_", gko_type(T), "_delete")        
         eval(:($API.$function_name($arr.ptr)))
     end

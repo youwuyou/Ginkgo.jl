@@ -1,6 +1,7 @@
 module Ginkgo
 
 using SparseArrays
+
 # Import helper functions for documentation purposes
 include("dochelper.jl")
 
@@ -23,11 +24,19 @@ include("base/Executor.jl")
 include("matrix/Dense.jl")
 include("matrix/Csr.jl")
 
-
 include("solver/CG.jl")
 
+
+# Export supported types for Ginkgo.jl
+export
+    SUPPORTED_EXECUTOR_TYPE,
+    SUPPORTED_DENSE_ELTYPE,
+    SUPPORTED_CSR_ELTYPE,
+    SUPPORTED_CSR_INDEXTYPE
+
 # Export types
-export 
+export
+    GkoExecutor,
     GkoArray,  # minimal working
     GkoDim,    # completely wrapped but bool operator
     GkoDense,

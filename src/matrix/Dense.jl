@@ -34,42 +34,42 @@ $(_doc_external("gko::matrix::Dense<T>", "classgko_1_1matrix_1_1Dense"))
 """
 mutable struct GkoDense{T} <: AbstractMatrix{T}
     ptr::Ptr{Cvoid}
-    executor::Ptr{API.gko_executor_st}  # Pointer to the struct wrapping the executor shared ptr
+    executor::GkoExecutor  # Pointer to the struct wrapping the executor shared ptr
     
     # Constructors for matrix with uninitialized values
-    function GkoDense{T}(executor::Ptr{API.gko_executor_st}, m::Integer, n::Integer) where T
+    function GkoDense{T}(executor::GkoExecutor, m::Integer, n::Integer) where T
         # @warn "Constructing $(m) x $(n) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
-        ptr = eval(:($API.$function_name($executor, $GkoDim{2}($m,$n))))
+        ptr = eval(:($API.$function_name($executor.ptr, $GkoDim{2}($m,$n))))
         finalizer(delete_dense_matrix, new{T}(ptr, executor))
     end
 
-    function GkoDense{T}(executor::Ptr{API.gko_executor_st}, size::Integer) where T
+    function GkoDense{T}(executor::GkoExecutor, size::Integer) where T
         # @warn "Constructing $(size) x $(size) square matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
-        ptr = eval(:($API.$function_name($executor, $GkoDim{2}($size,$size))))
+        ptr = eval(:($API.$function_name($executor.ptr, $GkoDim{2}($size,$size))))
         return finalizer(delete_dense_matrix, new{T}(ptr, executor))        
     end
 
-    function GkoDense{T}(executor::Ptr{API.gko_executor_st}, m::Tuple{Integer, Integer}) where T
+    function GkoDense{T}(executor::GkoExecutor, m::Tuple{Integer, Integer}) where T
         # @warn "Constructing $(m[1]) x $(m[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
-        ptr = eval(:($API.$function_name($executor, $m)))
+        ptr = eval(:($API.$function_name($executor.ptr, $m)))
         finalizer(delete_dense_matrix, new{T}(ptr, executor))        
     end
 
-    function GkoDense{T}(executor::Ptr{API.gko_executor_st}, size::GkoDim2) where T
+    function GkoDense{T}(executor::GkoExecutor, size::GkoDim2) where T
         # @warn "Constructing $(size[1]) x $(size[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
-        ptr = eval(:($API.$function_name($executor, $size)))
+        ptr = eval(:($API.$function_name($executor.ptr, $size)))
         finalizer(delete_dense_matrix, new{T}(ptr, executor))        
     end
 
     # Constructors for matrix with initialized values
-    function GkoDense{T}(filename::String, executor::Ptr{API.gko_executor_st}) where T
+    function GkoDense{T}(filename::String, executor::GkoExecutor) where T
         !isfile(filename) && error("File not found: $filename")        
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_read")
-        ptr = eval(:($API.$function_name($filename, $executor)))
+        ptr = eval(:($API.$function_name($filename, $executor.ptr)))
         finalizer(delete_dense_matrix, new{T}(ptr, executor))
     end
 
