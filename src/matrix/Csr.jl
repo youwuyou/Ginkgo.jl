@@ -14,7 +14,8 @@ A type for representing sparse matrix and vectors in CSR format. Alias for `gko_
 ### Examples
 
 ```julia-repl
-
+# Read matrix and vector from a mtx file
+A = GkoCsr{Tv, Ti}("data/A.mtx", exec)
 ```
 # External links
 $(_doc_external("gko::matrix::Csr<ValueType, IndexType>", "classgko_1_1matrix_1_1Csr"))
@@ -24,14 +25,14 @@ mutable struct GkoCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
     executor::Ptr{API.gko_executor_st}  # Pointer to the struct wrapping the executor shared ptr
     
     # Constructors for matrix with uninitialized values
-    # function SparseMatrixCsr{T}(executor::Ptr{Ginkgo.API.gko_executor_st}, m::Integer, n::Integer) where T
+    # function SparseMatrixCsr{T}(executor::Ptr{API.gko_executor_st}, m::Integer, n::Integer) where T
     #     @warn "Constructing $(m) x $(n) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
     #     function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
     #     ptr = eval(:($API.$function_name($executor, $Dim{2}($m,$n))))
     #     return new{T}(ptr, executor)
     # end
 
-    # function SparseMatrixCsr{T}(executor::Ptr{Ginkgo.API.gko_executor_st}, size::Ginkgo.Dim2) where T
+    # function SparseMatrixCsr{T}(executor::Ptr{API.gko_executor_st}, size::Dim2) where T
     #     @warn "Constructing $(size[1]) x $(size[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
     #     function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
     #     ptr = eval(:($API.$function_name($executor, $size)))
@@ -39,7 +40,7 @@ mutable struct GkoCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
     # end
 
     # Constructors for matrix with initialized values
-    function GkoCsr{Tv,Ti}(filename::String, executor::Ptr{Ginkgo.API.gko_executor_st}) where {Tv,Ti}
+    function GkoCsr{Tv,Ti}(filename::String, executor::Ptr{API.gko_executor_st}) where {Tv,Ti}
         !isfile(filename) && error("File not found: $filename")
         function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_read")
         ptr = eval(:($API.$function_name($filename, $executor)))
@@ -154,13 +155,10 @@ end
 
 
 # LinOp
-
 """
     spmm!(A::GkoCsr{Tv, Ti}, α::Dense{Tv}, x::Dense{Tv}, β::Dense{Tv}, y::Dense{Tv}) where {Tv, Ti}
 
-    x = α*A*b + β*x
-
-Applying to Dense matrices, computes an SpMM product.
+Applying to Dense matrices, computes an SpMM product. x = α*A*b + β*x.
 """
 function spmm!(A::GkoCsr{Tv, Ti}, α::GkoDense{Tv}, x::GkoDense{Tv}, β::GkoDense{Tv}, y::GkoDense{Tv}) where {Tv, Ti}
     API.ginkgo_matrix_csr_f32_i32_apply(A.ptr, α.ptr, x.ptr, β.ptr, y.ptr)

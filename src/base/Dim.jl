@@ -18,15 +18,15 @@ A type for representing the dimensions of an object. Alias for `gko_dim2_st` in 
 
 ```julia-repl
 # Creating uninitialized dimensional object
-julia> Ginkgo.GkoDim{2}()
+julia> GkoDim{2}()
 (0, 0)
 
 # Creating initialized dimensional object for identical row and column numbers
-julia> Ginkgo.GkoDim{2}(3)
+julia> GkoDim{2}(3)
 (3, 3)
 
 # Creaing initialized dimensional object of specified row and column numbers
-julia> Ginkgo.GkoDim{2}(6,9)
+julia> GkoDim{2}(6,9)
 (6, 9)
 ```
 """
@@ -55,7 +55,7 @@ mutable struct GkoDim2 <: GkoDim{2}
     # Conversion
     Base.cconvert(::Type{API.gko_dim2_st}, obj::GkoDim{2}) = API.gko_dim2_st(obj.m, obj.n)
 
-    # Base.unsafe_convert(::Type{Ptr{Ginkgo.API.gko_dim2_st}}, obj::Ginkgo.Dim2) =
+    # Base.unsafe_convert(::Type{Ptr{API.gko_dim2_st}}, obj::Dim2) =
     #     convert(Ptr{API.gko_dim2_st}, pointer_from_objref(obj))
 
     # Equality check

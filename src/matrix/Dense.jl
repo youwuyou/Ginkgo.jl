@@ -14,19 +14,19 @@ A type for representing dense matrix and vectors. Alias for `gko_matrix_dense_el
 
 ```julia-repl
 # Creating uninitialized vector of length 2, represented as a 2x1 dense matrix
-julia> dim = Ginkgo.GkoDim{2}(2,1); vec1 = Ginkgo.Dense{Float32}(exec, dim)
+julia> dim = GkoDim{2}(2,1); vec1 = GkoDense{Float32}(exec, dim)
 
 # Passing a tuple
-julia> vec2 = Ginkgo.Dense{Float32}(exec, (2, 1));
+julia> vec2 = GkoDense{Float32}(exec, (2, 1));
 
 # Passing numbers
-julia> vec3 = Ginkgo.Dense{Float32}(exec, 2, 1);
+julia> vec3 = GkoDense{Float32}(exec, 2, 1);
 
 # Creating uninitialized dense square matrix
-julia> square_mat = Ginkgo.Dense{Float32}(exec, 2);
+julia> square_mat = GkoDense{Float32}(exec, 2);
 
 # Creating initialized dense vector or matrix via reading from a `.mtx` file
-julia> b = Ginkgo.Dense{Float32}("b.mtx", exec);
+julia> b = GkoDense{Float32}("b.mtx", exec);
 
 ```
 # External links
@@ -37,28 +37,28 @@ mutable struct GkoDense{T} <: AbstractMatrix{T}
     executor::Ptr{API.gko_executor_st}  # Pointer to the struct wrapping the executor shared ptr
     
     # Constructors for matrix with uninitialized values
-    function GkoDense{T}(executor::Ptr{Ginkgo.API.gko_executor_st}, m::Integer, n::Integer) where T
+    function GkoDense{T}(executor::Ptr{API.gko_executor_st}, m::Integer, n::Integer) where T
         # @warn "Constructing $(m) x $(n) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($executor, $GkoDim{2}($m,$n))))
         finalizer(delete_dense_matrix, new{T}(ptr, executor))
     end
 
-    function GkoDense{T}(executor::Ptr{Ginkgo.API.gko_executor_st}, size::Integer) where T
+    function GkoDense{T}(executor::Ptr{API.gko_executor_st}, size::Integer) where T
         # @warn "Constructing $(size) x $(size) square matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($executor, $GkoDim{2}($size,$size))))
         return finalizer(delete_dense_matrix, new{T}(ptr, executor))        
     end
 
-    function GkoDense{T}(executor::Ptr{Ginkgo.API.gko_executor_st}, m::Tuple{Integer, Integer}) where T
+    function GkoDense{T}(executor::Ptr{API.gko_executor_st}, m::Tuple{Integer, Integer}) where T
         # @warn "Constructing $(m[1]) x $(m[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($executor, $m)))
         finalizer(delete_dense_matrix, new{T}(ptr, executor))        
     end
 
-    function GkoDense{T}(executor::Ptr{Ginkgo.API.gko_executor_st}, size::Ginkgo.GkoDim2) where T
+    function GkoDense{T}(executor::Ptr{API.gko_executor_st}, size::GkoDim2) where T
         # @warn "Constructing $(size[1]) x $(size[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($executor, $size)))
@@ -66,7 +66,7 @@ mutable struct GkoDense{T} <: AbstractMatrix{T}
     end
 
     # Constructors for matrix with initialized values
-    function GkoDense{T}(filename::String, executor::Ptr{Ginkgo.API.gko_executor_st}) where T
+    function GkoDense{T}(filename::String, executor::Ptr{API.gko_executor_st}) where T
         !isfile(filename) && error("File not found: $filename")        
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_read")
         ptr = eval(:($API.$function_name($filename, $executor)))
@@ -179,7 +179,7 @@ end
 
 
 """
-mtx_buffer_str(mat::GkoDense{T}) where T
+    mtx_buffer_str(mat::GkoDense{T}) where T
 
 Intermediate step that calls `gko::write` within C level wrapper. Allocates memory temporarily
 and returns a string pointer in C, then we utilize an IOBuffer to obtain a copy of the allocated cstring
