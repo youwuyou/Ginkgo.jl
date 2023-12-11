@@ -1,5 +1,4 @@
 using Ginkgo
-using ScopedValues
 using Test
 
 include("test-configurations.jl")
