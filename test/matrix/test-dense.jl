@@ -5,7 +5,7 @@ exec = create(:omp)
 
 for T in SUPPORTED_DENSE_ELTYPE
 
-
+    # Using executor implicitly
     with(EXECUTOR => exec) do
         # Create unitialized matrix, will trigger warnings
         M    = Ginkgo.GkoDense{T}(Ginkgo.GkoDim{2}(2, 3))

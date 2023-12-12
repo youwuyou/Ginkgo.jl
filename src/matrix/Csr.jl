@@ -20,18 +20,19 @@ $(_doc_external("gko::matrix::Csr<ValueType, IndexType>", "classgko_1_1matrix_1_
 """
 mutable struct GkoCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
     ptr::Ptr{Cvoid}
-    executor::ScopedValue{GkoExecutor}  # Pointer to the struct wrapping the executor shared ptr
-    
+    executor::GkoExecutor
+
+    ############################# CONSTRUCTOR ####################################
     # Constructors for matrix with initialized values
-    function GkoCsr{Tv,Ti}(filename::String) where {Tv,Ti}
+    function GkoCsr{Tv,Ti}(filename::String, executor::GkoExecutor = EXECUTOR[]) where {Tv,Ti}
         !isfile(filename) && error("File not found: $filename")
         function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_read")
         # Pass the void pointer to executor_st to C API
-        ptr = eval(:($API.$function_name($filename, $(EXECUTOR[].ptr))))
-        finalizer(delete_csr_matrix, new{Tv,Ti}(ptr, EXECUTOR));
+        ptr = eval(:($API.$function_name($filename, $(executor.ptr))))
+        finalizer(delete_csr_matrix, new{Tv,Ti}(ptr, executor));
     end
-    
-    # Destructor
+
+    ############################# DESTRUCTOR ####################################
     function delete_csr_matrix(mat::GkoCsr{Tv,Ti}) where {Tv, Ti}
         @warn "Calling the destructor for GkoCsr{$Tv,$Ti}!"
         function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_delete")

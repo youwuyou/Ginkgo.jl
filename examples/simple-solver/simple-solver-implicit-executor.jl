@@ -8,9 +8,11 @@ version()
 
 # Obtain executor with a specific backend
 const exec = create(:omp)
+@info "The executor we just created was $(exec.ptr)"
 
 # Specify executor to be passed for matrix creation including CSR, Dense and "number" and cg solver
 @with EXECUTOR => exec begin
+  @info "The executor we are using is $(EXECUTOR[].ptr)"
   # Read matrix and vector from mtk files, now omit the passing of exec
   A = GkoCsr{Tv, Ti}("data/A.mtx");
   b = GkoDense{Tv}("data/b.mtx");
