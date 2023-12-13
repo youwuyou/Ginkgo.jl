@@ -1,5 +1,9 @@
 module Ginkgo
 
+# Hide executors
+using ScopedValues
+export with, @with
+
 using SparseArrays
 
 # Import helper functions for documentation purposes
@@ -26,6 +30,7 @@ include("matrix/Csr.jl")
 
 include("solver/CG.jl")
 
+const EXECUTOR = ScopedValue(GkoExecutor(:omp)); export EXECUTOR
 
 # Export supported types for Ginkgo.jl
 export

@@ -17,6 +17,10 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
+        "Concepts" =>
+        [
+            "concepts/executor.md",
+        ],
         "Programmer Guide" =>
         [   
             "programmer-guide/CONTRIBUTING.md",

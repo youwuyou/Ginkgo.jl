@@ -1,6 +1,4 @@
 # gko::matrix::Csr<double, int>
-const implemented = false
-
 SUPPORTED_CSR_ELTYPE    = [Float32]
 SUPPORTED_CSR_INDEXTYPE = [Int32]
 
@@ -9,8 +7,8 @@ SUPPORTED_CSR_INDEXTYPE = [Int32]
 
 A type for representing sparse matrix and vectors in CSR format. Alias for `gko_matrix_csr_eltype_indextype_st` in C API.
     where `eltype` is one of the $SUPPORTED_CSR_ELTYPE and `indextype` is one of the $SUPPORTED_CSR_INDEXTYPE.
-    For constructing a matrix, it is necessary to provide an executor using the [`create`](@ref) method.
- 
+    For constructing a matrix, it is necessary to provide an [`GkoExecutor`](@ref).
+    
 ### Examples
 
 ```julia-repl
@@ -22,18 +20,19 @@ $(_doc_external("gko::matrix::Csr<ValueType, IndexType>", "classgko_1_1matrix_1_
 """
 mutable struct GkoCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
     ptr::Ptr{Cvoid}
-    executor::GkoExecutor  # Pointer to the struct wrapping the executor shared ptr
-    
+    executor::GkoExecutor
+
+    ############################# CONSTRUCTOR ####################################
     # Constructors for matrix with initialized values
-    function GkoCsr{Tv,Ti}(filename::String, executor::GkoExecutor) where {Tv,Ti}
+    function GkoCsr{Tv,Ti}(filename::String, executor::GkoExecutor = EXECUTOR[]) where {Tv,Ti}
         !isfile(filename) && error("File not found: $filename")
         function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_read")
         # Pass the void pointer to executor_st to C API
-        ptr = eval(:($API.$function_name($filename, $executor.ptr)))
-        finalizer(delete_csr_matrix, new{Tv,Ti}(ptr, executor))
+        ptr = eval(:($API.$function_name($filename, $(executor.ptr))))
+        finalizer(delete_csr_matrix, new{Tv,Ti}(ptr, executor));
     end
-    
-    # Destructor
+
+    ############################# DESTRUCTOR ####################################
     function delete_csr_matrix(mat::GkoCsr{Tv,Ti}) where {Tv, Ti}
         @warn "Calling the destructor for GkoCsr{$Tv,$Ti}!"
         function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_delete")
@@ -41,7 +40,6 @@ mutable struct GkoCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
     end
     
 end
-
 
 # Obtain numbers for important sizes
 """
