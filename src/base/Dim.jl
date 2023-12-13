@@ -54,6 +54,7 @@ mutable struct GkoDim2 <: GkoDim{2}
 
     # Conversion
     Base.cconvert(::Type{API.gko_dim2_st}, obj::GkoDim{2}) = API.gko_dim2_st(obj.m, obj.n)
+    Base.cconvert(::Type{API.gko_dim2_st}, obj::Tuple{T, T}) where T =  API.gko_dim2_st(obj[1], obj[2])
 
     # Base.unsafe_convert(::Type{Ptr{API.gko_dim2_st}}, obj::Dim2) =
     #     convert(Ptr{API.gko_dim2_st}, pointer_from_objref(obj))

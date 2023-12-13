@@ -6,25 +6,25 @@ SUPPORTED_DENSE_ELTYPE = [Float32, Float64]
 
 A type for representing dense matrix and vectors. Alias for `gko_matrix_dense_eltype_st` in C API.
     where `eltype` is one of the $SUPPORTED_DENSE_ELTYPE. For constructing a matrix, 
-    it is necessary to provide an executor as a dynamically scoped value using the [`create`](@ref) method.
+    it is necessary to provide an [`GkoExecutor`](@ref).
 
 ### Examples
 
 ```julia-repl
 # Creating uninitialized vector of length 2, represented as a 2x1 dense matrix
-julia> dim = GkoDim{2}(2,1); vec1 = GkoDense{Float32}(dim)
+julia> dim = GkoDim{2}(2,1); vec1 = GkoDense{Float32}(dim, exec)
 
 # Passing a tuple
-julia> vec2 = GkoDense{Float32}((2, 1));
+julia> vec2 = GkoDense{Float32}((2, 1), exec)
 
 # Passing numbers
-julia> vec3 = GkoDense{Float32}(2, 1);
+julia> vec3 = GkoDense{Float32}(2, 1, exec)
 
 # Creating uninitialized dense square matrix
-julia> square_mat = GkoDense{Float32}(2);
+julia> square_mat = GkoDense{Float32}(2, exec)
 
 # Creating initialized dense vector or matrix via reading from a `.mtx` file
-julia> b = GkoDense{Float32}("b.mtx");
+julia> b = GkoDense{Float32}("b.mtx", exec)
 
 ```
 # External links
@@ -82,7 +82,7 @@ mutable struct GkoDense{T} <: AbstractMatrix{T}
 end
 
 # Conversion
-# Base.cconvert(::Type{API.gko_matrix_dense_f32_st}, obj::Dense) = API.gko_matrix_dense_f32_st()
+# Base.cconvert(::Type{API.gko_matrix_dense_f32_st}, obj::GkoDense) = API.gko_matrix_dense_f32_st()
 
 # TODO: Overload element-wise access
 # function Base.setindex!(M::GkoDense{T}, value, i::Int, j::Int) where T

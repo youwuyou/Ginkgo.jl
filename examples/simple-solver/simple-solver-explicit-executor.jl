@@ -6,7 +6,7 @@ const (Tv, Ti) = (Float32, Int32)
 # Print ginkgo library version
 version()
 
-# Obtain executor with a specific backend
+# Creates executor for a specific backend
 const exec = create(:omp)
 
 # Read matrix and vector from mtk files

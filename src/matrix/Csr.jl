@@ -7,13 +7,13 @@ SUPPORTED_CSR_INDEXTYPE = [Int32]
 
 A type for representing sparse matrix and vectors in CSR format. Alias for `gko_matrix_csr_eltype_indextype_st` in C API.
     where `eltype` is one of the $SUPPORTED_CSR_ELTYPE and `indextype` is one of the $SUPPORTED_CSR_INDEXTYPE.
-    For constructing a matrix, it is necessary to provide an executor as a dynamically scoped value using the [`create`](@ref) method.
+    For constructing a matrix, it is necessary to provide an [`GkoExecutor`](@ref).
     
 ### Examples
 
 ```julia-repl
 # Read matrix and vector from a mtx file
-A = GkoCsr{Tv, Ti}("data/A.mtx")
+A = GkoCsr{Tv, Ti}("data/A.mtx", exec)
 ```
 # External links
 $(_doc_external("gko::matrix::Csr<ValueType, IndexType>", "classgko_1_1matrix_1_1Csr"))
