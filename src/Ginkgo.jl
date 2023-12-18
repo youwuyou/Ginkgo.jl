@@ -1,25 +1,25 @@
 module Ginkgo
 
-# Hide executors
-using ScopedValues
-export with, @with
-
+############################# EXTERNAL #################################
 using SparseArrays
 
-# Import helper functions for documentation purposes
-include("dochelper.jl")
+# Hide executors
+using ScopedValues; export with, @with
 
-# Import low-level C interface, generated using Clang.jl
-include("api.jl")
+############################# SUBMODULES ###############################
+include("preferences.jl") # GkoPreferences
+include("api.jl")         # low-level C interface, generated using Clang.jl
 
-# Import high-level Julia API
+
+############################# OTHERS ###################################
+# Helper functions for documentation purposes
+include("utils.jl")
+
+############################# CORE ####################################
+
+# High-level Julia API
 include("Configurations.jl")
 include("Type.jl")
-
-
-export
-    get_version
-
 include("base/Array.jl")
 include("base/Dim.jl")
 include("base/Executor.jl")
@@ -30,7 +30,9 @@ include("matrix/Csr.jl")
 
 include("solver/CG.jl")
 
-const EXECUTOR = ScopedValue(GkoExecutor(:omp)); export EXECUTOR
+# Dummy value used by ScopedValues.jl for implicit executor usage
+const EXECUTOR = ScopedValue(GkoExecutor())
+export EXECUTOR
 
 # Export supported types for Ginkgo.jl
 export

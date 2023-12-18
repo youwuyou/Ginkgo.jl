@@ -29,10 +29,16 @@ mutable struct GkoExecutor
     ptr::Ptr{Cvoid}
     type::Symbol
 
-    # Constructor
+    ############################# CONSTRUCTOR ####################################
+    function GkoExecutor()
+        @warn "Intializing EXECUTOR::ScopedValue{GkoExecutor} with dummy values for implicit executor usage. Users are not supposed to use this internal function!"
+        array = []
+        executor_type = :dummy
+        new(pointer_from_objref(array), executor_type)
+    end    
+
     function GkoExecutor(executor_type::Symbol)
         executor_type in SUPPORTED_EXECUTOR_TYPE || throw(ArgumentError("unsupported executor type $executor_type"))
-
         # Calling ginkgo to initialize the array
         function_name = Symbol("ginkgo_executor_", executor_type, "_create")
         @info "Creating $executor_type executor"
@@ -41,12 +47,13 @@ mutable struct GkoExecutor
         finalizer(delete_executor, new(ptr, executor_type))
     end
 
-    # Destructor
+    ############################# DESTRUCTOR ####################################
     function delete_executor(exec::GkoExecutor)
         @warn "Calling the destructor for GkoExecutor for $(exec.type)!"
         API.ginkgo_executor_delete(exec.ptr)
     end
 end
+
 
 """
     create(executor_type::Symbol)
