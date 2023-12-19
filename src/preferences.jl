@@ -6,9 +6,7 @@ try
 catch err
     @debug """
     import ginkgo_jll failed.
-    Consider using `Ginkgo.GkoPreferences.use_jll_binary()` or
-    `Ginkgo.GkoPreferences.use_upstream_binary()` to repair.
-    Importing ginkgo a second time will allow use of these functions.
+    Consider using `Ginkgo.GkoPreferences.use_jll_binary()` to repair.
     """
 end
 
