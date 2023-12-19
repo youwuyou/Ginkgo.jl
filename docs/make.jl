@@ -31,6 +31,7 @@ makedocs(;
         "Reference" => 
         [   
             "reference/ginkgo-api.md",
+            "reference/ginkgo-preferences.md",
             "reference/low-level-api.md",
         ],
         "Performance" => "performance.md",

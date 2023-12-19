@@ -49,7 +49,7 @@ end
 """
     preferences()
 
-Checking if paths to ginkgo binaries are overwritten in LocalPreferences.toml file.
+Checking if paths to ginkgo binaries are overwritten in `LocalPreferences.toml` file.
 """
 function preferences()
     for lib in LIBS
@@ -69,8 +69,8 @@ end
 Change library paths used by Ginkgo.jl to system binaries located at `libpath`.
 
 The override keyword can be either:
-* :force, See `Preferences.set_preferences!` for the `force` keyword.
-* :debug, This argument needs to be set to `true` for using binaries built in debug mode
+* `force`, See `Preferences.set_preferences!` for the `force` keyword.
+* `debug`, This argument needs to be set to `true` for using binaries built in debug mode
 
 !!! note
     You will need to restart Julia to use the new library.
@@ -107,7 +107,7 @@ end
 """
     use_jll_binary!()
 
-Change library paths used by Ginkgo.jl to artifacts provided by ginkgo_jll.jl.
+Change library paths used by Ginkgo.jl to artifacts provided by [ginkgo_jll.jl](https://github.com/JuliaBinaryWrappers/ginkgo_jll.jl).
 
 !!! note
     You will need to restart Julia to use the new library.

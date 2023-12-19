@@ -10,6 +10,7 @@ using ScopedValues; export with, @with
 include("preferences.jl") # GkoPreferences
 include("api.jl")         # low-level C interface, generated using Clang.jl
 
+export locate, preferences, diagnostics, use_jll_binary!, use_system_binary!
 
 ############################# OTHERS ###################################
 # Helper functions for documentation purposes
