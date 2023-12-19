@@ -12,6 +12,7 @@ ginkgo_jll = "e4326e8b-370f-5d90-bbd6-f077a22d5a69"
 
 [compat]
 CEnum = "0.5"
+Preferences = "1"
 ScopedValues = "1"
 julia = "1.9.1"
 
