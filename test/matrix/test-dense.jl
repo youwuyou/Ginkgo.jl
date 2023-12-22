@@ -8,8 +8,7 @@ for T in SUPPORTED_DENSE_ELTYPE
     # Using executor implicitly
     with(EXECUTOR => exec) do
         # Create unitialized matrix, will trigger warnings
-        M    = Ginkgo.GkoDense{T}(Ginkgo.GkoDim{2}(2, 3))
-        N    = Ginkgo.GkoDense{T}(8)
+        M    = Ginkgo.GkoDense{T}((2, 3))
 
         # Create initialized vector
         vec1 = Ginkgo.GkoDense{T}(3, 1)
@@ -17,12 +16,10 @@ for T in SUPPORTED_DENSE_ELTYPE
 
         @testset "Unit test: gko::matrix::Dense<$T> size                " begin
             @test Ginkgo.size(M) == (2, 3)
-            @test Ginkgo.size(N) == (8, 8)
         end
 
         @testset "Unit test: gko::matrix::Dense<$T> no. element entries " begin
             @test Ginkgo.elements(M) == 6
-            @test Ginkgo.elements(N) == 64
         end
 
         @testset "Unit test: gko::matrix::Dense<$T> get index          " begin

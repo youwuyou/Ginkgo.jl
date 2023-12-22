@@ -26,7 +26,6 @@ res     = number(Tv(0.0), exec)
 # x = one*A*b + neg_one*x
 spmm!(A, one, x, neg_one, b)
 
-
 norm2!(b, res)
 @info "Residual norm sqrt(r^T r):"
 display(res)

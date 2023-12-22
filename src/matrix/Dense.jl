@@ -12,16 +12,13 @@ A type for representing dense matrix and vectors. Alias for `gko_matrix_dense_el
 
 ```julia-repl
 # Creating uninitialized vector of length 2, represented as a 2x1 dense matrix
-julia> dim = GkoDim{2}(2,1); vec1 = GkoDense{Float32}(dim, exec)
+julia> dim = (2,1); vec1 = GkoDense{Float32}(dim, exec)
 
 # Passing a tuple
 julia> vec2 = GkoDense{Float32}((2, 1), exec)
 
 # Passing numbers
 julia> vec3 = GkoDense{Float32}(2, 1, exec)
-
-# Creating uninitialized dense square matrix
-julia> square_mat = GkoDense{Float32}(2, exec)
 
 # Creating initialized dense vector or matrix via reading from a `.mtx` file
 julia> b = GkoDense{Float32}("b.mtx", exec)
@@ -39,28 +36,14 @@ mutable struct GkoDense{T} <: AbstractMatrix{T}
     function GkoDense{T}(m::Integer, n::Integer, executor::GkoExecutor = EXECUTOR[]) where T
         # @warn "Constructing $(m) x $(n) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
-        ptr = eval(:($API.$function_name($(executor.ptr), $GkoDim{2}($m,$n))))
+        ptr = eval(:($API.$function_name($(executor.ptr), ($m,$n))))
         finalizer(delete_dense_matrix, new{T}(ptr, executor))
-    end
-
-    function GkoDense{T}(size::Integer, executor::GkoExecutor = EXECUTOR[]) where T
-        # @warn "Constructing $(size) x $(size) square matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
-        function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
-        ptr = eval(:($API.$function_name($(executor.ptr), $GkoDim{2}($size,$size))))
-        return finalizer(delete_dense_matrix, new{T}(ptr, executor))
     end
 
     function GkoDense{T}(m::Tuple{Integer, Integer}, executor::GkoExecutor = EXECUTOR[]) where T
         # @warn "Constructing $(m[1]) x $(m[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($(executor.ptr), $m)))
-        finalizer(delete_dense_matrix, new{T}(ptr, executor))
-    end
-
-    function GkoDense{T}(size::GkoDim2, executor::GkoExecutor = EXECUTOR[]) where T
-        # @warn "Constructing $(size[1]) x $(size[2]) matrix with uninitialized values. Displayed values may not be meaningful. It's advisable to initialize the matrix before usage."
-        function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_create")
-        ptr = eval(:($API.$function_name($(executor.ptr), $size)))
         finalizer(delete_dense_matrix, new{T}(ptr, executor))
     end
 
@@ -107,7 +90,7 @@ Initialize a 1x1 matrix representing a number with the provided value `val`
 """
 function number(val::Number, exec::GkoExecutor = EXECUTOR[])
     T = typeof(val)
-    mat = GkoDense{T}(1, exec)
+    mat = GkoDense{T}((1,1), exec)
     fill!(mat, val)
     return mat
 end

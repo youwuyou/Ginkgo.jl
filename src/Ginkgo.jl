@@ -22,7 +22,6 @@ include("utils.jl")
 include("Configurations.jl")
 include("Type.jl")
 include("base/Array.jl")
-include("base/Dim.jl")
 include("base/Executor.jl")
 # include("base/LinOp.jl")
 
@@ -46,7 +45,6 @@ export
 export
     GkoExecutor,
     GkoArray,  # minimal working
-    GkoDim,    # completely wrapped but bool operator
     GkoDense,
     GkoCsr
 

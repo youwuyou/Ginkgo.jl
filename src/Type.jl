@@ -25,3 +25,6 @@ const DATATYPE_CALL_MAP = Dict(
 
 export gko_type
 gko_type(T::Type) = DATATYPE_CALL_MAP[T]
+
+# Type Conversion for C native representable types
+Base.cconvert(::Type{API.gko_dim2_st}, obj::Tuple{T, T}) where T =  API.gko_dim2_st(obj[1], obj[2])
