@@ -46,11 +46,11 @@ Base.unsafe_convert(::Type{Ptr{Cvoid}}, obj::AbstractGkoVector) =
 Base.eltype(::AbstractGkoVector{T}) where {T} = T
 
 function Base.size(array::AbstractGkoVector{T}) where {T}
-    function_name = Symbol("ginkgo_array_", gko_type(T), "_get_num_elems")
+    function_name = Symbol("ginkgo_array_", gko_type(T), "_get_size")
     return eval(:($API.$function_name($array.ptr)))
 end
 
 function Base.isempty(array::AbstractGkoVector{T}) where {T}
-    function_name = Symbol("ginkgo_array_", gko_type(T), "_get_num_elems")
+    function_name = Symbol("ginkgo_array_", gko_type(T), "_get_size")
     return eval(:($API.$function_name($array.ptr))) == 0
 end

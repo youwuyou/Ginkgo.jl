@@ -1,6 +1,6 @@
 # gko::matrix::Csr<double, int>
-SUPPORTED_CSR_ELTYPE    = [Float32]
-SUPPORTED_CSR_INDEXTYPE = [Int32]
+SUPPORTED_CSR_ELTYPE    = [Float32, Float64]
+SUPPORTED_CSR_INDEXTYPE = [Int32, Int64]
 
 """
     GkoCsr{Tv, Ti} <: AbstractMatrix{Tv, Ti}
@@ -29,6 +29,20 @@ mutable struct GkoCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
         function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_read")
         # Pass the void pointer to executor_st to C API
         ptr = eval(:($API.$function_name($filename, $(executor.ptr))))
+        finalizer(delete_csr_matrix, new{Tv,Ti}(ptr, executor));
+    end
+
+    # FIXME: not used yet!
+    function GkoCsr(size::Tuple{Integer, Integer},
+                            nnz::Integer,
+                            row_ptrs::Vector{Ti},
+                            col_idxs::Vector{Ti},
+                            values::Vector{Tv},
+                            executor::GkoExecutor = EXECUTOR[]
+                           ) where {Tv,Ti}
+        # TODO: bound checking
+        function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_create_view")
+        ptr = eval(:($API.$function_name($(executor.ptr), $size, $nnz, $row_ptrs, $col_idxs, $values)))
         finalizer(delete_csr_matrix, new{Tv,Ti}(ptr, executor));
     end
 

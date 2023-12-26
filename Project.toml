@@ -5,6 +5,7 @@ version = "1.0.0"
 
 [deps]
 CEnum = "fa961155-64e5-5f13-b03f-caf6b980ea82"
+MatrixMarket = "4d4711f2-db25-561a-b6b3-d35e7d4047d3"
 Preferences = "21216c6a-2e73-6563-6e65-726566657250"
 ScopedValues = "7e506255-f358-4e82-b7e4-beb19740aa63"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"

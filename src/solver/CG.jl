@@ -9,7 +9,7 @@ function cg!(x::Ginkgo.GkoDense{Tv}, A::Ginkgo.GkoCsr{Tv, Ti}, b::Ginkgo.GkoDens
     # verbose::Bool = false,
     # Pl = Identity(),
     kwargs...) where {Tv, Ti}
-
+    function_name = Symbol("ginkgo_solver_cg_solve_", gko_type(Tv), "_", gko_type(Ti))
     # Store the result in the x
-    API.ginkgo_solver_cg_solve(executor.ptr, A.ptr, b.ptr, x.ptr, maxiter, reduction)
+    eval(:($API.$function_name($executor.ptr, $A.ptr, $b.ptr, $x.ptr, $maxiter, $reduction)))
 end
