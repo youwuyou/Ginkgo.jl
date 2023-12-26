@@ -1,7 +1,7 @@
 using Ginkgo
 
 # Type alias
-const (Tv, Ti) = (Float32, Int32)
+const (Tv, Ti) = (Float64, Int32)
 
 # Print ginkgo library version
 version()

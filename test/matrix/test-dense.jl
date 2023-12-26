@@ -8,10 +8,10 @@ for T in SUPPORTED_DENSE_ELTYPE
     # Using executor implicitly
     with(EXECUTOR => exec) do
         # Create unitialized matrix, will trigger warnings
-        M    = Ginkgo.GkoDense{T}((2, 3))
+        M    = Ginkgo.GkoDense{T}(undef, (2, 3))
 
         # Create initialized vector
-        vec1 = Ginkgo.GkoDense{T}(3, 1)
+        vec1 = Ginkgo.GkoDense{T}(undef, 3, 1)
         fill!(vec1, T(1.0))
 
         @testset "Unit test: gko::matrix::Dense<$T> size                " begin
