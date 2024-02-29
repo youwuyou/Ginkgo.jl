@@ -1,6 +1,6 @@
 # gko::matrix::Csr<double, int>
-SUPPORTED_CSR_ELTYPE    = [Float32]
-SUPPORTED_CSR_INDEXTYPE = [Int32]
+SUPPORTED_CSR_ELTYPE    = [Float32, Float64]
+SUPPORTED_CSR_INDEXTYPE = [Int32, Int64]
 
 """
     GkoCsr{Tv, Ti} <: AbstractMatrix{Tv, Ti}
@@ -32,16 +32,56 @@ mutable struct GkoCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
         finalizer(delete_csr_matrix, new{Tv,Ti}(ptr, executor));
     end
 
+    function GkoCsr(size::Tuple{Integer, Integer},
+                            nnz::Integer,
+                            row_ptrs::Vector{Ti},
+                            col_idxs::Vector{Ti},
+                            values::Vector{Tv},
+                            executor::GkoExecutor = EXECUTOR[]
+                           ) where {Tv,Ti}
+        function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_create_view")
+        ptr = eval(:($API.$function_name($(executor.ptr), $size, $nnz, $row_ptrs, $col_idxs, $values)))
+        finalizer(delete_csr_matrix, new{Tv,Ti}(ptr, executor));
+    end
+
+    # SparseMatrixCSC{Tv, Ti} => GkoCsr{Tv, Ti}
+    function GkoCsr(csc_mat::SparseMatrixCSC{Tv,Ti},
+                            executor::GkoExecutor = EXECUTOR[]
+                        ) where {Tv, Ti}
+        # Using C/C++-based indexing {Bi} = {0}
+        csr_mat = convert(SparseMatrixCSR{0,Tv,Ti}, csc_mat)
+        return GkoCsr(
+            (csr_mat.m, csr_mat.n),    # Tuple{rows::Integer, cols::Integer}
+            SparseArrays.nnz(csr_mat), # Integer
+            csr_mat.rowptr,            # Vector{Ti}
+            csr_mat.colval,            # Vector{Ti}
+            csr_mat.nzval,             # Vector{Tv}
+            executor
+        )
+    end
+
     ############################# DESTRUCTOR ####################################
     function delete_csr_matrix(mat::GkoCsr{Tv,Ti}) where {Tv, Ti}
         @warn "Calling the destructor for GkoCsr{$Tv,$Ti}!"
         function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_delete")
         eval(:($API.$function_name($mat.ptr)))
     end
-    
 end
 
-# Obtain numbers for important sizes
+
+# I/O
+"""
+    mmwrite(filename::String, mat::GkoCsr{Tv,Ti}) where {Tv, Ti}
+
+Writing `mat::GkoCsr{Tv,Ti}` into a matrix market file. The filename should be in form as "name.mtx"
+"""
+function mmwrite(filename::String, mat::GkoCsr{Tv,Ti}) where {Tv, Ti}
+    @info "Writing into $filename"
+    isempty(filename) && error("You have to specify a filename")
+    function_name = Symbol("ginkgo_write_csr_", gko_type(Tv), "_", gko_type(Ti), "_in_coo")
+    eval(:($API.$function_name($filename, $mat.ptr)))
+end
+
 """
     Base.size(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
 
@@ -54,61 +94,55 @@ function Base.size(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
 end
 
 """
-    nnz(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
+    get_nnz(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
 
 Get number of stored elements of the matrix
 """
-function nnz(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
+function get_nnz(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
     function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_num_stored_elements")
     number = eval(:($API.$function_name($mat.ptr)))
     return Ti(number)
 end
 
+"""
+    rowptr(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
 
-
-# Obtain pointers to the underlying arrays
-# for rowptr(A)
-function get_rowptrs(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
-    function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_row_ptrs")
-    return eval(:($API.$function_name($mat.ptr)))
-end
-
-# for colvals(A)
-function get_col_idxs(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
-    function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_col_idxs")
-    return eval(:($API.$function_name($mat.ptr)))
-end
-
-# for nonzeros(A)
-function get_values(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
-    function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_values")
-    return eval(:($API.$function_name($mat.ptr)))
-end
-
-
-# Obtain arrays using unsafe_wrap
+Returns the row pointers of the matrix.
+"""
 function rowptr(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
-    row_ptrs_raw_ptr = get_rowptrs(mat)
+    # Obtain pointers to the underlying arrays
+    function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_row_ptrs")
+    row_ptrs_raw_ptr = eval(:($API.$function_name($mat.ptr)))
     num_entries = size(mat)[1] + 1
 
     # Use unsafe_wrap to create a Julia array that references the C array without copying.
     # The Julia array will be automatically garbage collected when it goes out of scope.
-    unsafe_wrap(Vector{Ti}, row_ptrs_raw_ptr, num_entries)
+    unsafe_wrap(Vector{Ti}, row_ptrs_raw_ptr, num_entries) .+ 1 # Julia indexing
 end
 
+"""
+    colvals(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
 
+Returns the column indexes of the matrix.
+"""
 function colvals(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
-    col_idxs_raw_ptr = get_col_idxs(mat)
-    num_elem       = nnz(mat)
-    unsafe_wrap(Vector{Ti}, col_idxs_raw_ptr, num_elem)
+    function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_col_idxs")
+    col_idxs_raw_ptr = eval(:($API.$function_name($mat.ptr)))
+    num_elem         = get_nnz(mat)
+    unsafe_wrap(Vector{Ti}, col_idxs_raw_ptr, num_elem) .+ 1
 end
 
+"""
+    nonzeros(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
+
+Returns the non-zero values of the matrix.
+"""
 function nonzeros(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
-    values_raw_ptr = get_values(mat)
-    num_elem       = nnz(mat)
+    function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_values")
+    values_raw_ptr = eval(:($API.$function_name($mat.ptr)))
+    num_elem       = get_nnz(mat)
     unsafe_wrap(Vector{Tv}, values_raw_ptr, num_elem)
 end
-
 
 # NOT BEING USED
 function srow(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
@@ -126,7 +160,6 @@ function srows(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
     number = eval(:($API.$function_name($mat.ptr)))
     return Ti(number)
 end
-
 
 # LinOp
 """
