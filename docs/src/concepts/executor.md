@@ -28,12 +28,13 @@ Identical to the original usage as in [ginkgo](https://github.com/ginkgo-project
 const exec = create(:omp)
 
 # Read matrix and vector from mtk files
-A = GkoCsr{Float32, Int32}("data/A.mtx", exec)
-b = GkoDense{Float32}("data/b.mtx", exec)
-x = GkoDense{Float32}("data/x0.mtx", exec)
+A = GkoCsr{Tv, Ti}("data/A.mtx", exec)
+b = GkoDense{Tv}("data/b.mtx", exec)
+x = GkoDense{Tv}("data/x0.mtx", exec)
 
 # Passing the executor to the CG solver
-cg!(x, A, b, exec; maxiter = 20, reduction = 1.0e-7)
+solver = GkoLinOp(:cg, A, exec; maxiter = 20, reduction = 1.0e-7)
+apply!(solver, b, x)
 ```
 
 !!! example
@@ -58,7 +59,8 @@ with(EXECUTOR => exec) do
   b = GkoDense{Float32}("data/b.mtx");
   x = GkoDense{Float32}("data/x0.mtx");
   
-  cg!(x, A, b; maxiter = 20, reduction = 1.0e-7)
+  solver = GkoLinOp(:cg, A; maxiter = 20, reduction = 1.0e-7)
+  apply!(solver, b, x)
 end
 ```
 

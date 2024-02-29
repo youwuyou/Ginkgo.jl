@@ -1,7 +1,7 @@
 using Ginkgo
 
 # Type alias
-const (Tv, Ti) = (Float32, Int32)
+const (Tv, Ti) = (Float64, Int32)
 
 # Print ginkgo library version
 version()
@@ -14,7 +14,9 @@ A = GkoCsr{Tv, Ti}("data/A.mtx", exec)
 b = GkoDense{Tv}("data/b.mtx", exec)
 x = GkoDense{Tv}("data/x0.mtx", exec)
 
-cg!(x, A, b, exec; maxiter = 20, reduction = 1.0e-7)
+# Passing the executor to the CG solver
+solver = GkoLinOp(:cg, A, exec; maxiter = 20, reduction = 1.0e-7)
+apply!(solver, b, x)
 
 @info "Solution (x):"
 display(x)

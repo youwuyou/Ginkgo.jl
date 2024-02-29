@@ -95,17 +95,17 @@ function ginkgo_executor_delete(exec_st_ptr)
     ccall((:ginkgo_executor_delete, libginkgo), Cvoid, (gko_executor,), exec_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:337:14, please use with caution
+# no prototype is found for this function at c_api.h:498:14, please use with caution
 function ginkgo_executor_omp_create()
     ccall((:ginkgo_executor_omp_create, libginkgo), gko_executor, ())
 end
 
-# no prototype is found for this function at c_api.h:338:14, please use with caution
+# no prototype is found for this function at c_api.h:499:14, please use with caution
 function ginkgo_executor_cuda_create()
     ccall((:ginkgo_executor_cuda_create, libginkgo), gko_executor, ())
 end
 
-# no prototype is found for this function at c_api.h:341:14, please use with caution
+# no prototype is found for this function at c_api.h:502:14, please use with caution
 function ginkgo_executor_reference_create()
     ccall((:ginkgo_executor_reference_create, libginkgo), gko_executor, ())
 end
@@ -119,15 +119,15 @@ function ginkgo_array_i16_create(exec_st_ptr, size)
 end
 
 function ginkgo_array_i16_create_view(exec_st_ptr, size, data_ptr)
-    ccall((:ginkgo_array_i16_create_view, libginkgo), gko_array_i16, (gko_executor, Csize_t, Ptr{Cshort}), exec_st_ptr, size, data_ptr)
+    ccall((:ginkgo_array_i16_create_view, libginkgo), gko_array_i16, (gko_executor, Csize_t, Ptr{Int16}), exec_st_ptr, size, data_ptr)
 end
 
 function ginkgo_array_i16_delete(array_st_ptr)
     ccall((:ginkgo_array_i16_delete, libginkgo), Cvoid, (gko_array_i16,), array_st_ptr)
 end
 
-function ginkgo_array_i16_get_num_elems(array_st_ptr)
-    ccall((:ginkgo_array_i16_get_num_elems, libginkgo), Csize_t, (gko_array_i16,), array_st_ptr)
+function ginkgo_array_i16_get_size(array_st_ptr)
+    ccall((:ginkgo_array_i16_get_size, libginkgo), Csize_t, (gko_array_i16,), array_st_ptr)
 end
 
 mutable struct gko_array_i32_st end
@@ -146,8 +146,8 @@ function ginkgo_array_i32_delete(array_st_ptr)
     ccall((:ginkgo_array_i32_delete, libginkgo), Cvoid, (gko_array_i32,), array_st_ptr)
 end
 
-function ginkgo_array_i32_get_num_elems(array_st_ptr)
-    ccall((:ginkgo_array_i32_get_num_elems, libginkgo), Csize_t, (gko_array_i32,), array_st_ptr)
+function ginkgo_array_i32_get_size(array_st_ptr)
+    ccall((:ginkgo_array_i32_get_size, libginkgo), Csize_t, (gko_array_i32,), array_st_ptr)
 end
 
 mutable struct gko_array_i64_st end
@@ -159,15 +159,15 @@ function ginkgo_array_i64_create(exec_st_ptr, size)
 end
 
 function ginkgo_array_i64_create_view(exec_st_ptr, size, data_ptr)
-    ccall((:ginkgo_array_i64_create_view, libginkgo), gko_array_i64, (gko_executor, Csize_t, Ptr{Clonglong}), exec_st_ptr, size, data_ptr)
+    ccall((:ginkgo_array_i64_create_view, libginkgo), gko_array_i64, (gko_executor, Csize_t, Ptr{Int64}), exec_st_ptr, size, data_ptr)
 end
 
 function ginkgo_array_i64_delete(array_st_ptr)
     ccall((:ginkgo_array_i64_delete, libginkgo), Cvoid, (gko_array_i64,), array_st_ptr)
 end
 
-function ginkgo_array_i64_get_num_elems(array_st_ptr)
-    ccall((:ginkgo_array_i64_get_num_elems, libginkgo), Csize_t, (gko_array_i64,), array_st_ptr)
+function ginkgo_array_i64_get_size(array_st_ptr)
+    ccall((:ginkgo_array_i64_get_size, libginkgo), Csize_t, (gko_array_i64,), array_st_ptr)
 end
 
 mutable struct gko_array_f32_st end
@@ -186,8 +186,8 @@ function ginkgo_array_f32_delete(array_st_ptr)
     ccall((:ginkgo_array_f32_delete, libginkgo), Cvoid, (gko_array_f32,), array_st_ptr)
 end
 
-function ginkgo_array_f32_get_num_elems(array_st_ptr)
-    ccall((:ginkgo_array_f32_get_num_elems, libginkgo), Csize_t, (gko_array_f32,), array_st_ptr)
+function ginkgo_array_f32_get_size(array_st_ptr)
+    ccall((:ginkgo_array_f32_get_size, libginkgo), Csize_t, (gko_array_f32,), array_st_ptr)
 end
 
 mutable struct gko_array_f64_st end
@@ -206,8 +206,8 @@ function ginkgo_array_f64_delete(array_st_ptr)
     ccall((:ginkgo_array_f64_delete, libginkgo), Cvoid, (gko_array_f64,), array_st_ptr)
 end
 
-function ginkgo_array_f64_get_num_elems(array_st_ptr)
-    ccall((:ginkgo_array_f64_get_num_elems, libginkgo), Csize_t, (gko_array_f64,), array_st_ptr)
+function ginkgo_array_f64_get_size(array_st_ptr)
+    ccall((:ginkgo_array_f64_get_size, libginkgo), Csize_t, (gko_array_f64,), array_st_ptr)
 end
 
 mutable struct gko_matrix_dense_f32_st end
@@ -216,6 +216,10 @@ const gko_matrix_dense_f32 = Ptr{gko_matrix_dense_f32_st}
 
 function ginkgo_matrix_dense_f32_create(exec, size)
     ccall((:ginkgo_matrix_dense_f32_create, libginkgo), gko_matrix_dense_f32, (gko_executor, gko_dim2_st), exec, size)
+end
+
+function ginkgo_matrix_dense_f32_create_view(exec, size, values, stride)
+    ccall((:ginkgo_matrix_dense_f32_create_view, libginkgo), gko_matrix_dense_f32, (gko_executor, gko_dim2_st, Ptr{Cfloat}, Csize_t), exec, size, values, stride)
 end
 
 function ginkgo_matrix_dense_f32_delete(mat_st_ptr)
@@ -232,6 +236,14 @@ end
 
 function ginkgo_matrix_dense_f32_get_size(mat_st_ptr)
     ccall((:ginkgo_matrix_dense_f32_get_size, libginkgo), gko_dim2_st, (gko_matrix_dense_f32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_dense_f32_get_values(mat_st_ptr)
+    ccall((:ginkgo_matrix_dense_f32_get_values, libginkgo), Ptr{Cfloat}, (gko_matrix_dense_f32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_dense_f32_get_const_values(mat_st_ptr)
+    ccall((:ginkgo_matrix_dense_f32_get_const_values, libginkgo), Ptr{Cfloat}, (gko_matrix_dense_f32,), mat_st_ptr)
 end
 
 function ginkgo_matrix_dense_f32_get_num_stored_elements(mat_st_ptr)
@@ -270,6 +282,10 @@ function ginkgo_matrix_dense_f64_create(exec, size)
     ccall((:ginkgo_matrix_dense_f64_create, libginkgo), gko_matrix_dense_f64, (gko_executor, gko_dim2_st), exec, size)
 end
 
+function ginkgo_matrix_dense_f64_create_view(exec, size, values, stride)
+    ccall((:ginkgo_matrix_dense_f64_create_view, libginkgo), gko_matrix_dense_f64, (gko_executor, gko_dim2_st, Ptr{Cdouble}, Csize_t), exec, size, values, stride)
+end
+
 function ginkgo_matrix_dense_f64_delete(mat_st_ptr)
     ccall((:ginkgo_matrix_dense_f64_delete, libginkgo), Cvoid, (gko_matrix_dense_f64,), mat_st_ptr)
 end
@@ -284,6 +300,14 @@ end
 
 function ginkgo_matrix_dense_f64_get_size(mat_st_ptr)
     ccall((:ginkgo_matrix_dense_f64_get_size, libginkgo), gko_dim2_st, (gko_matrix_dense_f64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_dense_f64_get_values(mat_st_ptr)
+    ccall((:ginkgo_matrix_dense_f64_get_values, libginkgo), Ptr{Cdouble}, (gko_matrix_dense_f64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_dense_f64_get_const_values(mat_st_ptr)
+    ccall((:ginkgo_matrix_dense_f64_get_const_values, libginkgo), Ptr{Cdouble}, (gko_matrix_dense_f64,), mat_st_ptr)
 end
 
 function ginkgo_matrix_dense_f64_get_num_stored_elements(mat_st_ptr)
@@ -322,12 +346,20 @@ function ginkgo_matrix_csr_f32_i32_create(exec, size, nnz)
     ccall((:ginkgo_matrix_csr_f32_i32_create, libginkgo), gko_matrix_csr_f32_i32, (gko_executor, gko_dim2_st, Csize_t), exec, size, nnz)
 end
 
+function ginkgo_matrix_csr_f32_i32_create_view(exec, size, nnz, row_ptrs, col_idxs, values)
+    ccall((:ginkgo_matrix_csr_f32_i32_create_view, libginkgo), gko_matrix_csr_f32_i32, (gko_executor, gko_dim2_st, Csize_t, Ptr{Cint}, Ptr{Cint}, Ptr{Cfloat}), exec, size, nnz, row_ptrs, col_idxs, values)
+end
+
 function ginkgo_matrix_csr_f32_i32_delete(mat_st_ptr)
     ccall((:ginkgo_matrix_csr_f32_i32_delete, libginkgo), Cvoid, (gko_matrix_csr_f32_i32,), mat_st_ptr)
 end
 
 function ginkgo_matrix_csr_f32_i32_read(str_ptr, exec)
     ccall((:ginkgo_matrix_csr_f32_i32_read, libginkgo), gko_matrix_csr_f32_i32, (Ptr{Cchar}, gko_executor), str_ptr, exec)
+end
+
+function ginkgo_write_csr_f32_i32_in_coo(str_ptr, mat_st_ptr)
+    ccall((:ginkgo_write_csr_f32_i32_in_coo, libginkgo), Cvoid, (Ptr{Cchar}, gko_matrix_csr_f32_i32), str_ptr, mat_st_ptr)
 end
 
 function ginkgo_matrix_csr_f32_i32_get_num_stored_elements(mat_st_ptr)
@@ -358,27 +390,230 @@ function ginkgo_matrix_csr_f32_i32_get_const_srow(mat_st_ptr)
     ccall((:ginkgo_matrix_csr_f32_i32_get_const_srow, libginkgo), Ptr{Cint}, (gko_matrix_csr_f32_i32,), mat_st_ptr)
 end
 
-"""
-    ginkgo_matrix_csr_f32_i32_apply(mat_st_ptr, alpha, x, beta, y)
-
-Performs an SpMM product
-
-### Parameters
-* `mat_st_ptr`:
-* `alpha`:
-* `x`:
-* `beta`:
-* `y`:
-"""
 function ginkgo_matrix_csr_f32_i32_apply(mat_st_ptr, alpha, x, beta, y)
     ccall((:ginkgo_matrix_csr_f32_i32_apply, libginkgo), Cvoid, (gko_matrix_csr_f32_i32, gko_matrix_dense_f32, gko_matrix_dense_f32, gko_matrix_dense_f32, gko_matrix_dense_f32), mat_st_ptr, alpha, x, beta, y)
 end
 
-function ginkgo_solver_cg_solve(exec_st_ptr, A_st_ptr, b_st_ptr, x_st_ptr, maxiter, reduction)
-    ccall((:ginkgo_solver_cg_solve, libginkgo), Cvoid, (gko_executor, gko_matrix_csr_f32_i32, gko_matrix_dense_f32, gko_matrix_dense_f32, Cint, Cdouble), exec_st_ptr, A_st_ptr, b_st_ptr, x_st_ptr, maxiter, reduction)
+mutable struct gko_matrix_csr_f32_i64_st end
+
+const gko_matrix_csr_f32_i64 = Ptr{gko_matrix_csr_f32_i64_st}
+
+function ginkgo_matrix_csr_f32_i64_create(exec, size, nnz)
+    ccall((:ginkgo_matrix_csr_f32_i64_create, libginkgo), gko_matrix_csr_f32_i64, (gko_executor, gko_dim2_st, Csize_t), exec, size, nnz)
 end
 
-# no prototype is found for this function at c_api.h:428:6, please use with caution
+function ginkgo_matrix_csr_f32_i64_create_view(exec, size, nnz, row_ptrs, col_idxs, values)
+    ccall((:ginkgo_matrix_csr_f32_i64_create_view, libginkgo), gko_matrix_csr_f32_i64, (gko_executor, gko_dim2_st, Csize_t, Ptr{Int64}, Ptr{Int64}, Ptr{Cfloat}), exec, size, nnz, row_ptrs, col_idxs, values)
+end
+
+function ginkgo_matrix_csr_f32_i64_delete(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i64_delete, libginkgo), Cvoid, (gko_matrix_csr_f32_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i64_read(str_ptr, exec)
+    ccall((:ginkgo_matrix_csr_f32_i64_read, libginkgo), gko_matrix_csr_f32_i64, (Ptr{Cchar}, gko_executor), str_ptr, exec)
+end
+
+function ginkgo_write_csr_f32_i64_in_coo(str_ptr, mat_st_ptr)
+    ccall((:ginkgo_write_csr_f32_i64_in_coo, libginkgo), Cvoid, (Ptr{Cchar}, gko_matrix_csr_f32_i64), str_ptr, mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i64_get_num_stored_elements(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i64_get_num_stored_elements, libginkgo), Csize_t, (gko_matrix_csr_f32_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i64_get_num_srow_elements(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i64_get_num_srow_elements, libginkgo), Csize_t, (gko_matrix_csr_f32_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i64_get_size(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i64_get_size, libginkgo), gko_dim2_st, (gko_matrix_csr_f32_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i64_get_const_values(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i64_get_const_values, libginkgo), Ptr{Cfloat}, (gko_matrix_csr_f32_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i64_get_const_col_idxs(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i64_get_const_col_idxs, libginkgo), Ptr{Int64}, (gko_matrix_csr_f32_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i64_get_const_row_ptrs(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i64_get_const_row_ptrs, libginkgo), Ptr{Int64}, (gko_matrix_csr_f32_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i64_get_const_srow(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f32_i64_get_const_srow, libginkgo), Ptr{Int64}, (gko_matrix_csr_f32_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f32_i64_apply(mat_st_ptr, alpha, x, beta, y)
+    ccall((:ginkgo_matrix_csr_f32_i64_apply, libginkgo), Cvoid, (gko_matrix_csr_f32_i64, gko_matrix_dense_f32, gko_matrix_dense_f32, gko_matrix_dense_f32, gko_matrix_dense_f32), mat_st_ptr, alpha, x, beta, y)
+end
+
+mutable struct gko_matrix_csr_f64_i32_st end
+
+const gko_matrix_csr_f64_i32 = Ptr{gko_matrix_csr_f64_i32_st}
+
+function ginkgo_matrix_csr_f64_i32_create(exec, size, nnz)
+    ccall((:ginkgo_matrix_csr_f64_i32_create, libginkgo), gko_matrix_csr_f64_i32, (gko_executor, gko_dim2_st, Csize_t), exec, size, nnz)
+end
+
+function ginkgo_matrix_csr_f64_i32_create_view(exec, size, nnz, row_ptrs, col_idxs, values)
+    ccall((:ginkgo_matrix_csr_f64_i32_create_view, libginkgo), gko_matrix_csr_f64_i32, (gko_executor, gko_dim2_st, Csize_t, Ptr{Cint}, Ptr{Cint}, Ptr{Cdouble}), exec, size, nnz, row_ptrs, col_idxs, values)
+end
+
+function ginkgo_matrix_csr_f64_i32_delete(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i32_delete, libginkgo), Cvoid, (gko_matrix_csr_f64_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i32_read(str_ptr, exec)
+    ccall((:ginkgo_matrix_csr_f64_i32_read, libginkgo), gko_matrix_csr_f64_i32, (Ptr{Cchar}, gko_executor), str_ptr, exec)
+end
+
+function ginkgo_write_csr_f64_i32_in_coo(str_ptr, mat_st_ptr)
+    ccall((:ginkgo_write_csr_f64_i32_in_coo, libginkgo), Cvoid, (Ptr{Cchar}, gko_matrix_csr_f64_i32), str_ptr, mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i32_get_num_stored_elements(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i32_get_num_stored_elements, libginkgo), Csize_t, (gko_matrix_csr_f64_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i32_get_num_srow_elements(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i32_get_num_srow_elements, libginkgo), Csize_t, (gko_matrix_csr_f64_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i32_get_size(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i32_get_size, libginkgo), gko_dim2_st, (gko_matrix_csr_f64_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i32_get_const_values(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i32_get_const_values, libginkgo), Ptr{Cdouble}, (gko_matrix_csr_f64_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i32_get_const_col_idxs(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i32_get_const_col_idxs, libginkgo), Ptr{Cint}, (gko_matrix_csr_f64_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i32_get_const_row_ptrs(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i32_get_const_row_ptrs, libginkgo), Ptr{Cint}, (gko_matrix_csr_f64_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i32_get_const_srow(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i32_get_const_srow, libginkgo), Ptr{Cint}, (gko_matrix_csr_f64_i32,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i32_apply(mat_st_ptr, alpha, x, beta, y)
+    ccall((:ginkgo_matrix_csr_f64_i32_apply, libginkgo), Cvoid, (gko_matrix_csr_f64_i32, gko_matrix_dense_f64, gko_matrix_dense_f64, gko_matrix_dense_f64, gko_matrix_dense_f64), mat_st_ptr, alpha, x, beta, y)
+end
+
+mutable struct gko_matrix_csr_f64_i64_st end
+
+const gko_matrix_csr_f64_i64 = Ptr{gko_matrix_csr_f64_i64_st}
+
+function ginkgo_matrix_csr_f64_i64_create(exec, size, nnz)
+    ccall((:ginkgo_matrix_csr_f64_i64_create, libginkgo), gko_matrix_csr_f64_i64, (gko_executor, gko_dim2_st, Csize_t), exec, size, nnz)
+end
+
+function ginkgo_matrix_csr_f64_i64_create_view(exec, size, nnz, row_ptrs, col_idxs, values)
+    ccall((:ginkgo_matrix_csr_f64_i64_create_view, libginkgo), gko_matrix_csr_f64_i64, (gko_executor, gko_dim2_st, Csize_t, Ptr{Int64}, Ptr{Int64}, Ptr{Cdouble}), exec, size, nnz, row_ptrs, col_idxs, values)
+end
+
+function ginkgo_matrix_csr_f64_i64_delete(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i64_delete, libginkgo), Cvoid, (gko_matrix_csr_f64_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i64_read(str_ptr, exec)
+    ccall((:ginkgo_matrix_csr_f64_i64_read, libginkgo), gko_matrix_csr_f64_i64, (Ptr{Cchar}, gko_executor), str_ptr, exec)
+end
+
+function ginkgo_write_csr_f64_i64_in_coo(str_ptr, mat_st_ptr)
+    ccall((:ginkgo_write_csr_f64_i64_in_coo, libginkgo), Cvoid, (Ptr{Cchar}, gko_matrix_csr_f64_i64), str_ptr, mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i64_get_num_stored_elements(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i64_get_num_stored_elements, libginkgo), Csize_t, (gko_matrix_csr_f64_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i64_get_num_srow_elements(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i64_get_num_srow_elements, libginkgo), Csize_t, (gko_matrix_csr_f64_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i64_get_size(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i64_get_size, libginkgo), gko_dim2_st, (gko_matrix_csr_f64_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i64_get_const_values(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i64_get_const_values, libginkgo), Ptr{Cdouble}, (gko_matrix_csr_f64_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i64_get_const_col_idxs(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i64_get_const_col_idxs, libginkgo), Ptr{Int64}, (gko_matrix_csr_f64_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i64_get_const_row_ptrs(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i64_get_const_row_ptrs, libginkgo), Ptr{Int64}, (gko_matrix_csr_f64_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i64_get_const_srow(mat_st_ptr)
+    ccall((:ginkgo_matrix_csr_f64_i64_get_const_srow, libginkgo), Ptr{Int64}, (gko_matrix_csr_f64_i64,), mat_st_ptr)
+end
+
+function ginkgo_matrix_csr_f64_i64_apply(mat_st_ptr, alpha, x, beta, y)
+    ccall((:ginkgo_matrix_csr_f64_i64_apply, libginkgo), Cvoid, (gko_matrix_csr_f64_i64, gko_matrix_dense_f64, gko_matrix_dense_f64, gko_matrix_dense_f64, gko_matrix_dense_f64), mat_st_ptr, alpha, x, beta, y)
+end
+
+"""
+Struct containing the shared pointer to a ginkgo deferred factory parameter
+"""
+mutable struct gko_deferred_factory_parameter_st end
+
+"""
+Type of the pointer to the wrapped [`gko_deferred_factory_parameter_st`](@ref) struct
+"""
+const gko_deferred_factory_parameter = Ptr{gko_deferred_factory_parameter_st}
+
+"""
+    ginkgo_deferred_factory_parameter_delete(deferred_fac_param_st_ptr)
+
+Deallocates memory for the parameter used for preconditioner
+
+### Parameters
+* `deferred_fac_param_st_ptr`: Raw pointer to the shared pointer of the preconditioner parameter object to be deleted
+"""
+function ginkgo_deferred_factory_parameter_delete(deferred_fac_param_st_ptr)
+    ccall((:ginkgo_deferred_factory_parameter_delete, libginkgo), Cvoid, (gko_deferred_factory_parameter,), deferred_fac_param_st_ptr)
+end
+
+mutable struct gko_linop_st end
+
+const gko_linop = Ptr{gko_linop_st}
+
+function ginkgo_linop_delete(linop_st_ptr)
+    ccall((:ginkgo_linop_delete, libginkgo), Cvoid, (gko_linop,), linop_st_ptr)
+end
+
+function ginkgo_linop_apply(solver, b_st_ptr, x_st_ptr)
+    ccall((:ginkgo_linop_apply, libginkgo), Cvoid, (gko_linop, gko_linop, gko_linop), solver, b_st_ptr, x_st_ptr)
+end
+
+# no prototype is found for this function at c_api.h:575:32, please use with caution
+function ginkgo_preconditioner_none_create()
+    ccall((:ginkgo_preconditioner_none_create, libginkgo), gko_deferred_factory_parameter, ())
+end
+
+function ginkgo_preconditioner_jacobi_f64_i32_create(blocksize)
+    ccall((:ginkgo_preconditioner_jacobi_f64_i32_create, libginkgo), gko_deferred_factory_parameter, (Cint,), blocksize)
+end
+
+function ginkgo_linop_cg_preconditioned_f64_create(exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
+    ccall((:ginkgo_linop_cg_preconditioned_f64_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint), exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
+end
+
+function ginkgo_linop_gmres_preconditioned_f64_create(exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
+    ccall((:ginkgo_linop_gmres_preconditioned_f64_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint), exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
+end
+
+# no prototype is found for this function at c_api.h:601:6, please use with caution
 """
     ginkgo_version_get()
 

@@ -2,6 +2,8 @@ module Ginkgo
 
 ############################# EXTERNAL #################################
 using SparseArrays
+using SparseMatricesCSR
+using LinearAlgebra
 
 # Hide executors
 using ScopedValues; export with, @with
@@ -23,12 +25,13 @@ include("Configurations.jl")
 include("Type.jl")
 include("base/Array.jl")
 include("base/Executor.jl")
-# include("base/LinOp.jl")
 
 include("matrix/Dense.jl")
 include("matrix/Csr.jl")
 
-include("solver/CG.jl")
+# include("factorization/Factorization.jl")
+include("preconditioner/Preconditioner.jl")
+include("base/LinOp.jl")
 
 # Dummy value used by ScopedValues.jl for implicit executor usage
 const EXECUTOR = ScopedValue(GkoExecutor())
@@ -46,7 +49,14 @@ export
     GkoExecutor,
     GkoArray,  # minimal working
     GkoDense,
-    GkoCsr
+    GkoCsr,
+    GkoPreconditioner,
+    GkoNonePreconditioner,
+    GkoJacobiPreconditioner,
+    # GkoILUPreconditioner,
+    GkoLinOp  # for solver
+    # GkoFactorization,
+    # GkoParILUFactorization  # for factorization, also a type of linop
 
 export
     version, # binary version info
@@ -56,9 +66,11 @@ export
     norm1!,
     norm2!,
     nnz,
-    cg!,
-    spmm!
+    spmm!,
+    apply! # LinOp
     # axpby! # BLAS-like apply
 
+export
+    mmwrite
 
 end # module Ginkgo
