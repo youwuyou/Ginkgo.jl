@@ -1,4 +1,4 @@
-name: Develop CI using Local JLL
+name: Develop CI (Local JLL)
 on:
   push:
     branches:
