@@ -16,7 +16,7 @@ b = GkoDense{Tv}("data/b.mtx", exec)
 x = GkoDense{Tv}("data/x0.mtx", exec)
 
 # Use GMRES solver without preconditioning
-gmres = GkoLinOp(:gmres, A, exec; maxiter = 1000, reduction = 1.0e-7)
+gmres = GkoIterativeSolver(:gmres, A, exec; maxiter = 1000, reduction = 1.0e-7)
 
 # Solve system
 apply!(gmres, b, x)
@@ -29,7 +29,7 @@ neg_one = number(Tv(-1.0), exec)
 res     = number(Tv(0.0), exec)
 
 # x = one*A*b + neg_one*x
-spmm!(A, one, x, neg_one, b)
+spmv!(A, one, x, neg_one, b)
 
 norm2!(b, res)
 @info "Residual norm sqrt(r^T r):"

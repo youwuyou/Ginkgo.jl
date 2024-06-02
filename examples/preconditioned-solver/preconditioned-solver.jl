@@ -17,7 +17,7 @@ x = GkoDense{Tv}("data/x0.mtx", exec)
 
 # With Jacobi preconditioner, with blocksize = 8
 jacobi = GkoJacobiPreconditioner{Tv, Ti}(8)
-solver = GkoLinOp(:cg, A, exec; preconditioner =  jacobi, maxiter = 20, reduction = 1.0e-7)
+solver = GkoIterativeSolver(:cg, A, exec; preconditioner = jacobi, maxiter = 20, reduction = 1.0e-7)
 apply!(solver, b, x)
 
 @info "Solution (x):"
@@ -28,7 +28,7 @@ neg_one = number(Tv(-1.0), exec)
 res     = number(Tv(0.0), exec)
 
 # x = one*A*b + neg_one*x
-spmm!(A, one, x, neg_one, b)
+spmv!(A, one, x, neg_one, b)
 
 norm2!(b, res)
 @info "Residual norm sqrt(r^T r):"

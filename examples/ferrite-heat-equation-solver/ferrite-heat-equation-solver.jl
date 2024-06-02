@@ -97,7 +97,7 @@ if with_ginkgo
     u = Vector{Float64}(undef, length(f)); fill!(u, 0.0)
 
     # Use CG solver
-    solver = GkoLinOp(:cg, K, exec; maxiter = 20, reduction = 1.0e-7)
+    solver = GkoIterativeSolver(:cg, K, exec; maxiter = 20, reduction = 1.0e-7)
     Ginkgo.apply!(solver, f, u, exec)
 else
     u = K \ f

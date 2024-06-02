@@ -22,22 +22,19 @@ mutable struct GkoJacobiPreconditioner{Tv, Ti} <: GkoPreconditioner
     end
 end
 
-# mutable struct GkoILUPreconditioner{Tv, Ti} <: GkoPreconditioner
-#     ptr::Ptr{Cvoid}
-#     ############################# CONSTRUCTOR ####################################
-#     function GkoILUPreconditioner{Tv,Ti}(fact::GkoFactorization) where {Tv, Ti}
-#         function_name = Symbol("ginkgo_preconditioner_ilu_", gko_type(Tv), "_", gko_type(Ti), "_create")
-#         @info "Creating ILU preconditioner"
-#         ptr = eval(:($API.$function_name($fact.ptr)))
-#         finalizer(delete_preconditioner, new{Tv, Ti}(ptr))
-#     end
-# end
-
-# function ginkgo_preconditioner_ilu_f64_i32_create(A_st_ptr)
+mutable struct GkoILUPreconditioner{Tv, Ti} <: GkoPreconditioner
+    ptr::Ptr{Cvoid}
+    ############################# CONSTRUCTOR ####################################
+    function GkoILUPreconditioner{Tv,Ti}(fact::GkoFactorization) where {Tv, Ti}
+        function_name = Symbol("ginkgo_preconditioner_ilu_", gko_type(Tv), "_", gko_type(Ti), "_create")
+        @info "Creating ILU preconditioner"
+        ptr = eval(:($API.$function_name($fact.ptr)))
+        finalizer(delete_preconditioner, new{Tv, Ti}(ptr))
+    end
+end
 
 
 ################################# DESTRUCTOR ######################################
 function delete_preconditioner(precond::GkoPreconditioner)
-    @warn "Calling the destructor for GkoNonePreconditioner!"
     API.ginkgo_deferred_factory_parameter_delete(precond.ptr)
 end
