@@ -62,7 +62,6 @@ mutable struct GkoCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
 
     ############################# DESTRUCTOR ####################################
     function delete_csr_matrix(mat::GkoCsr{Tv,Ti}) where {Tv, Ti}
-        @warn "Calling the destructor for GkoCsr{$Tv,$Ti}!"
         function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_delete")
         eval(:($API.$function_name($mat.ptr)))
     end
@@ -163,10 +162,10 @@ end
 
 # LinOp
 """
-    spmm!(A::GkoCsr{Tv, Ti}, α::Dense{Tv}, x::Dense{Tv}, β::Dense{Tv}, y::Dense{Tv}) where {Tv, Ti}
+    spmv!(A::GkoCsr{Tv, Ti}, α::Dense{Tv}, x::Dense{Tv}, β::Dense{Tv}, y::Dense{Tv}) where {Tv, Ti}
 
-Applying to Dense matrices, computes an SpMM product. x = α*A*b + β*x.
+Applying to Dense matrices, computes an SPMV product. x = α*A*b + β*x.
 """
-function spmm!(A::GkoCsr{Tv, Ti}, α::GkoDense{Tv}, x::GkoDense{Tv}, β::GkoDense{Tv}, y::GkoDense{Tv}) where {Tv, Ti}
+function spmv!(A::GkoCsr{Tv, Ti}, α::GkoDense{Tv}, x::GkoDense{Tv}, β::GkoDense{Tv}, y::GkoDense{Tv}) where {Tv, Ti}
     API.ginkgo_matrix_csr_f32_i32_apply(A.ptr, α.ptr, x.ptr, β.ptr, y.ptr)
 end

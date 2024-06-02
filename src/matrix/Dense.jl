@@ -85,7 +85,6 @@ mutable struct GkoDense{T} <: AbstractMatrix{T}
 
     ############################# DESTRUCTOR ####################################
     function delete_dense_matrix(mat::GkoDense{T}) where T
-        @warn "Calling the destructor for GkoDense{$T}!"
         function_name = Symbol("ginkgo_matrix_dense_", gko_type(T), "_delete")
         eval(:($API.$function_name($mat.ptr)))
     end
