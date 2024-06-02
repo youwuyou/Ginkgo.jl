@@ -71,7 +71,13 @@ function create(executor_type::Symbol; device_id::Integer = 0)
     if executor_type == :reference || executor_type == :omp
         return GkoExecutor(executor_type)
     else
-        return GkoExecutor(executor_type, device_id = device_id)
+        # on GPU
+        num_device = get_num_devices(executor_type)
+        if num_device > 0
+            return GkoExecutor(executor_type, device_id = device_id)
+        else
+            throw(ArgumentError("No device available for $executor_type, num_device = $num_device"))
+        end
     end
 end
 
