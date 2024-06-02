@@ -1,5 +1,5 @@
 # gko::Executor
-const SUPPORTED_EXECUTOR_TYPE = [:omp, :reference, :cuda#=, :hip, :dpcpp=#]
+const SUPPORTED_EXECUTOR_TYPE = [:omp, :reference, :cuda, :hip, :dpcpp]
 
 """
     GkoExecutor
@@ -37,13 +37,17 @@ mutable struct GkoExecutor
         new(pointer_from_objref(array), executor_type)
     end    
 
-    function GkoExecutor(executor_type::Symbol)
+    function GkoExecutor(executor_type::Symbol; device_id::Integer = 0)
         executor_type in SUPPORTED_EXECUTOR_TYPE || throw(ArgumentError("unsupported executor type $executor_type"))
         # Calling ginkgo to initialize the array
         function_name = Symbol("ginkgo_executor_", executor_type, "_create")
         @info "Creating $executor_type executor"
 
-        ptr = eval(:($API.$function_name()))
+        if executor_type == :reference || executor_type == :omp
+            ptr = eval(:($API.$function_name()))            
+        else
+            ptr = eval(:($API.$function_name($device_id)))
+        end
         finalizer(delete_executor, new(ptr, executor_type))
     end
 
@@ -63,6 +67,19 @@ Creation of the executor of a specified executor type.
 # Parameters
 - `executor_type::Symbol`: One of the executor types to create out of supported executor types $SUPPORTED_EXECUTOR_TYPE
 """
-function create(executor_type::Symbol)
-    return GkoExecutor(executor_type)
+function create(executor_type::Symbol; device_id::Integer = 0)
+    if executor_type == :reference || executor_type == :omp
+        return GkoExecutor(executor_type)
+    else
+        return GkoExecutor(executor_type, device_id = device_id)
+    end
+end
+
+function get_num_devices(executor_type::Symbol)
+    if executor_type == :cuda || executor_type == :hip || executor_type == :dpcpp
+        function_name = Symbol("ginkgo_executor_", executor_type, "_get_num_devices")
+        eval(:($API.$function_name()))
+    else
+        throw(ArgumentError("unsupported executor type $executor_type"))
+    end
 end

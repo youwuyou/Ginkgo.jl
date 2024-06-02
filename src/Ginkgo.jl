@@ -29,7 +29,7 @@ include("base/Executor.jl")
 include("matrix/Dense.jl")
 include("matrix/Csr.jl")
 
-# include("factorization/Factorization.jl")
+include("factorization/Factorization.jl")
 include("preconditioner/Preconditioner.jl")
 include("base/LinOp.jl")
 
@@ -53,20 +53,23 @@ export
     GkoPreconditioner,
     GkoNonePreconditioner,
     GkoJacobiPreconditioner,
-    # GkoILUPreconditioner,
-    GkoLinOp  # for solver
-    # GkoFactorization,
-    # GkoParILUFactorization  # for factorization, also a type of linop
+    GkoILUPreconditioner,
+    GkoLinOp,           # Abstract type for solvers
+    GkoDirectSolver,    # for direct solver
+    GkoIterativeSolver, # for iterative solver
+    GkoFactorization,
+    GkoParILUFactorization  # for factorization, also a type of linop
 
 export
     version, # binary version info
     create,  # executor
+    get_num_devices, # executor
     number,  # create 1x1 matrix
     elements,
     norm1!,
     norm2!,
     nnz,
-    spmm!,
+    spmv!,
     apply! # LinOp
     # axpby! # BLAS-like apply
 
