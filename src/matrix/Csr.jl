@@ -116,7 +116,7 @@ function rowptr(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
 
     # Use unsafe_wrap to create a Julia array that references the C array without copying.
     # The Julia array will be automatically garbage collected when it goes out of scope.
-    unsafe_wrap(Vector{Ti}, row_ptrs_raw_ptr, num_entries) .+ 1 # Julia indexing
+    unsafe_wrap(Vector{Ti}, row_ptrs_raw_ptr, num_entries) .+ Ti(1) # Julia indexing
 end
 
 """
@@ -128,7 +128,7 @@ function colvals(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
     function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_col_idxs")
     col_idxs_raw_ptr = eval(:($API.$function_name($mat.ptr)))
     num_elem         = get_nnz(mat)
-    unsafe_wrap(Vector{Ti}, col_idxs_raw_ptr, num_elem) .+ 1
+    unsafe_wrap(Vector{Ti}, col_idxs_raw_ptr, num_elem) .+ Ti(1)
 end
 
 """
