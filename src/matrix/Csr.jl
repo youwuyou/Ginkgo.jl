@@ -1,6 +1,6 @@
 # gko::matrix::Csr<double, int>
 SUPPORTED_CSR_ELTYPE    = [Float32, Float64]
-SUPPORTED_CSR_INDEXTYPE = [Int32, Int64]
+SUPPORTED_CSR_INDEXTYPE = [Int32#=, Int64=#]
 
 """
     GkoCsr{Tv, Ti} <: AbstractMatrix{Tv, Ti}
