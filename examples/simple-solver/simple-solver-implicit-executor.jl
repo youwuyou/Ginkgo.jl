@@ -27,7 +27,7 @@ with(EXECUTOR => exec) do
   res     = number(Tv(0.0))
 
   # x = one*A*b + neg_one*x
-  spmv!(A, one, x, neg_one, b)
+  apply!(A, one, x, neg_one, b)
   
   norm2!(b, res)
   @info "Residual norm sqrt(r^T r):"
