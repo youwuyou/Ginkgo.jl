@@ -95,12 +95,12 @@ function ginkgo_executor_delete(exec_st_ptr)
     ccall((:ginkgo_executor_delete, libginkgo), Cvoid, (gko_executor,), exec_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:498:14, please use with caution
+# no prototype is found for this function at c_api.h:500:14, please use with caution
 function ginkgo_executor_omp_create()
     ccall((:ginkgo_executor_omp_create, libginkgo), gko_executor, ())
 end
 
-# no prototype is found for this function at c_api.h:499:14, please use with caution
+# no prototype is found for this function at c_api.h:501:14, please use with caution
 function ginkgo_executor_reference_create()
     ccall((:ginkgo_executor_reference_create, libginkgo), gko_executor, ())
 end
@@ -117,19 +117,83 @@ function ginkgo_executor_dpcpp_create(device_id)
     ccall((:ginkgo_executor_dpcpp_create, libginkgo), gko_executor, (Csize_t,), device_id)
 end
 
-# no prototype is found for this function at c_api.h:503:8, please use with caution
+# no prototype is found for this function at c_api.h:505:8, please use with caution
 function ginkgo_executor_cuda_get_num_devices()
     ccall((:ginkgo_executor_cuda_get_num_devices, libginkgo), Csize_t, ())
 end
 
-# no prototype is found for this function at c_api.h:504:8, please use with caution
+# no prototype is found for this function at c_api.h:506:8, please use with caution
 function ginkgo_executor_hip_get_num_devices()
     ccall((:ginkgo_executor_hip_get_num_devices, libginkgo), Csize_t, ())
 end
 
-# no prototype is found for this function at c_api.h:505:8, please use with caution
+# no prototype is found for this function at c_api.h:507:8, please use with caution
 function ginkgo_executor_dpcpp_get_num_devices()
     ccall((:ginkgo_executor_dpcpp_get_num_devices, libginkgo), Csize_t, ())
+end
+
+function ginkgo_executor_get_master(exec_st_ptr)
+    ccall((:ginkgo_executor_get_master, libginkgo), gko_executor, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_memory_accessible(exec_st_ptr, other_exec_st_ptr)
+    ccall((:ginkgo_executor_memory_accessible, libginkgo), Bool, (gko_executor, gko_executor), exec_st_ptr, other_exec_st_ptr)
+end
+
+function ginkgo_executor_synchronize(exec_st_ptr)
+    ccall((:ginkgo_executor_synchronize, libginkgo), Cvoid, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_cpu_get_num_cores(exec_st_ptr)
+    ccall((:ginkgo_executor_cpu_get_num_cores, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_cpu_get_num_threads_per_core(exec_st_ptr)
+    ccall((:ginkgo_executor_cpu_get_num_threads_per_core, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_gpu_thread_get_num_multiprocessor(exec_st_ptr)
+    ccall((:ginkgo_executor_gpu_thread_get_num_multiprocessor, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_gpu_thread_get_device_id(exec_st_ptr)
+    ccall((:ginkgo_executor_gpu_thread_get_device_id, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_gpu_thread_get_num_warps_per_sm(exec_st_ptr)
+    ccall((:ginkgo_executor_gpu_thread_get_num_warps_per_sm, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_gpu_thread_get_num_warps(exec_st_ptr)
+    ccall((:ginkgo_executor_gpu_thread_get_num_warps, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_gpu_thread_get_warp_size(exec_st_ptr)
+    ccall((:ginkgo_executor_gpu_thread_get_warp_size, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_gpu_thread_get_major_version(exec_st_ptr)
+    ccall((:ginkgo_executor_gpu_thread_get_major_version, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_gpu_thread_get_minor_version(exec_st_ptr)
+    ccall((:ginkgo_executor_gpu_thread_get_minor_version, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_gpu_thread_get_closest_numa(exec_st_ptr)
+    ccall((:ginkgo_executor_gpu_thread_get_closest_numa, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_gpu_item_get_max_subgroup_size(exec_st_ptr)
+    ccall((:ginkgo_executor_gpu_item_get_max_subgroup_size, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_gpu_item_get_max_workgroup_size(exec_st_ptr)
+    ccall((:ginkgo_executor_gpu_item_get_max_workgroup_size, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
+end
+
+function ginkgo_executor_gpu_item_get_num_computing_units(exec_st_ptr)
+    ccall((:ginkgo_executor_gpu_item_get_num_computing_units, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
 end
 
 mutable struct gko_array_i16_st end
@@ -618,7 +682,7 @@ function ginkgo_linop_apply(solver, b_st_ptr, x_st_ptr)
     ccall((:ginkgo_linop_apply, libginkgo), Cvoid, (gko_linop, gko_linop, gko_linop), solver, b_st_ptr, x_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:579:32, please use with caution
+# no prototype is found for this function at c_api.h:609:32, please use with caution
 function ginkgo_preconditioner_none_create()
     ccall((:ginkgo_preconditioner_none_create, libginkgo), gko_deferred_factory_parameter, ())
 end
@@ -632,7 +696,7 @@ function ginkgo_preconditioner_ilu_f64_i32_create(dfp_st_ptr)
 end
 
 function ginkgo_factorization_parilu_f64_i32_create(iteration, skip_sorting)
-    ccall((:ginkgo_factorization_parilu_f64_i32_create, libginkgo), gko_deferred_factory_parameter, (Cint, Cint), iteration, skip_sorting)
+    ccall((:ginkgo_factorization_parilu_f64_i32_create, libginkgo), gko_deferred_factory_parameter, (Cint, Bool), iteration, skip_sorting)
 end
 
 function ginkgo_linop_cg_preconditioned_f64_create(exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
@@ -651,7 +715,15 @@ function ginkgo_linop_lu_direct_f64_i64_create(exec_st_ptr, A_st_ptr)
     ccall((:ginkgo_linop_lu_direct_f64_i64_create, libginkgo), gko_linop, (gko_executor, gko_linop), exec_st_ptr, A_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:623:6, please use with caution
+function ginkgo_linop_lu_direct_f64_i32_create(exec_st_ptr, A_st_ptr)
+    ccall((:ginkgo_linop_lu_direct_f64_i32_create, libginkgo), gko_linop, (gko_executor, gko_linop), exec_st_ptr, A_st_ptr)
+end
+
+function ginkgo_linop_lu_direct_f32_i32_create(exec_st_ptr, A_st_ptr)
+    ccall((:ginkgo_linop_lu_direct_f32_i32_create, libginkgo), gko_linop, (gko_executor, gko_linop), exec_st_ptr, A_st_ptr)
+end
+
+# no prototype is found for this function at c_api.h:657:6, please use with caution
 """
     ginkgo_version_get()
 

@@ -34,7 +34,7 @@ include("preconditioner/Preconditioner.jl")
 include("base/LinOp.jl")
 
 # Dummy value used by ScopedValues.jl for implicit executor usage
-const EXECUTOR = ScopedValue(GkoExecutor())
+EXECUTOR = ScopedValue(GkoScopedExecutor())
 export EXECUTOR
 
 # Export supported types for Ginkgo.jl
@@ -47,6 +47,18 @@ export
 # Export types
 export
     GkoExecutor,
+    GkoCPUExecutor,
+    GkoGPUExecutor,
+    GkoGPUThreadExecutor,
+    GkoGPUItemExecutor,
+    GkoCUDAHIPExecutor,
+    # Concrete executor types
+    GkoScopedExecutor,
+    GkoOMPExecutor,
+    GkoReferenceExecutor,
+    GkoCUDAExecutor,
+    GkoHIPExecutor,
+    GkoDPCPPExecutor,
     GkoArray,  # minimal working
     GkoDense,
     GkoCsr,
@@ -62,15 +74,32 @@ export
 
 export
     version, # binary version info
-    create,  # executor
+
+    # Executor
+    create,
     get_num_devices, # executor
+
+    # Thread-based executors only
+    get_num_multiprocessor,
+    get_device_id,
+    get_num_warps_per_sm,
+    get_num_warps,
+    get_warp_size,
+    get_major_version,
+    get_minor_version,
+    get_closest_numa,
+
+    # Item-based executors only
+    get_max_subgroup_size,
+    get_max_workgroup_size,
+    get_num_computing_units,
+
     number,  # create 1x1 matrix
     elements,
     norm1!,
     norm2!,
     nnz,
-    spmv!,
-    apply! # LinOp
+    apply!
     # axpby! # BLAS-like apply
 
 export
