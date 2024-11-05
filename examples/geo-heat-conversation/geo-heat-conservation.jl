@@ -161,6 +161,10 @@ function heat_conservation()
             # Use sparse direct
             solver = GkoDirectSolver(:lu_direct, sparse(L), exec)
             @time Ginkgo.apply!(solver, vec(R), S, exec)
+           
+            # Use GMRES solver without preconditioning
+            # gmres = GkoIterativeSolver(:gmres, sparse(L), exec; maxiter = 100, reduction = 1.0e-16)
+            # @time apply!(gmres, vec(R), S, exec)
         else
             @time S = sparse(L) \ R
         end
