@@ -40,15 +40,25 @@ function c_char_ptr_free(ptr)
     ccall((:c_char_ptr_free, libginkgo), Cvoid, (Ptr{Cchar},), ptr)
 end
 
+# no prototype is found for this function at c_api.h:444:6, please use with caution
+"""
+    ginkgo_version_get()
+
+This function is a wrapper for obtaining the version of the ginkgo library
+"""
+function ginkgo_version_get()
+    ccall((:ginkgo_version_get, libginkgo), Cvoid, ())
+end
+
 """
     ginkgo_dim2_create(rows, cols)
 
 Allocates memory for a C-based reimplementation of the gko::dim<2> type
 
-### Parameters
+# Arguments
 * `rows`: First dimension
 * `cols`: Second dimension
-### Returns
+# Returns
 [`gko_dim2_st`](@ref) C struct that contains members of the gko::dim<2> type
 """
 function ginkgo_dim2_create(rows, cols)
@@ -60,9 +70,9 @@ end
 
 Obtains the value of the first element of a gko::dim<2> type
 
-### Parameters
+# Arguments
 * `dim`: An object of [`gko_dim2_st`](@ref) type
-### Returns
+# Returns
 size\\_t First dimension
 """
 function ginkgo_dim2_rows_get(dim)
@@ -74,9 +84,9 @@ end
 
 Obtains the value of the second element of a gko::dim<2> type
 
-### Parameters
+# Arguments
 * `dim`: An object of [`gko_dim2_st`](@ref) type
-### Returns
+# Returns
 size\\_t Second dimension
 """
 function ginkgo_dim2_cols_get(dim)
@@ -88,110 +98,340 @@ end
 
 Deallocates memory for an executor on targeted device.
 
-### Parameters
+# Arguments
 * `exec_st_ptr`: Raw pointer to the shared pointer of the executor to be deleted
 """
 function ginkgo_executor_delete(exec_st_ptr)
     ccall((:ginkgo_executor_delete, libginkgo), Cvoid, (gko_executor,), exec_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:500:14, please use with caution
-function ginkgo_executor_omp_create()
-    ccall((:ginkgo_executor_omp_create, libginkgo), gko_executor, ())
-end
+"""
+    ginkgo_executor_get_master(exec_st_ptr)
 
-# no prototype is found for this function at c_api.h:501:14, please use with caution
-function ginkgo_executor_reference_create()
-    ccall((:ginkgo_executor_reference_create, libginkgo), gko_executor, ())
-end
+Returns the master OmpExecutor of this Executor.
 
-function ginkgo_executor_cuda_create(device_id)
-    ccall((:ginkgo_executor_cuda_create, libginkgo), gko_executor, (Csize_t,), device_id)
-end
-
-function ginkgo_executor_hip_create(device_id)
-    ccall((:ginkgo_executor_hip_create, libginkgo), gko_executor, (Csize_t,), device_id)
-end
-
-function ginkgo_executor_dpcpp_create(device_id)
-    ccall((:ginkgo_executor_dpcpp_create, libginkgo), gko_executor, (Csize_t,), device_id)
-end
-
-# no prototype is found for this function at c_api.h:505:8, please use with caution
-function ginkgo_executor_cuda_get_num_devices()
-    ccall((:ginkgo_executor_cuda_get_num_devices, libginkgo), Csize_t, ())
-end
-
-# no prototype is found for this function at c_api.h:506:8, please use with caution
-function ginkgo_executor_hip_get_num_devices()
-    ccall((:ginkgo_executor_hip_get_num_devices, libginkgo), Csize_t, ())
-end
-
-# no prototype is found for this function at c_api.h:507:8, please use with caution
-function ginkgo_executor_dpcpp_get_num_devices()
-    ccall((:ginkgo_executor_dpcpp_get_num_devices, libginkgo), Csize_t, ())
-end
-
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the current executor
+# Returns
+[`gko_executor`](@ref) Raw pointer to the shared pointer of the master executor
+"""
 function ginkgo_executor_get_master(exec_st_ptr)
     ccall((:ginkgo_executor_get_master, libginkgo), gko_executor, (gko_executor,), exec_st_ptr)
 end
 
+"""
+    ginkgo_executor_memory_accessible(exec_st_ptr, other_exec_st_ptr)
+
+Verifies whether the executors share the same memory.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the current executor
+* `other_exec_st_ptr`: Raw pointer to the shared pointer of the other executor
+"""
 function ginkgo_executor_memory_accessible(exec_st_ptr, other_exec_st_ptr)
     ccall((:ginkgo_executor_memory_accessible, libginkgo), Bool, (gko_executor, gko_executor), exec_st_ptr, other_exec_st_ptr)
 end
 
+"""
+    ginkgo_executor_synchronize(exec_st_ptr)
+
+Synchronize the operations launched on the executor with its master.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the current executor
+"""
 function ginkgo_executor_synchronize(exec_st_ptr)
     ccall((:ginkgo_executor_synchronize, libginkgo), Cvoid, (gko_executor,), exec_st_ptr)
 end
 
+# no prototype is found for this function at c_api.h:539:14, please use with caution
+"""
+    ginkgo_executor_omp_create()
+
+Create an OMP executor
+
+# Returns
+[`gko_executor`](@ref) Raw pointer to the shared pointer of the OMP executor created
+"""
+function ginkgo_executor_omp_create()
+    ccall((:ginkgo_executor_omp_create, libginkgo), gko_executor, ())
+end
+
+# no prototype is found for this function at c_api.h:547:14, please use with caution
+"""
+    ginkgo_executor_reference_create()
+
+Create a reference executor
+
+# Returns
+[`gko_executor`](@ref) Raw pointer to the shared pointer of the reference executor created
+"""
+function ginkgo_executor_reference_create()
+    ccall((:ginkgo_executor_reference_create, libginkgo), gko_executor, ())
+end
+
+"""
+    ginkgo_executor_cpu_get_num_cores(exec_st_ptr)
+
+Get the number of cores of the CPU associated to this executor.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the executor
+# Returns
+size\\_t No. of cores
+"""
 function ginkgo_executor_cpu_get_num_cores(exec_st_ptr)
     ccall((:ginkgo_executor_cpu_get_num_cores, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
 end
 
+"""
+    ginkgo_executor_cpu_get_num_threads_per_core(exec_st_ptr)
+
+Get the number of threads per core of the CPU associated to this executor.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the executor
+# Returns
+size\\_t No. of threads per core
+"""
 function ginkgo_executor_cpu_get_num_threads_per_core(exec_st_ptr)
     ccall((:ginkgo_executor_cpu_get_num_threads_per_core, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
 end
 
+"""
+    ginkgo_executor_gpu_get_device_id(exec_st_ptr)
+
+Get the device id of the device associated to this executor.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the executor
+# Returns
+size\\_t Device id
+"""
+function ginkgo_executor_gpu_get_device_id(exec_st_ptr)
+    ccall((:ginkgo_executor_gpu_get_device_id, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
+end
+
+"""
+    ginkgo_executor_cuda_create(device_id, exec_st_ptr)
+
+Create a CUDA executor
+
+# Arguments
+* `device_id`: Device id
+* `exec_st_ptr`: Raw pointer to the shared pointer of the master executor
+# Returns
+[`gko_executor`](@ref) Raw pointer to the shared pointer of the CUDA executor created
+"""
+function ginkgo_executor_cuda_create(device_id, exec_st_ptr)
+    ccall((:ginkgo_executor_cuda_create, libginkgo), gko_executor, (Csize_t, gko_executor), device_id, exec_st_ptr)
+end
+
+# no prototype is found for this function at c_api.h:592:8, please use with caution
+"""
+    ginkgo_executor_cuda_get_num_devices()
+
+Get the number of devices of this CUDA executor.
+
+# Returns
+size\\_t No. of devices
+"""
+function ginkgo_executor_cuda_get_num_devices()
+    ccall((:ginkgo_executor_cuda_get_num_devices, libginkgo), Csize_t, ())
+end
+
+"""
+    ginkgo_executor_hip_create(device_id, exec_st_ptr)
+
+Create a HIP executor
+
+# Arguments
+* `device_id`: Device id
+* `exec_st_ptr`: Raw pointer to the shared pointer of the master executor
+# Returns
+[`gko_executor`](@ref) Raw pointer to the shared pointer of the HIP executor created
+"""
+function ginkgo_executor_hip_create(device_id, exec_st_ptr)
+    ccall((:ginkgo_executor_hip_create, libginkgo), gko_executor, (Csize_t, gko_executor), device_id, exec_st_ptr)
+end
+
+# no prototype is found for this function at c_api.h:610:8, please use with caution
+"""
+    ginkgo_executor_hip_get_num_devices()
+
+Get the number of devices of this HIP executor.
+
+# Returns
+size\\_t No. of devices
+"""
+function ginkgo_executor_hip_get_num_devices()
+    ccall((:ginkgo_executor_hip_get_num_devices, libginkgo), Csize_t, ())
+end
+
+"""
+    ginkgo_executor_gpu_thread_get_num_multiprocessor(exec_st_ptr)
+
+Get the number of multiprocessors of this thread-based executor.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the thread-based executor
+# Returns
+size\\_t No. multiprocessors
+"""
 function ginkgo_executor_gpu_thread_get_num_multiprocessor(exec_st_ptr)
     ccall((:ginkgo_executor_gpu_thread_get_num_multiprocessor, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
 end
 
-function ginkgo_executor_gpu_thread_get_device_id(exec_st_ptr)
-    ccall((:ginkgo_executor_gpu_thread_get_device_id, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
-end
+"""
+    ginkgo_executor_gpu_thread_get_num_warps_per_sm(exec_st_ptr)
 
+Get the number of warps per SM of this thread-based executor.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the thread-based executor
+# Returns
+size\\_t No. of warps per SM
+"""
 function ginkgo_executor_gpu_thread_get_num_warps_per_sm(exec_st_ptr)
     ccall((:ginkgo_executor_gpu_thread_get_num_warps_per_sm, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
 end
 
+"""
+    ginkgo_executor_gpu_thread_get_num_warps(exec_st_ptr)
+
+Get the number of warps of this thread-based executor.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the thread-based executor
+# Returns
+size\\_t No. of warps
+"""
 function ginkgo_executor_gpu_thread_get_num_warps(exec_st_ptr)
     ccall((:ginkgo_executor_gpu_thread_get_num_warps, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
 end
 
+"""
+    ginkgo_executor_gpu_thread_get_warp_size(exec_st_ptr)
+
+Get the warp size of this thread-based executor.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the thread-based executor
+# Returns
+size\\_t The warp size of this executor
+"""
 function ginkgo_executor_gpu_thread_get_warp_size(exec_st_ptr)
     ccall((:ginkgo_executor_gpu_thread_get_warp_size, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
 end
 
+"""
+    ginkgo_executor_gpu_thread_get_major_version(exec_st_ptr)
+
+Get the major version of compute capability.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the thread-based executor
+# Returns
+size\\_t The major version of compute capability
+"""
 function ginkgo_executor_gpu_thread_get_major_version(exec_st_ptr)
     ccall((:ginkgo_executor_gpu_thread_get_major_version, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
 end
 
+"""
+    ginkgo_executor_gpu_thread_get_minor_version(exec_st_ptr)
+
+Get the minor version of compute capability.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the thread-based executor
+# Returns
+size\\_t The minor version of compute capability
+"""
 function ginkgo_executor_gpu_thread_get_minor_version(exec_st_ptr)
     ccall((:ginkgo_executor_gpu_thread_get_minor_version, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
 end
 
+"""
+    ginkgo_executor_gpu_thread_get_closest_numa(exec_st_ptr)
+
+Get the closest NUMA node.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the thread-based executor
+# Returns
+size\\_t No. of the closest NUMA node
+"""
 function ginkgo_executor_gpu_thread_get_closest_numa(exec_st_ptr)
     ccall((:ginkgo_executor_gpu_thread_get_closest_numa, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
 end
 
+"""
+    ginkgo_executor_dpcpp_create(device_id, exec_st_ptr)
+
+Create a DPCPP executor
+
+# Arguments
+* `device_id`: Device id
+* `exec_st_ptr`: Raw pointer to the shared pointer of the master executor
+# Returns
+[`gko_executor`](@ref) Raw pointer to the shared pointer of the DPCPP executor created
+"""
+function ginkgo_executor_dpcpp_create(device_id, exec_st_ptr)
+    ccall((:ginkgo_executor_dpcpp_create, libginkgo), gko_executor, (Csize_t, gko_executor), device_id, exec_st_ptr)
+end
+
+# no prototype is found for this function at c_api.h:695:8, please use with caution
+"""
+    ginkgo_executor_dpcpp_get_num_devices()
+
+Get the number of devices of this DPCPP executor.
+
+# Returns
+size\\_t No. of devices
+"""
+function ginkgo_executor_dpcpp_get_num_devices()
+    ccall((:ginkgo_executor_dpcpp_get_num_devices, libginkgo), Csize_t, ())
+end
+
+"""
+    ginkgo_executor_gpu_item_get_max_subgroup_size(exec_st_ptr)
+
+Get the number of subgroups of this item-based executor.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the item-based executor
+# Returns
+size\\_t No. of subgroups
+"""
 function ginkgo_executor_gpu_item_get_max_subgroup_size(exec_st_ptr)
     ccall((:ginkgo_executor_gpu_item_get_max_subgroup_size, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
 end
 
+"""
+    ginkgo_executor_gpu_item_get_max_workgroup_size(exec_st_ptr)
+
+Get the number of workgroups of this item-based executor.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the item-based executor
+# Returns
+size\\_t No. of workgroups
+"""
 function ginkgo_executor_gpu_item_get_max_workgroup_size(exec_st_ptr)
     ccall((:ginkgo_executor_gpu_item_get_max_workgroup_size, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
 end
 
+"""
+    ginkgo_executor_gpu_item_get_num_computing_units(exec_st_ptr)
+
+Get the number of computing units of this item-based executor.
+
+# Arguments
+* `exec_st_ptr`: Raw pointer to the shared pointer of the item-based executor
+# Returns
+size\\_t No. of computing units
+"""
 function ginkgo_executor_gpu_item_get_num_computing_units(exec_st_ptr)
     ccall((:ginkgo_executor_gpu_item_get_num_computing_units, libginkgo), Csize_t, (gko_executor,), exec_st_ptr)
 end
@@ -659,30 +899,26 @@ Type of the pointer to the wrapped [`gko_deferred_factory_parameter_st`](@ref) s
 const gko_deferred_factory_parameter = Ptr{gko_deferred_factory_parameter_st}
 
 """
-    ginkgo_deferred_factory_parameter_delete(deferred_fac_param_st_ptr)
+    ginkgo_deferred_factory_parameter_delete(dfp_st_ptr)
 
-Deallocates memory for the parameter used for preconditioner
+Deallocates memory for a ginkgo deferred factory parameter object.
 
-### Parameters
-* `deferred_fac_param_st_ptr`: Raw pointer to the shared pointer of the preconditioner parameter object to be deleted
+# Arguments
+* `dfp_st_ptr`: Raw pointer to the shared pointer of the deferred factory parameter object to be deleted
 """
-function ginkgo_deferred_factory_parameter_delete(deferred_fac_param_st_ptr)
-    ccall((:ginkgo_deferred_factory_parameter_delete, libginkgo), Cvoid, (gko_deferred_factory_parameter,), deferred_fac_param_st_ptr)
+function ginkgo_deferred_factory_parameter_delete(dfp_st_ptr)
+    ccall((:ginkgo_deferred_factory_parameter_delete, libginkgo), Cvoid, (gko_deferred_factory_parameter,), dfp_st_ptr)
 end
 
-mutable struct gko_linop_st end
+# no prototype is found for this function at c_api.h:780:32, please use with caution
+"""
+    ginkgo_preconditioner_none_create()
 
-const gko_linop = Ptr{gko_linop_st}
+Create a deferred factory parameter for an empty preconditioner
 
-function ginkgo_linop_delete(linop_st_ptr)
-    ccall((:ginkgo_linop_delete, libginkgo), Cvoid, (gko_linop,), linop_st_ptr)
-end
-
-function ginkgo_linop_apply(solver, b_st_ptr, x_st_ptr)
-    ccall((:ginkgo_linop_apply, libginkgo), Cvoid, (gko_linop, gko_linop, gko_linop), solver, b_st_ptr, x_st_ptr)
-end
-
-# no prototype is found for this function at c_api.h:609:32, please use with caution
+# Returns
+[`gko_deferred_factory_parameter`](@ref) Raw pointer to the shared pointer of the none preconditioner created
+"""
 function ginkgo_preconditioner_none_create()
     ccall((:ginkgo_preconditioner_none_create, libginkgo), gko_deferred_factory_parameter, ())
 end
@@ -697,6 +933,18 @@ end
 
 function ginkgo_factorization_parilu_f64_i32_create(iteration, skip_sorting)
     ccall((:ginkgo_factorization_parilu_f64_i32_create, libginkgo), gko_deferred_factory_parameter, (Cint, Bool), iteration, skip_sorting)
+end
+
+mutable struct gko_linop_st end
+
+const gko_linop = Ptr{gko_linop_st}
+
+function ginkgo_linop_delete(linop_st_ptr)
+    ccall((:ginkgo_linop_delete, libginkgo), Cvoid, (gko_linop,), linop_st_ptr)
+end
+
+function ginkgo_linop_apply(A_st_ptr, b_st_ptr, x_st_ptr)
+    ccall((:ginkgo_linop_apply, libginkgo), Cvoid, (gko_linop, gko_linop, gko_linop), A_st_ptr, b_st_ptr, x_st_ptr)
 end
 
 function ginkgo_linop_cg_preconditioned_f64_create(exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
@@ -721,16 +969,6 @@ end
 
 function ginkgo_linop_lu_direct_f32_i32_create(exec_st_ptr, A_st_ptr)
     ccall((:ginkgo_linop_lu_direct_f32_i32_create, libginkgo), gko_linop, (gko_executor, gko_linop), exec_st_ptr, A_st_ptr)
-end
-
-# no prototype is found for this function at c_api.h:657:6, please use with caution
-"""
-    ginkgo_version_get()
-
-This function is a wrapper for obtaining the version of the ginkgo library
-"""
-function ginkgo_version_get()
-    ccall((:ginkgo_version_get, libginkgo), Cvoid, ())
 end
 
 # exports

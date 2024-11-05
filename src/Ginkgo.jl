@@ -77,9 +77,15 @@ export
 
     # Executor
     create,
+    
+    # CPU executors only
+    get_num_cores,
+    get_num_threads_per_core,
+            
+    # GPU executors only
     get_num_devices, # executor
-
-    # Thread-based executors only
+    
+    ## Thread-based GPU executors only
     get_num_multiprocessor,
     get_device_id,
     get_num_warps_per_sm,
@@ -89,7 +95,7 @@ export
     get_minor_version,
     get_closest_numa,
 
-    # Item-based executors only
+    ## Item-based GPU executors only
     get_max_subgroup_size,
     get_max_workgroup_size,
     get_num_computing_units,

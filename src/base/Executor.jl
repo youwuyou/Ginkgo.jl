@@ -105,9 +105,9 @@ Concrete executor type for CUDA execution.
 """
 mutable struct GkoCUDAExecutor <: GkoGPUThreadExecutor
     ptr::Ptr{Cvoid}
-    function GkoCUDAExecutor(device_id::Integer)
+    function GkoCUDAExecutor(device_id::Integer, master::GkoCPUExecutor)
         @info "Creating CUDA executor"
-        ptr = API.ginkgo_executor_cuda_create(device_id)
+        ptr = API.ginkgo_executor_cuda_create(device_id, master.ptr)
         finalizer(delete_executor, new(ptr))
     end
 end
@@ -119,9 +119,9 @@ Concrete executor type for HIP execution.
 """
 mutable struct GkoHIPExecutor <: GkoGPUThreadExecutor
     ptr::Ptr{Cvoid}
-    function GkoHIPExecutor(device_id::Integer)
+    function GkoHIPExecutor(device_id::Integer, master::GkoCPUExecutor)
         @info "Creating HIP executor"
-        ptr = API.ginkgo_executor_hip_create(device_id)
+        ptr = API.ginkgo_executor_hip_create(device_id, master.ptr)
         finalizer(delete_executor, new(ptr))
     end    
 end
@@ -133,9 +133,9 @@ Concrete executor type for DPCPP execution.
 """
 mutable struct GkoDPCPPExecutor <: GkoGPUItemExecutor
     ptr::Ptr{Cvoid}
-    function GkoDPCPPExecutor(device_id::Integer)
+    function GkoDPCPPExecutor(device_id::Integer, master::GkoCPUExecutor)
         @info "Creating DPCPP executor"
-        ptr = API.ginkgo_executor_dpcpp_create(device_id)
+        ptr = API.ginkgo_executor_dpcpp_create(device_id, master.ptr)
         finalizer(delete_executor, new(ptr))
     end        
 end
@@ -169,7 +169,7 @@ Creation of the executor of a specified executor type.
 # Parameters
 - `executor_type::Symbol`: One of the executor types to create out of supported executor types $SUPPORTED_EXECUTOR_TYPE
 """
-function create(executor_type::Symbol; device_id::Integer = 0)
+function create(executor_type::Symbol; device_id::Integer = 0, master::GkoCPUExecutor = GkoOMPExecutor())
     if executor_type == :reference
         return GkoReferenceExecutor()
 
@@ -177,15 +177,24 @@ function create(executor_type::Symbol; device_id::Integer = 0)
         return GkoOMPExecutor()
 
     elseif executor_type == :cuda
-        return GkoCUDAExecutor(device_id)
+        return GkoCUDAExecutor(device_id, master)
 
     elseif executor_type == :hip
-        return GkoHIPExecutor(device_id)
+        return GkoHIPExecutor(device_id, master)
 
     elseif executor_type == :dpcpp
-        return GkoDPCPPExecutor(device_id)
+        return GkoDPCPPExecutor(device_id, master)
     end
 end
+
+
+# Getters for all CPU executors
+get_num_cores(exec::GkoCPUExecutor) = Int32(API.ginkgo_executor_cpu_get_num_cores(exec.ptr))
+get_num_threads_per_core(exec::GkoCPUExecutor) = Int32(API.ginkgo_executor_cpu_get_num_threads_per_core(exec.ptr))
+
+# Getters for all GPU executors
+
+get_device_id(exec::GkoGPUExecutor) = Int32(API.ginkgo_executor_gpu_get_device_id(exec.ptr))
 
 get_num_devices(::GkoCUDAExecutor) = Int32(API.ginkgo_executor_cuda_get_num_devices())
 get_num_devices(::GkoHIPExecutor) = Int32(API.ginkgo_executor_hip_get_num_devices())
@@ -194,7 +203,6 @@ get_num_devices(::GkoDPCPPExecutor) = Int32(API.ginkgo_executor_dpcpp_get_num_de
 # Getters for GkoGPUThreadExecutor (CUDA, HIP)
 
 get_num_multiprocessor(exec::GkoGPUThreadExecutor) = Int32(API.ginkgo_executor_gpu_thread_get_num_multiprocessor(exec.ptr))
-get_device_id(exec::GkoGPUThreadExecutor) = Int32(API.ginkgo_executor_gpu_thread_get_device_id(exec.ptr))
 get_num_warps_per_sm(exec::GkoGPUThreadExecutor) = Int32(API.ginkgo_executor_gpu_thread_get_num_warps_per_sm(exec.ptr))
 get_num_warps(exec::GkoGPUThreadExecutor) = Int32(API.ginkgo_executor_gpu_thread_get_num_warps(exec.ptr))
 get_warp_size(exec::GkoGPUThreadExecutor) = Int32(API.ginkgo_executor_gpu_thread_get_warp_size(exec.ptr))
