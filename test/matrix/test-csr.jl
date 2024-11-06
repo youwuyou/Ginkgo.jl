@@ -1,5 +1,5 @@
 # gko::matrix::Csr<T>
-const exec = Ginkgo.create(:omp)
+exec = Ginkgo.create(:omp)
 
 for (Tv, Ti) in Iterators.product(SUPPORTED_CSR_ELTYPE, SUPPORTED_CSR_INDEXTYPE)
     @testset "Integration test: gko::matrix::Csr<$Tv, $Ti> read from file and retrieve information [implicit executor] " begin

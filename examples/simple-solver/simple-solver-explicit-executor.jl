@@ -7,7 +7,7 @@ const (Tv, Ti) = (Float64, Int32)
 version()
 
 # Creates executor for a specific backend
-const exec = create(:omp)
+exec = create(:omp)
 
 # Read matrix and vector from mtk files
 A = GkoCsr{Tv, Ti}("data/A.mtx", exec)

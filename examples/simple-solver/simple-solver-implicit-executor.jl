@@ -7,7 +7,7 @@ const (Tv, Ti) = (Float64, Int32)
 version()
 
 # Creates executor for a specific backend
-const exec = create(:omp)
+exec = create(:omp)
 
 # Specify executor to be passed for matrix creation including CSR, Dense and "number" and cg solver
 with(EXECUTOR => exec) do
