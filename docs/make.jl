@@ -1,8 +1,7 @@
-using Ginkgo
 using Documenter
 using DocumenterVitepress
 
-DocMeta.setdocmeta!(Ginkgo, :DocTestSetup, :(using Ginkgo); recursive=true)
+using Ginkgo
 
 makedocs(
     sitename = "Ginkgo.jl",

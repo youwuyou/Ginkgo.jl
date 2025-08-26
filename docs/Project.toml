@@ -3,3 +3,6 @@ Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 DocumenterVitepress = "4710194d-e776-4893-9690-8d956a29c365"
 Ginkgo = "4c8bd3c9-ead9-4b5e-a625-08f1338ba0ec"
 ginkgo_jll = "e4326e8b-370f-5d90-bbd6-f077a22d5a69"
+
+[sources]
+Ginkgo = {path = ".."}
