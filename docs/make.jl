@@ -11,6 +11,7 @@ makedocs(
         repo = "github.com/youwuyou/Ginkgo.jl",
         devbranch = "main",
         devurl = "dev",
+        deploy_url = "https://ginkgo-for-julia.org/"
     ),
     modules = [Ginkgo],
     warnonly = [:missing_docs],
@@ -31,7 +32,6 @@ makedocs(
             "reference/low-level-api.md",
         ],
         "Performance" => "performance.md",
-        "Index" => "reindex.md",
     ]
 )
 
