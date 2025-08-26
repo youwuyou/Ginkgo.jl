@@ -18,7 +18,7 @@ hero:
       text: View on GitHub
       link: https://github.com/youwuyou/Ginkgo.jl
   image:
-    src: /assets/logo.png
+    src: /logo.png
     alt: Ginkgo.jl
 
 features:
