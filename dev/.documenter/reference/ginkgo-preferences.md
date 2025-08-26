@@ -17,7 +17,7 @@ diagnostics()
 Checking if the artifact is avaliable for current platform. It returns false if `best_wrapper === nothing`
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/preferences.jl#L34-L38" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/preferences.jl#L34-L38" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -34,7 +34,7 @@ locate()
 Fetch locations of binaries being used by Ginkgo.jl
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/preferences.jl#L15-L19" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/preferences.jl#L15-L19" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -51,7 +51,7 @@ preferences()
 Checking if paths to ginkgo binaries are overwritten in `LocalPreferences.toml` file.
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/preferences.jl#L47-L51" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/preferences.jl#L47-L51" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -80,7 +80,7 @@ Due to a bug in Julia (until 1.6.5 and 1.7.1), setting preferences in transitive
 :::
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/preferences.jl#L105-L117" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/preferences.jl#L105-L117" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -115,7 +115,7 @@ Due to a bug in Julia (until 1.6.5 and 1.7.1), setting preferences in transitive
 :::
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/preferences.jl#L64-L80" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/preferences.jl#L64-L80" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 

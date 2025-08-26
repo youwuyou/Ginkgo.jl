@@ -27,7 +27,7 @@ A = GkoCsr{Tv, Ti}("data/A.mtx", exec)
   
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Csr.jl#L5-L20" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Csr.jl#L5-L20" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -66,7 +66,7 @@ julia> b = GkoDense{Float32}("b.mtx", exec)
   
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Dense.jl#L4-L29" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Dense.jl#L4-L29" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -103,7 +103,7 @@ julia> exec = GkoExecutor(:cuda)
   
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/base/Executor.jl#L4-L27" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/base/Executor.jl#L4-L27" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -120,7 +120,7 @@ Base.fill!(mat::GkoDense{T}, val::G) where {T, G}
 Fill the given matrix for all matrix elements with the provided value `val`
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Dense.jl#L102-L106" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Dense.jl#L102-L106" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -137,7 +137,7 @@ Base.getindex(mat::GkoDense{T}, m::Int, n::Int) where T
 Obtain an element of the matrix, using Julia indexing
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Dense.jl#L75-L79" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Dense.jl#L75-L79" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -154,7 +154,7 @@ Base.size(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
 Returns the size of the sparse matrix/vector as a tuple
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Csr.jl#L45-L49" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Csr.jl#L45-L49" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -171,7 +171,7 @@ Base.size(mat::GkoDense{T}) where T
 Returns the size of the dense matrix/vector as a tuple
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Dense.jl#L114-L118" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Dense.jl#L114-L118" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -192,7 +192,7 @@ Creation of the executor of a specified executor type.
   
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/base/Executor.jl#L58-L65" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/base/Executor.jl#L58-L65" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -209,7 +209,7 @@ elements(mat::GkoDense{T}) where T
 Get number of stored elements of the matrix
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Dense.jl#L125-L129" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Dense.jl#L125-L129" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -226,7 +226,7 @@ mtx_buffer_str(mat::GkoDense{T}) where T
 Intermediate step that calls `gko::write` within C level wrapper. Allocates memory temporarily and returns a string pointer in C, then we utilize an IOBuffer to obtain a copy of the allocated cstring in Julia. In the end we deallocate the C string and return the buffered copy.
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Dense.jl#L164-L170" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Dense.jl#L164-L170" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -243,7 +243,7 @@ nnz(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
 Get number of stored elements of the matrix
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Csr.jl#L56-L60" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Csr.jl#L56-L60" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -264,7 +264,7 @@ Computes the column-wise Euclidian (L¹) norm of this matrix.
   
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Dense.jl#L137-L144" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Dense.jl#L137-L144" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -285,7 +285,7 @@ Computes the column-wise Euclidian (L²) norm of this matrix.
   
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Dense.jl#L150-L157" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Dense.jl#L150-L157" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -302,7 +302,7 @@ number(val::Number, exec::GkoExecutor = EXECUTOR[])
 Initialize a 1x1 matrix representing a number with the provided value `val`
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Dense.jl#L86-L90" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Dense.jl#L86-L90" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -319,7 +319,7 @@ spmm!(A::GkoCsr{Tv, Ti}, α::Dense{Tv}, x::Dense{Tv}, β::Dense{Tv}, y::Dense{Tv
 Applying to Dense matrices, computes an SpMM product. x = α_A_b + β*x.
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Csr.jl#L132-L136" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Csr.jl#L132-L136" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -336,7 +336,7 @@ srows(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
 Returns the number of the srow stored elements (involved warps)
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/matrix/Csr.jl#L119-L123" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/matrix/Csr.jl#L119-L123" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -357,7 +357,7 @@ Obtain the version information and the supported modules of the underlying Ginkg
   
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/Configurations.jl#L1-L8" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/58010a500c1da023098fa6e8c1a07798a3b862e0/src/Configurations.jl#L1-L8" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
