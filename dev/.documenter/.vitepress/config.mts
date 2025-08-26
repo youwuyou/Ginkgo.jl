@@ -10,7 +10,7 @@ function getBaseRepository(base: string): string {
 }
 
 const baseTemp = {
-  base: '/Ginkgo.jl/dev/',// TODO: replace this in makedocs!
+  base: '/dev/',// TODO: replace this in makedocs!
 }
 
 const navTemp = {
@@ -30,8 +30,7 @@ const navTemp = {
 { text: 'GkoPreferences', link: '/reference/ginkgo-preferences' },
 { text: 'Low-level API', link: '/reference/low-level-api' }]
  },
-{ text: 'Performance', link: '/performance' },
-{ text: 'Index', link: '/reindex' }
+{ text: 'Performance', link: '/performance' }
 ]
 ,
 }
@@ -45,7 +44,7 @@ const nav = [
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: '/Ginkgo.jl/dev/',// TODO: replace this in makedocs!
+  base: '/dev/',// TODO: replace this in makedocs!
   title: 'Ginkgo.jl',
   description: 'Documentation for Ginkgo.jl',
   lastUpdated: true,
@@ -115,8 +114,7 @@ export default defineConfig({
 { text: 'GkoPreferences', link: '/reference/ginkgo-preferences' },
 { text: 'Low-level API', link: '/reference/low-level-api' }]
  },
-{ text: 'Performance', link: '/performance' },
-{ text: 'Index', link: '/reindex' }
+{ text: 'Performance', link: '/performance' }
 ]
 ,
     editLink: { pattern: "https://github.com/youwuyou/Ginkgo.jl/edit/main/docs/src/:path" },
