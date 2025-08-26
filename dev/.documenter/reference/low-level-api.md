@@ -23,7 +23,7 @@ Obtains the value of the second element of a gko::dim&lt;2&gt; type
 size_t Second dimension
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/91c4b24ce7489371ef81da7f1733e106fc143fc4/src/api.jl#L72-L81" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/api.jl#L72-L81" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -50,7 +50,7 @@ Allocates memory for a C-based reimplementation of the gko::dim&lt;2&gt; type
 [`gko_dim2_st`](/reference/low-level-api#Ginkgo.API.gko_dim2_st) C struct that contains members of the gko::dim&lt;2&gt; type
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/91c4b24ce7489371ef81da7f1733e106fc143fc4/src/api.jl#L43-L53" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/api.jl#L43-L53" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -75,7 +75,7 @@ Obtains the value of the first element of a gko::dim&lt;2&gt; type
 size_t First dimension
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/91c4b24ce7489371ef81da7f1733e106fc143fc4/src/api.jl#L58-L67" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/api.jl#L58-L67" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -96,7 +96,7 @@ Deallocates memory for an executor on targeted device.
   
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/91c4b24ce7489371ef81da7f1733e106fc143fc4/src/api.jl#L86-L93" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/api.jl#L86-L93" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -125,7 +125,7 @@ Performs an SpMM product
   
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/91c4b24ce7489371ef81da7f1733e106fc143fc4/src/api.jl#L361-L372" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/api.jl#L361-L372" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -142,7 +142,7 @@ ginkgo_version_get()
 This function is a wrapper for obtaining the version of the ginkgo library
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/91c4b24ce7489371ef81da7f1733e106fc143fc4/src/api.jl#L382-L386" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/api.jl#L382-L386" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -159,7 +159,7 @@ gko_dim2_st
 Struct implements the gko::dim&lt;2&gt; type
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/91c4b24ce7489371ef81da7f1733e106fc143fc4/src/api.jl#L18-L22" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/api.jl#L18-L22" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -171,7 +171,7 @@ Struct implements the gko::dim&lt;2&gt; type
 Type of the pointer to the wrapped [`gko_executor_st`](/reference/low-level-api#Ginkgo.API.gko_executor_st) struct
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/91c4b24ce7489371ef81da7f1733e106fc143fc4/src/api.jl#L13-L15" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/api.jl#L13-L15" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
@@ -183,7 +183,7 @@ Type of the pointer to the wrapped [`gko_executor_st`](/reference/low-level-api#
 Struct containing the shared pointer to a ginkgo executor
 
 
-<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/91c4b24ce7489371ef81da7f1733e106fc143fc4/src/api.jl#L8-L10" target="_blank" rel="noreferrer">source</a></Badge>
+<Badge type="info" class="source-link" text="source"><a href="https://github.com/youwuyou/Ginkgo.jl/blob/ec5d986b9677d431940287e838cca61593dfe816/src/api.jl#L8-L10" target="_blank" rel="noreferrer">source</a></Badge>
 
 </details>
 
