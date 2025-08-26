@@ -1,45 +1,42 @@
 using Ginkgo
 using Documenter
+using DocumenterVitepress
 
 DocMeta.setdocmeta!(Ginkgo, :DocTestSetup, :(using Ginkgo); recursive=true)
 
-makedocs(;
-    modules=[Ginkgo],
-    authors="You Wu",
-    repo="https://github.com/youwuyou/Ginkgo.jl/blob/{commit}{path}#{line}",
-    sitename="Ginkgo.jl",
-    format=Documenter.HTML(;
-        prettyurls=get(ENV, "CI", "false") == "true",
-	repolink="https://github.com/youwuyou/Ginkgo.jl",
-        canonical="https://youwuyou.github.io/Ginkgo.jl",
-        edit_link="main",
-        assets=String[],
+makedocs(
+    sitename = "Ginkgo.jl",
+    authors = "You Wu",
+    format = DocumenterVitepress.MarkdownVitepress(
+        repo = "github.com/youwuyou/Ginkgo.jl",
+        devbranch = "main",
+        devurl = "dev",
     ),
-    pages=[
+    modules = [Ginkgo],
+    warnonly = [:missing_docs],
+    pages = [
         "Home" => "index.md",
-        "Concepts" =>
-        [
+        "Concepts" => [
             "concepts/executor.md",
         ],
-        "Programmer Guide" =>
-        [   
+        "Programmer Guide" => [
             "programmer-guide/CONTRIBUTING.md",
             "programmer-guide/use-ginkgo-in-julia.md",
             "programmer-guide/ginkgo-c-library-api.md",
             "programmer-guide/debugging.md",
         ],
-        "Reference" => 
-        [   
+        "Reference" => [
             "reference/ginkgo-api.md",
             "reference/ginkgo-preferences.md",
             "reference/low-level-api.md",
         ],
         "Performance" => "performance.md",
         "Index" => "reindex.md",
-    ],
+    ]
 )
 
-deploydocs(;
-    repo="github.com/youwuyou/Ginkgo.jl",
-    devbranch="main",
+deploydocs(
+    repo = "github.com/youwuyou/Ginkgo.jl",
+    devbranch = "main",
+    push_preview = true
 )
