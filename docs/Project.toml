@@ -6,3 +6,7 @@ ginkgo_jll = "e4326e8b-370f-5d90-bbd6-f077a22d5a69"
 
 [sources]
 Ginkgo = {path = ".."}
+
+[compat]
+Documenter = "1"
+DocumenterVitepress = "0.1"
