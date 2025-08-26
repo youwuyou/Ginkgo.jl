@@ -4,6 +4,6 @@
 
 These choices are compile-time constants, any changes require a Julia restart.
 
-```@autodocs
+<!-- ```@autodocs
 Modules = [Ginkgo.GkoPreferences]
-```
+``` -->
