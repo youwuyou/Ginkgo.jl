@@ -1,6 +1,6 @@
 module API
 
-using CEnum
+using CEnum: CEnum, @cenum
 
 # Prologue can be added under /res/prologue.jl
 import ginkgo_jll: libginkgo
@@ -25,29 +25,18 @@ struct gko_dim2_st
     cols::Csize_t
 end
 
-@cenum _GKO_DATATYPE_CONST::Int32 begin
-    GKO_NONE = -1
-    GKO_SHORT = 0
-    GKO_INT = 1
-    GKO_LONG_LONG = 2
-    GKO_FLOAT = 3
-    GKO_DOUBLE = 4
-    GKO_COMPLEX_FLOAT = 5
-    GKO_COMPLEX_DOUBLE = 6
+function ginkgo_c_char_ptr_free(ptr)
+    ccall((:ginkgo_c_char_ptr_free, libginkgo), Cvoid, (Ptr{Cchar},), ptr)
 end
 
-function c_char_ptr_free(ptr)
-    ccall((:c_char_ptr_free, libginkgo), Cvoid, (Ptr{Cchar},), ptr)
-end
-
-# no prototype is found for this function at c_api.h:444:6, please use with caution
+# no prototype is found for this function at c_api.h:421:6, please use with caution
 """
-    ginkgo_version_get()
+    ginkgo_version_print()
 
-This function is a wrapper for obtaining the version of the ginkgo library
+This function is a wrapper for printing the version of the ginkgo library
 """
-function ginkgo_version_get()
-    ccall((:ginkgo_version_get, libginkgo), Cvoid, ())
+function ginkgo_version_print()
+    ccall((:ginkgo_version_print, libginkgo), Cvoid, ())
 end
 
 """
@@ -144,7 +133,7 @@ function ginkgo_executor_synchronize(exec_st_ptr)
     ccall((:ginkgo_executor_synchronize, libginkgo), Cvoid, (gko_executor,), exec_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:539:14, please use with caution
+# no prototype is found for this function at c_api.h:516:14, please use with caution
 """
     ginkgo_executor_omp_create()
 
@@ -157,7 +146,7 @@ function ginkgo_executor_omp_create()
     ccall((:ginkgo_executor_omp_create, libginkgo), gko_executor, ())
 end
 
-# no prototype is found for this function at c_api.h:547:14, please use with caution
+# no prototype is found for this function at c_api.h:524:14, please use with caution
 """
     ginkgo_executor_reference_create()
 
@@ -227,7 +216,7 @@ function ginkgo_executor_cuda_create(device_id, exec_st_ptr)
     ccall((:ginkgo_executor_cuda_create, libginkgo), gko_executor, (Csize_t, gko_executor), device_id, exec_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:592:8, please use with caution
+# no prototype is found for this function at c_api.h:569:8, please use with caution
 """
     ginkgo_executor_cuda_get_num_devices()
 
@@ -255,7 +244,7 @@ function ginkgo_executor_hip_create(device_id, exec_st_ptr)
     ccall((:ginkgo_executor_hip_create, libginkgo), gko_executor, (Csize_t, gko_executor), device_id, exec_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:610:8, please use with caution
+# no prototype is found for this function at c_api.h:587:8, please use with caution
 """
     ginkgo_executor_hip_get_num_devices()
 
@@ -381,7 +370,7 @@ function ginkgo_executor_dpcpp_create(device_id, exec_st_ptr)
     ccall((:ginkgo_executor_dpcpp_create, libginkgo), gko_executor, (Csize_t, gko_executor), device_id, exec_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:695:8, please use with caution
+# no prototype is found for this function at c_api.h:672:8, please use with caution
 """
     ginkgo_executor_dpcpp_get_num_devices()
 
@@ -910,7 +899,7 @@ function ginkgo_deferred_factory_parameter_delete(dfp_st_ptr)
     ccall((:ginkgo_deferred_factory_parameter_delete, libginkgo), Cvoid, (gko_deferred_factory_parameter,), dfp_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:780:32, please use with caution
+# no prototype is found for this function at c_api.h:756:32, please use with caution
 """
     ginkgo_preconditioner_none_create()
 
@@ -935,14 +924,38 @@ function ginkgo_factorization_parilu_f64_i32_create(iteration, skip_sorting)
     ccall((:ginkgo_factorization_parilu_f64_i32_create, libginkgo), gko_deferred_factory_parameter, (Cint, Bool), iteration, skip_sorting)
 end
 
+"""
+Struct containing the shared pointer to a ginkgo LinOp object
+"""
 mutable struct gko_linop_st end
 
+"""
+Type of the pointer to the wrapped [`gko_linop_st`](@ref) struct
+"""
 const gko_linop = Ptr{gko_linop_st}
 
+"""
+    ginkgo_linop_delete(linop_st_ptr)
+
+Deallocates memory for a ginkgo LinOp object.
+
+# Arguments
+* `linop_st_ptr`: Raw pointer to the shared pointer of the LinOp object to be deleted
+"""
 function ginkgo_linop_delete(linop_st_ptr)
     ccall((:ginkgo_linop_delete, libginkgo), Cvoid, (gko_linop,), linop_st_ptr)
 end
 
+"""
+    ginkgo_linop_apply(A_st_ptr, b_st_ptr, x_st_ptr)
+
+Applies a linear operator to a vector (or a sequence of vectors).
+
+# Arguments
+* `A_st_ptr`: Raw pointer to the shared pointer of the LinOp object
+* `b_st_ptr`: Raw pointer to the shared pointer of the input vector(s) on which the operator is applied
+* `x_st_ptr`: Raw pointer to the shared pointer of the output vector where the result is stored
+"""
 function ginkgo_linop_apply(A_st_ptr, b_st_ptr, x_st_ptr)
     ccall((:ginkgo_linop_apply, libginkgo), Cvoid, (gko_linop, gko_linop, gko_linop), A_st_ptr, b_st_ptr, x_st_ptr)
 end

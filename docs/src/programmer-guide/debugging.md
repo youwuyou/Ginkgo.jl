@@ -21,7 +21,7 @@ Followingly is an example program where we accessed the underlying Ginkgo librar
 
 int main() {
 
-    ginkgo_version_get();
+    ginkgo_version_print();
 
     // create an executor
     gko_executor exec = ginkgo_executor_omp_create();
