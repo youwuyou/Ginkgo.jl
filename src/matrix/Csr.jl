@@ -169,3 +169,12 @@ Applying to Dense matrices, computes an SPMV product. x = α*A*b + β*x.
 function apply!(A::GkoCsr{Tv, Ti}, α::GkoDense{Tv}, x::GkoDense{Tv}, β::GkoDense{Tv}, y::GkoDense{Tv}) where {Tv, Ti}
     API.ginkgo_matrix_csr_f32_i32_apply(A.ptr, α.ptr, x.ptr, β.ptr, y.ptr)
 end
+
+function apply!(A::SparseMatrixCSC{Tv, Ti}, v_in::Vector{Tv}, v_out::Vector{Tv}, executor::GkoExecutor = EXECUTOR[]) where {Tv, Ti}
+    # Takes SparseMatrixCSC{Tv, Ti}
+    A_device = GkoCsr(A, executor)
+    v_in_device = GkoDense(v_in, executor)
+    v_out_device = GkoDense(v_out, executor)
+
+    eval(:($API.ginkgo_linop_apply($A_device.ptr, $v_in_device.ptr, $v_out_device.ptr)))
+end
