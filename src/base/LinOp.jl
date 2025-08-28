@@ -35,13 +35,13 @@ mutable struct GkoIterativeSolver{T} <: GkoLinOp
 
         if solver_type == :gmres
             kd = Cint(krylov_dim)
-            fname = Symbol("ginkgo_linop_gmres_preconditioned_", gko_type(Tv), "_create")
+            fname = Symbol("ginkgo_solver_gmres_", gko_type(Tv), "_create")
             return @eval $API.$fname($exec_ptr, $A_ptr, $prec_ptr, $r, $mi, $kd)
         elseif solver_type == :cg
-            fname = Symbol("ginkgo_linop_cg_preconditioned_", gko_type(Tv), "_create")
+            fname = Symbol("ginkgo_solver_cg_", gko_type(Tv), "_create")
             return @eval $API.$fname($exec_ptr, $A_ptr, $prec_ptr, $r, $mi)
         elseif solver_type == :bicgstab
-            fname = Symbol("ginkgo_linop_bicgstab_preconditioned_", gko_type(Tv), "_create")
+            fname = Symbol("ginkgo_solver_bicgstab_", gko_type(Tv), "_create")
             return @eval $API.$fname($exec_ptr, $A_ptr, $prec_ptr, $r, $mi)
         else
             throw(ArgumentError("unsupported linear operator type $solver_type"))
@@ -96,7 +96,7 @@ mutable struct GkoDirectSolver{T} <: GkoLinOp
         executor::GkoExecutor = EXECUTOR[]
     ) where {Tv, Ti}
         solver_type in SUPPORTED_DIRECT_SOLVER_TYPE || throw(ArgumentError("unsupported linear operator type $solver_type"))
-        function_name = Symbol("ginkgo_linop_", solver_type, "_", gko_type(Tv), "_", gko_type(Ti), "_create")
+        function_name = Symbol("ginkgo_solver_", solver_type, "_", gko_type(Tv), "_", gko_type(Ti), "_create")
         ptr = eval(:($API.$function_name($executor.ptr, $A.ptr)))
         finalizer(delete_linop, new{Tv}(ptr, solver_type))
     end
@@ -106,7 +106,7 @@ mutable struct GkoDirectSolver{T} <: GkoLinOp
         A::SparseMatrixCSC{Tv, Ti},
         executor::GkoExecutor = EXECUTOR[]    ) where {Tv, Ti}
         solver_type in SUPPORTED_DIRECT_SOLVER_TYPE || throw(ArgumentError("unsupported linear operator type $solver_type"))
-        function_name = Symbol("ginkgo_linop_", solver_type, "_", gko_type(Tv), "_", gko_type(Ti), "_create")
+        function_name = Symbol("ginkgo_solver_", solver_type, "_", gko_type(Tv), "_", gko_type(Ti), "_create")
         # Convert SparseMatrixCSC{Float64, Int64} => GkoCsr{Tv, Ti}
         A_device = GkoCsr(A, executor)
         ptr = eval(:($API.$function_name($executor.ptr, $A_device.ptr)))

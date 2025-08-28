@@ -964,44 +964,44 @@ function ginkgo_linop_apply(A_st_ptr, b_st_ptr, x_st_ptr)
     ccall((:ginkgo_linop_apply, libginkgo), Cvoid, (gko_linop, gko_linop, gko_linop), A_st_ptr, b_st_ptr, x_st_ptr)
 end
 
-function ginkgo_linop_cg_preconditioned_f64_create(exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
-    ccall((:ginkgo_linop_cg_preconditioned_f64_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint), exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
+function ginkgo_solver_cg_f64_create(exec_st_ptr, A_st_ptr, preconditioner_dfp_st_ptr, reduction, maxiter)
+    ccall((:ginkgo_solver_cg_f64_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint), exec_st_ptr, A_st_ptr, preconditioner_dfp_st_ptr, reduction, maxiter)
 end
 
-function ginkgo_linop_bicgstab_preconditioned_f64_create(exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
-    ccall((:ginkgo_linop_bicgstab_preconditioned_f64_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint), exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
+function ginkgo_solver_bicgstab_f64_create(exec_st_ptr, A_st_ptr, preconditioner_dfp_st_ptr, reduction, maxiter)
+    ccall((:ginkgo_solver_bicgstab_f64_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint), exec_st_ptr, A_st_ptr, preconditioner_dfp_st_ptr, reduction, maxiter)
 end
 
-function ginkgo_linop_gmres_preconditioned_f64_create(exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter, krylov_dim)
-    ccall((:ginkgo_linop_gmres_preconditioned_f64_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint, Cint), exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter, krylov_dim)
+function ginkgo_solver_gmres_f64_create(exec_st_ptr, A_st_ptr, preconditioner_dfp_st_ptr, reduction, maxiter, krylov_dim)
+    ccall((:ginkgo_solver_gmres_f64_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint, Cint), exec_st_ptr, A_st_ptr, preconditioner_dfp_st_ptr, reduction, maxiter, krylov_dim)
 end
 
-function ginkgo_linop_cg_preconditioned_f32_create(exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
-    ccall((:ginkgo_linop_cg_preconditioned_f32_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint), exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
+function ginkgo_solver_cg_f32_create(exec_st_ptr, A_st_ptr, preconditioner_dfp_st_ptr, reduction, maxiter)
+    ccall((:ginkgo_solver_cg_f32_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint), exec_st_ptr, A_st_ptr, preconditioner_dfp_st_ptr, reduction, maxiter)
 end
 
-function ginkgo_linop_bicgstab_preconditioned_f32_create(exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
-    ccall((:ginkgo_linop_bicgstab_preconditioned_f32_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint), exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter)
+function ginkgo_solver_bicgstab_f32_create(exec_st_ptr, A_st_ptr, preconditioner_dfp_st_ptr, reduction, maxiter)
+    ccall((:ginkgo_solver_bicgstab_f32_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint), exec_st_ptr, A_st_ptr, preconditioner_dfp_st_ptr, reduction, maxiter)
 end
 
-function ginkgo_linop_gmres_preconditioned_f32_create(exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter, krylov_dim)
-    ccall((:ginkgo_linop_gmres_preconditioned_f32_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint, Cint), exec_st_ptr, A_st_ptr, dfp_st_ptr, reduction, maxiter, krylov_dim)
+function ginkgo_solver_gmres_f32_create(exec_st_ptr, A_st_ptr, preconditioner_dfp_st_ptr, reduction, maxiter, krylov_dim)
+    ccall((:ginkgo_solver_gmres_f32_create, libginkgo), gko_linop, (gko_executor, gko_linop, gko_deferred_factory_parameter, Cdouble, Cint, Cint), exec_st_ptr, A_st_ptr, preconditioner_dfp_st_ptr, reduction, maxiter, krylov_dim)
 end
 
-function ginkgo_linop_spd_direct_f64_i64_create(exec_st_ptr, A_st_ptr)
-    ccall((:ginkgo_linop_spd_direct_f64_i64_create, libginkgo), gko_linop, (gko_executor, gko_linop), exec_st_ptr, A_st_ptr)
+function ginkgo_solver_spd_direct_f64_i64_create(exec_st_ptr, A_st_ptr)
+    ccall((:ginkgo_solver_spd_direct_f64_i64_create, libginkgo), gko_linop, (gko_executor, gko_linop), exec_st_ptr, A_st_ptr)
 end
 
-function ginkgo_linop_lu_direct_f64_i64_create(exec_st_ptr, A_st_ptr)
-    ccall((:ginkgo_linop_lu_direct_f64_i64_create, libginkgo), gko_linop, (gko_executor, gko_linop), exec_st_ptr, A_st_ptr)
+function ginkgo_solver_lu_direct_f64_i64_create(exec_st_ptr, A_st_ptr)
+    ccall((:ginkgo_solver_lu_direct_f64_i64_create, libginkgo), gko_linop, (gko_executor, gko_linop), exec_st_ptr, A_st_ptr)
 end
 
-function ginkgo_linop_lu_direct_f64_i32_create(exec_st_ptr, A_st_ptr)
-    ccall((:ginkgo_linop_lu_direct_f64_i32_create, libginkgo), gko_linop, (gko_executor, gko_linop), exec_st_ptr, A_st_ptr)
+function ginkgo_solver_lu_direct_f64_i32_create(exec_st_ptr, A_st_ptr)
+    ccall((:ginkgo_solver_lu_direct_f64_i32_create, libginkgo), gko_linop, (gko_executor, gko_linop), exec_st_ptr, A_st_ptr)
 end
 
-function ginkgo_linop_lu_direct_f32_i32_create(exec_st_ptr, A_st_ptr)
-    ccall((:ginkgo_linop_lu_direct_f32_i32_create, libginkgo), gko_linop, (gko_executor, gko_linop), exec_st_ptr, A_st_ptr)
+function ginkgo_solver_lu_direct_f32_i32_create(exec_st_ptr, A_st_ptr)
+    ccall((:ginkgo_solver_lu_direct_f32_i32_create, libginkgo), gko_linop, (gko_executor, gko_linop), exec_st_ptr, A_st_ptr)
 end
 
 """
@@ -1034,7 +1034,7 @@ function ginkgo_log_convergence_f64_delete(log_conv_st_ptr)
     ccall((:ginkgo_log_convergence_f64_delete, libginkgo), Cvoid, (gko_log_convergence_f64,), log_conv_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:586:25, please use with caution
+# no prototype is found for this function at c_api.h:590:25, please use with caution
 function ginkgo_logger_convergence_f32_create()
     ccall((:ginkgo_logger_convergence_f32_create, libginkgo), gko_log_convergence_f32, ())
 end
@@ -1043,7 +1043,7 @@ function ginkgo_logger_convergence_f32_solver_add(solver_st_ptr, logger_st_ptr)
     ccall((:ginkgo_logger_convergence_f32_solver_add, libginkgo), Cvoid, (gko_linop, gko_log_convergence_f32), solver_st_ptr, logger_st_ptr)
 end
 
-# no prototype is found for this function at c_api.h:591:25, please use with caution
+# no prototype is found for this function at c_api.h:595:25, please use with caution
 function ginkgo_logger_convergence_f64_create()
     ccall((:ginkgo_logger_convergence_f64_create, libginkgo), gko_log_convergence_f64, ())
 end
