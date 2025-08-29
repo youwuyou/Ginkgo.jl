@@ -1,3 +1,4 @@
+# modified from preconditioned solver
 using Ginkgo
 
 # Type alias
@@ -14,9 +15,11 @@ A = GkoCsr{Tv, Ti}("data/A.mtx", exec)
 b = GkoDense{Tv}("data/b.mtx", exec)
 x = GkoDense{Tv}("data/x0.mtx", exec)
 
-# Passing the executor to the CG solver
-solver = GkoIterativeSolver(:cg, A, exec; maxiter = 20, reduction = 1.0e-7)
-apply!(solver, b, x)
+# Use GMRES solver without preconditioning
+gmres = GkoIterativeSolver(:gmres, A, exec; maxiter = 1000, reduction = 1.0e-7)
+
+# Solve system
+apply!(gmres, b, x)
 
 @info "Solution (x):"
 display(x)

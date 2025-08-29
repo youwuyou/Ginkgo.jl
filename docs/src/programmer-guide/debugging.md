@@ -21,16 +21,16 @@ Followingly is an example program where we accessed the underlying Ginkgo librar
 
 int main() {
 
-    ginkgo_version_get();
+    gko_version_print();
 
     // create an executor
-    gko_executor exec = ginkgo_executor_omp_create();
+    gko_executor exec = gko_executor_omp_create();
 
     // create an dimensional object
-    struct gko_dim2_st size = ginkgo_dim2_create(3, 4);
+    struct gko_dim2_st size = gko_dim2_create(3, 4);
 
     // create a dense matrix
-    gko_matrix_dense_f32 mat = ginkgo_matrix_dense_f32_create(exec, size);
+    gko_matrix_dense_f32 mat = gko_matrix_dense_f32_create(exec, size);
 
     // printf() displays the string inside quotation
     printf("Number of stored elements: %zu\n", ginkgo_matrix_dense_f32_get_num_stored_elements(mat));
@@ -45,5 +45,4 @@ For the compilation process, this `play_field.c` file needs to be linked properl
 gcc -o play_field play_field.c -L/path/to/ginkgo/build/lib -lginkgod -Wl,-rpath=/path/to/ginkgo/build/lib -lginkgo_ompd -lginkgo_cudad -lginkgo_referenced -lginkgo_hipd -lginkgo_dpcppd -lginkgo_deviced /usr/lib/libhwloc.so /usr/lib/libmpi_cxx.so /usr/lib/libmpi.so
 ```
 
-This is also helpful for verifying that the `gcc` compiler can properly
-proceed with our implemented C API.
+This is also helpful for verifying that the `gcc` compiler can properly proceed with our implemented C API.

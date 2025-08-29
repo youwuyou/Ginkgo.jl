@@ -1,3 +1,4 @@
+# modified from explicit solver
 using Ginkgo
 
 # Type alias
@@ -14,8 +15,9 @@ A = GkoCsr{Tv, Ti}("data/A.mtx", exec)
 b = GkoDense{Tv}("data/b.mtx", exec)
 x = GkoDense{Tv}("data/x0.mtx", exec)
 
-# Passing the executor to the CG solver
-solver = GkoIterativeSolver(:cg, A, exec; maxiter = 20, reduction = 1.0e-7)
+# With Jacobi preconditioner, with blocksize = 8
+jacobi = GkoJacobiPreconditioner{Tv, Ti}(8)
+solver = GkoIterativeSolver(:cg, A, exec; preconditioner = jacobi, maxiter = 20, reduction = 1.0e-7)
 apply!(solver, b, x)
 
 @info "Solution (x):"

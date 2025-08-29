@@ -8,5 +8,5 @@ $(_doc_external("gko::version_info::get()", "classgko_1_1version__info"))
 """
 function version()
     @info "Using precompiled Ginkgo library from C++ source code"
-    API.ginkgo_version_get()
+    API.gko_version_print()
 end

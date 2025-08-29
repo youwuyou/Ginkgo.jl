@@ -1,13 +1,13 @@
 using Ginkgo
 
 # Type alias
-const (Tv, Ti) = (Float32, Int32)
+const (Tv, Ti) = (Float64, Int32)
 
 # Print ginkgo library version
 version()
 
 # Creates executor for a specific backend
-const exec = create(:omp)
+exec = create(:omp)
 
 # Specify executor to be passed for matrix creation including CSR, Dense and "number" and cg solver
 with(EXECUTOR => exec) do
@@ -16,7 +16,8 @@ with(EXECUTOR => exec) do
   b = GkoDense{Tv}("data/b.mtx");
   x = GkoDense{Tv}("data/x0.mtx");
   
-  cg!(x, A, b; maxiter = 20, reduction = 1.0e-7)
+  solver = GkoIterativeSolver(:cg, A; maxiter = 20, reduction = 1.0e-7)
+  apply!(solver, b, x)
 
   @info "Solution (x):"
   display(x)
@@ -26,7 +27,7 @@ with(EXECUTOR => exec) do
   res     = number(Tv(0.0))
 
   # x = one*A*b + neg_one*x
-  spmm!(A, one, x, neg_one, b)
+  apply!(A, one, x, neg_one, b)
   
   norm2!(b, res)
   @info "Residual norm sqrt(r^T r):"
