@@ -22,14 +22,14 @@ mutable struct GkoArray{T} <: AbstractGkoVector{T}
         size < 0 && throw(ArgumentError("invalid Array dimensions"))
 
         # Calling ginkgo to initialize the array
-        function_name = Symbol("ginkgo_array_", gko_type(T), "_create")
+        function_name = Symbol("gko_array_", gko_type(T), "_create")
         ptr = eval(:($API.$function_name($executor, $size)))
         finalizer(delete_array, new{T}(ptr, executor))
     end
 
     # Destructor
     function delete_array(arr::GkoArray{T}) where T
-        function_name = Symbol("ginkgo_array_", gko_type(T), "_delete")        
+        function_name = Symbol("gko_array_", gko_type(T), "_delete")        
         eval(:($API.$function_name($arr.ptr)))
     end
 end
@@ -45,11 +45,11 @@ Base.unsafe_convert(::Type{Ptr{Cvoid}}, obj::AbstractGkoVector) =
 Base.eltype(::AbstractGkoVector{T}) where {T} = T
 
 function Base.size(array::AbstractGkoVector{T}) where {T}
-    function_name = Symbol("ginkgo_array_", gko_type(T), "_get_size")
+    function_name = Symbol("gko_array_", gko_type(T), "_get_size")
     return eval(:($API.$function_name($array.ptr)))
 end
 
 function Base.isempty(array::AbstractGkoVector{T}) where {T}
-    function_name = Symbol("ginkgo_array_", gko_type(T), "_get_size")
+    function_name = Symbol("gko_array_", gko_type(T), "_get_size")
     return eval(:($API.$function_name($array.ptr))) == 0
 end

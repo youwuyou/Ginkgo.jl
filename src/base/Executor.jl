@@ -31,7 +31,7 @@ abstract type GkoExecutor end
 # Operations on all subtypes of GkoExecutor
 function delete_executor(exec::GkoExecutor)
     @warn "Calling the destructor for $(typeof(exec)) !"
-    API.ginkgo_executor_delete(exec.ptr)
+    API.gko_executor_delete(exec.ptr)
 end
 
 
@@ -79,7 +79,7 @@ mutable struct GkoOMPExecutor <: GkoCPUExecutor
     ptr::Ptr{Cvoid}
     function GkoOMPExecutor()
         @info "Creating OMP executor"
-        ptr = API.ginkgo_executor_omp_create()
+        ptr = API.gko_executor_omp_create()
         finalizer(delete_executor, new(ptr))
     end
 end
@@ -93,7 +93,7 @@ mutable struct GkoReferenceExecutor <: GkoCPUExecutor
     ptr::Ptr{Cvoid}
     function GkoReferenceExecutor()
         @info "Creating reference executor"
-        ptr = API.ginkgo_executor_reference_create()
+        ptr = API.gko_executor_reference_create()
         finalizer(delete_executor, new(ptr))
     end
 end
@@ -107,7 +107,7 @@ mutable struct GkoCUDAExecutor <: GkoGPUThreadExecutor
     ptr::Ptr{Cvoid}
     function GkoCUDAExecutor(device_id::Integer, master::GkoCPUExecutor)
         @info "Creating CUDA executor"
-        ptr = API.ginkgo_executor_cuda_create(device_id, master.ptr)
+        ptr = API.gko_executor_cuda_create(device_id, master.ptr)
         finalizer(delete_executor, new(ptr))
     end
 end
@@ -121,7 +121,7 @@ mutable struct GkoHIPExecutor <: GkoGPUThreadExecutor
     ptr::Ptr{Cvoid}
     function GkoHIPExecutor(device_id::Integer, master::GkoCPUExecutor)
         @info "Creating HIP executor"
-        ptr = API.ginkgo_executor_hip_create(device_id, master.ptr)
+        ptr = API.gko_executor_hip_create(device_id, master.ptr)
         finalizer(delete_executor, new(ptr))
     end    
 end
@@ -135,7 +135,7 @@ mutable struct GkoDPCPPExecutor <: GkoGPUItemExecutor
     ptr::Ptr{Cvoid}
     function GkoDPCPPExecutor(device_id::Integer, master::GkoCPUExecutor)
         @info "Creating DPCPP executor"
-        ptr = API.ginkgo_executor_dpcpp_create(device_id, master.ptr)
+        ptr = API.gko_executor_dpcpp_create(device_id, master.ptr)
         finalizer(delete_executor, new(ptr))
     end        
 end
@@ -189,29 +189,29 @@ end
 
 
 # Getters for all CPU executors
-get_num_cores(exec::GkoCPUExecutor) = Int32(API.ginkgo_executor_cpu_get_num_cores(exec.ptr))
-get_num_threads_per_core(exec::GkoCPUExecutor) = Int32(API.ginkgo_executor_cpu_get_num_threads_per_core(exec.ptr))
+get_num_cores(exec::GkoCPUExecutor) = Int32(API.gko_executor_cpu_get_num_cores(exec.ptr))
+get_num_threads_per_core(exec::GkoCPUExecutor) = Int32(API.gko_executor_cpu_get_num_threads_per_core(exec.ptr))
 
 # Getters for all GPU executors
 
-get_device_id(exec::GkoGPUExecutor) = Int32(API.ginkgo_executor_gpu_get_device_id(exec.ptr))
+get_device_id(exec::GkoGPUExecutor) = Int32(API.gko_executor_gpu_get_device_id(exec.ptr))
 
-get_num_devices(::GkoCUDAExecutor) = Int32(API.ginkgo_executor_cuda_get_num_devices())
-get_num_devices(::GkoHIPExecutor) = Int32(API.ginkgo_executor_hip_get_num_devices())
-get_num_devices(::GkoDPCPPExecutor) = Int32(API.ginkgo_executor_dpcpp_get_num_devices())
+get_num_devices(::GkoCUDAExecutor) = Int32(API.gko_executor_cuda_get_num_devices())
+get_num_devices(::GkoHIPExecutor) = Int32(API.gko_executor_hip_get_num_devices())
+get_num_devices(::GkoDPCPPExecutor) = Int32(API.gko_executor_dpcpp_get_num_devices())
 
 # Getters for GkoGPUThreadExecutor (CUDA, HIP)
 
-get_num_multiprocessor(exec::GkoGPUThreadExecutor) = Int32(API.ginkgo_executor_gpu_thread_get_num_multiprocessor(exec.ptr))
-get_num_warps_per_sm(exec::GkoGPUThreadExecutor) = Int32(API.ginkgo_executor_gpu_thread_get_num_warps_per_sm(exec.ptr))
-get_num_warps(exec::GkoGPUThreadExecutor) = Int32(API.ginkgo_executor_gpu_thread_get_num_warps(exec.ptr))
-get_warp_size(exec::GkoGPUThreadExecutor) = Int32(API.ginkgo_executor_gpu_thread_get_warp_size(exec.ptr))
-get_major_version(exec::GkoGPUThreadExecutor) = Int32(API.ginkgo_executor_gpu_thread_get_major_version(exec.ptr))
-get_minor_version(exec::GkoGPUThreadExecutor) = Int32(API.ginkgo_executor_gpu_thread_get_minor_version(exec.ptr))
-get_closest_numa(exec::GkoGPUThreadExecutor) = Int32(API.ginkgo_executor_gpu_thread_get_closest_numa(exec.ptr))
+get_num_multiprocessor(exec::GkoGPUThreadExecutor) = Int32(API.gko_executor_gpu_thread_get_num_multiprocessor(exec.ptr))
+get_num_warps_per_sm(exec::GkoGPUThreadExecutor) = Int32(API.gko_executor_gpu_thread_get_num_warps_per_sm(exec.ptr))
+get_num_warps(exec::GkoGPUThreadExecutor) = Int32(API.gko_executor_gpu_thread_get_num_warps(exec.ptr))
+get_warp_size(exec::GkoGPUThreadExecutor) = Int32(API.gko_executor_gpu_thread_get_warp_size(exec.ptr))
+get_major_version(exec::GkoGPUThreadExecutor) = Int32(API.gko_executor_gpu_thread_get_major_version(exec.ptr))
+get_minor_version(exec::GkoGPUThreadExecutor) = Int32(API.gko_executor_gpu_thread_get_minor_version(exec.ptr))
+get_closest_numa(exec::GkoGPUThreadExecutor) = Int32(API.gko_executor_gpu_thread_get_closest_numa(exec.ptr))
 
 # Getters for GkoGPUItemExecutor (DPCPP)
 
-get_max_subgroup_size(exec::GkoGPUItemExecutor) = Int32(API.ginkgo_executor_gpu_item_get_max_subgroup_size(exec.ptr))
-get_max_workgroup_size(exec::GkoGPUItemExecutor) = Int32(API.ginkgo_executor_gpu_item_get_max_workgroup_size(exec.ptr))
-get_num_computing_units(exec::GkoGPUItemExecutor) = Int32(API.ginkgo_executor_gpu_item_get_num_computing_units(exec.ptr))
+get_max_subgroup_size(exec::GkoGPUItemExecutor) = Int32(API.gko_executor_gpu_item_get_max_subgroup_size(exec.ptr))
+get_max_workgroup_size(exec::GkoGPUItemExecutor) = Int32(API.gko_executor_gpu_item_get_max_workgroup_size(exec.ptr))
+get_num_computing_units(exec::GkoGPUItemExecutor) = Int32(API.gko_executor_gpu_item_get_num_computing_units(exec.ptr))

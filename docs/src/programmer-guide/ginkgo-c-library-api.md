@@ -65,7 +65,7 @@ For consistency, following is a list of system independent types and their namin
 
 ### 3. Functions
 
->Functions are named using the pattern `ginkgo_classname_typename_fname`,
+>Functions are named using the pattern `gko_classname_typename_fname`,
 >for more complicated member functions like `gko::matrix::Csr<float, int>` that involves two template parameters for both `ValueType` and `IndexType`, we stack the templated types one after another such as for gko::matrix::Csr<float, int>, the entry in the C API is named as `gko_matrix_csr_f32_i32_st`.
 
 
@@ -80,73 +80,65 @@ In the following example, we define macros to generate wrappers using selected c
 
 ```C
 // c_api.h
-
-
 // Define macros to generating declarations within the header file
-#define DECLARE_ARRAY_OVERLOAD(_ctype, _cpptype, _name)                       \
-    struct gko_array_##_name##_st;                                            \
-    typedef struct gko_array_##_name##_st* gko_array_##_name;                 \
-    gko_array_##_name ginkgo_array_##_name##_create(gko_executor exec_st_ptr, \
-                                                    size_t size);             \
-    gko_array_##_name ginkgo_array_##_name##_create_view(                     \
-        gko_executor exec_st_ptr, size_t size, _ctype* data_ptr);             \
-    void ginkgo_array_##_name##_delete(gko_array_##_name array_st_ptr);       \
-    size_t ginkgo_array_##_name##_get_num_elems(gko_array_##_name array_st_ptr);
+#define GKO_DECLARE_ARRAY_OVERLOAD(_ctype, _cpptype, _name)                \
+    struct gko_array_##_name##_st;                                         \
+    typedef struct gko_array_##_name##_st* gko_array_##_name;              \
+    gko_array_##_name gko_array_##_name##_create(gko_executor exec_st_ptr, \
+                                                 size_t size);             \
+    gko_array_##_name gko_array_##_name##_create_view(                     \
+        gko_executor exec_st_ptr, size_t size, _ctype* data_ptr);          \
+    void gko_array_##_name##_delete(gko_array_##_name array_st_ptr);       \
+    size_t gko_array_##_name##_get_size(gko_array_##_name array_st_ptr);
 
+// Apply the declare overload macros to declare in within the header
+GKO_DECLARE_ARRAY_OVERLOAD(int16_t, int16_t, i16)
+GKO_DECLARE_ARRAY_OVERLOAD(int, int, i32)
+GKO_DECLARE_ARRAY_OVERLOAD(int64_t, std::int64_t, i64)
+GKO_DECLARE_ARRAY_OVERLOAD(float, float, f32)
+GKO_DECLARE_ARRAY_OVERLOAD(double, double, f64)
+```
+
+```C++
+// c_api.cpp
 // Define macros for generating implementations within the source file
-#define DEFINE_ARRAY_OVERLOAD(_ctype, _cpptype, _name)                         \
+#define GKO_DEFINE_ARRAY_OVERLOAD(_ctype, _cpptype, _name)                     \
     struct gko_array_##_name##_st {                                            \
         gko::array<_cpptype> arr;                                              \
     };                                                                         \
                                                                                \
     typedef gko_array_##_name##_st* gko_array_##_name;                         \
                                                                                \
-    gko_array_##_name ginkgo_array_##_name##_create(gko_executor exec_st_ptr,  \
-                                                    size_t size)               \
+    gko_array_##_name gko_array_##_name##_create(gko_executor exec_st_ptr,     \
+                                                 size_t size)                  \
     {                                                                          \
         return new gko_array_##_name##_st{                                     \
             gko::array<_cpptype>{exec_st_ptr->shared_ptr, size}};              \
     }                                                                          \
                                                                                \
-    gko_array_##_name ginkgo_array_##_name##_create_view(                      \
+    gko_array_##_name gko_array_##_name##_create_view(                         \
         gko_executor exec_st_ptr, size_t size, _ctype* data_ptr)               \
     {                                                                          \
         return new gko_array_##_name##_st{gko::make_array_view(                \
             exec_st_ptr->shared_ptr, size, static_cast<_cpptype*>(data_ptr))}; \
     }                                                                          \
                                                                                \
-    void ginkgo_array_##_name##_delete(gko_array_##_name array_st_ptr)         \
+    void gko_array_##_name##_delete(gko_array_##_name array_st_ptr)            \
     {                                                                          \
         delete array_st_ptr;                                                   \
     }                                                                          \
                                                                                \
-    size_t ginkgo_array_##_name##_get_num_elems(                               \
-        gko_array_##_name array_st_ptr)                                        \
+    size_t gko_array_##_name##_get_size(gko_array_##_name array_st_ptr)        \
     {                                                                          \
-        return (*array_st_ptr).arr.get_num_elems();                            \
+        return (*array_st_ptr).arr.get_size();                                 \
     }
 
-
-// Apply the declare overload macros to declare in within the header
-DECLARE_ARRAY_OVERLOAD(short, short, i16);
-DECLARE_ARRAY_OVERLOAD(int, int, i32);
-DECLARE_ARRAY_OVERLOAD(long long, long long, i64);
-DECLARE_ARRAY_OVERLOAD(float, float, f32);
-DECLARE_ARRAY_OVERLOAD(double, double, f64);
-DECLARE_ARRAY_OVERLOAD(float complex, std::complex<float>, cf32);
-DECLARE_ARRAY_OVERLOAD(double complex, std::complex<double>, cf64);
-```
-
-```C++
-// c_api.cpp
-// Apply the define overload macros to declare in within the header
-DEFINE_ARRAY_OVERLOAD(short, short, i16);
-DEFINE_ARRAY_OVERLOAD(int, int, i32);
-DEFINE_ARRAY_OVERLOAD(long long, long long, i64);
-DEFINE_ARRAY_OVERLOAD(float, float, f32);
-DEFINE_ARRAY_OVERLOAD(double, double, f64);
-DEFINE_ARRAY_OVERLOAD(float _Complex, std::complex<float>, cf32);
-DEFINE_ARRAY_OVERLOAD(double _Complex, std::complex<double>, cf64);
+// Apply the define overload macros within the source file
+GKO_DEFINE_ARRAY_OVERLOAD(int16_t, int16_t, i16)
+GKO_DEFINE_ARRAY_OVERLOAD(int, int, i32)
+GKO_DEFINE_ARRAY_OVERLOAD(int64_t, std::int64_t, i64)
+GKO_DEFINE_ARRAY_OVERLOAD(float, float, f32)
+GKO_DEFINE_ARRAY_OVERLOAD(double, double, f64)
 ```
 
 ---

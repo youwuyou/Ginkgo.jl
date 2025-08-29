@@ -11,7 +11,7 @@ mutable struct GkoParILUFactorization{Tv, Ti} <: GkoFactorization
     - `skip_sorting::Bool = true`: If `true`, the `system_matrix` must be sorted. Default is `true`.
     """
     function GkoParILUFactorization{Tv, Ti}(iteration::Integer = 0, skip_sorting::Bool = false) where {Tv, Ti}
-        function_name = Symbol("ginkgo_factorization_parilu_", gko_type(Tv), "_", gko_type(Ti), "_create")
+        function_name = Symbol("gko_factorization_parilu_", gko_type(Tv), "_", gko_type(Ti), "_create")
         @info "Performing parallel ILU factorization"
         ptr = eval(:($API.$function_name($iteration, $skip_sorting)))   
         finalizer(delete_factorization, new{Tv, Ti}(ptr))
@@ -20,5 +20,5 @@ end
 
 ################################# DESTRUCTOR ######################################
 function delete_factorization(fact::GkoFactorization)
-    API.ginkgo_deferred_factory_parameter_delete(fact.ptr)
+    API.gko_deferred_factory_parameter_delete(fact.ptr)
 end

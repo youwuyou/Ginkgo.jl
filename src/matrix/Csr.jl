@@ -26,7 +26,7 @@ mutable struct GkoCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
     # Constructors for matrix with initialized values
     function GkoCsr{Tv,Ti}(filename::String, executor::GkoExecutor = EXECUTOR[]) where {Tv,Ti}
         !isfile(filename) && error("File not found: $filename")
-        function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_read")
+        function_name = Symbol("gko_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_read")
         # Pass the void pointer to executor_st to C API
         ptr = eval(:($API.$function_name($filename, $(executor.ptr))))
         finalizer(delete_csr_matrix, new{Tv,Ti}(ptr, executor));
@@ -39,7 +39,7 @@ mutable struct GkoCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
                             values::Vector{Tv},
                             executor::GkoExecutor = EXECUTOR[]
                            ) where {Tv,Ti}
-        function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_create_view")
+        function_name = Symbol("gko_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_create_view")
         ptr = eval(:($API.$function_name($(executor.ptr), $size, $nnz, $row_ptrs, $col_idxs, $values)))
         finalizer(delete_csr_matrix, new{Tv,Ti}(ptr, executor));
     end
@@ -62,7 +62,7 @@ mutable struct GkoCsr{Tv,Ti} <: AbstractSparseMatrix{Tv,Ti}
 
     ############################# DESTRUCTOR ####################################
     function delete_csr_matrix(mat::GkoCsr{Tv,Ti}) where {Tv, Ti}
-        function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_delete")
+        function_name = Symbol("gko_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_delete")
         eval(:($API.$function_name($mat.ptr)))
     end
 end
@@ -77,7 +77,7 @@ Writing `mat::GkoCsr{Tv,Ti}` into a matrix market file. The filename should be i
 function mmwrite(filename::String, mat::GkoCsr{Tv,Ti}) where {Tv, Ti}
     @info "Writing into $filename"
     isempty(filename) && error("You have to specify a filename")
-    function_name = Symbol("ginkgo_write_csr_", gko_type(Tv), "_", gko_type(Ti), "_in_coo")
+    function_name = Symbol("gko_write_csr_", gko_type(Tv), "_", gko_type(Ti), "_in_coo")
     eval(:($API.$function_name($filename, $mat.ptr)))
 end
 
@@ -87,7 +87,7 @@ end
 Returns the size of the sparse matrix/vector as a tuple
 """
 function Base.size(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
-    function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_size")
+    function_name = Symbol("gko_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_size")
     dim =  (eval(:($API.$function_name($mat.ptr))))
     return (Cint(dim.rows), Cint(dim.cols))
 end
@@ -98,7 +98,7 @@ end
 Get number of stored elements of the matrix
 """
 function get_nnz(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
-    function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_num_stored_elements")
+    function_name = Symbol("gko_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_num_stored_elements")
     number = eval(:($API.$function_name($mat.ptr)))
     return Ti(number)
 end
@@ -110,7 +110,7 @@ Returns the row pointers of the matrix.
 """
 function rowptr(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
     # Obtain pointers to the underlying arrays
-    function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_row_ptrs")
+    function_name = Symbol("gko_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_row_ptrs")
     row_ptrs_raw_ptr = eval(:($API.$function_name($mat.ptr)))
     num_entries = size(mat)[1] + 1
 
@@ -125,7 +125,7 @@ end
 Returns the column indexes of the matrix.
 """
 function colvals(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
-    function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_col_idxs")
+    function_name = Symbol("gko_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_col_idxs")
     col_idxs_raw_ptr = eval(:($API.$function_name($mat.ptr)))
     num_elem         = get_nnz(mat)
     unsafe_wrap(Vector{Ti}, col_idxs_raw_ptr, num_elem) .+ Ti(1)
@@ -137,7 +137,7 @@ end
 Returns the non-zero values of the matrix.
 """
 function nonzeros(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
-    function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_values")
+    function_name = Symbol("gko_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_values")
     values_raw_ptr = eval(:($API.$function_name($mat.ptr)))
     num_elem       = get_nnz(mat)
     unsafe_wrap(Vector{Tv}, values_raw_ptr, num_elem)
@@ -145,7 +145,7 @@ end
 
 # NOT BEING USED
 function srow(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
-    function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_srow")
+    function_name = Symbol("gko_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_const_srow")
     return eval(:($API.$function_name($mat.ptr)))
 end
 
@@ -155,7 +155,7 @@ end
 Returns the number of the srow stored elements (involved warps)
 """
 function srows(mat::GkoCsr{Tv,Ti}) where {Tv,Ti}
-    function_name = Symbol("ginkgo_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_num_srow_elements")
+    function_name = Symbol("gko_matrix_csr_", gko_type(Tv), "_", gko_type(Ti), "_get_num_srow_elements")
     number = eval(:($API.$function_name($mat.ptr)))
     return Ti(number)
 end
@@ -167,7 +167,7 @@ end
 Applying to Dense matrices, computes an SPMV product. x = α*A*b + β*x.
 """
 function apply!(A::GkoCsr{Tv, Ti}, α::GkoDense{Tv}, x::GkoDense{Tv}, β::GkoDense{Tv}, y::GkoDense{Tv}) where {Tv, Ti}
-    API.ginkgo_matrix_csr_f32_i32_apply(A.ptr, α.ptr, x.ptr, β.ptr, y.ptr)
+    API.gko_matrix_csr_f32_i32_apply(A.ptr, α.ptr, x.ptr, β.ptr, y.ptr)
 end
 
 function apply!(A::SparseMatrixCSC{Tv, Ti}, v_in::Vector{Tv}, v_out::Vector{Tv}, executor::GkoExecutor = EXECUTOR[]) where {Tv, Ti}
@@ -176,5 +176,5 @@ function apply!(A::SparseMatrixCSC{Tv, Ti}, v_in::Vector{Tv}, v_out::Vector{Tv},
     v_in_device = GkoDense(v_in, executor)
     v_out_device = GkoDense(v_out, executor)
 
-    eval(:($API.ginkgo_linop_apply($A_device.ptr, $v_in_device.ptr, $v_out_device.ptr)))
+    eval(:($API.gko_linop_apply($A_device.ptr, $v_in_device.ptr, $v_out_device.ptr)))
 end
