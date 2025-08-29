@@ -77,7 +77,8 @@ export
 
     # Executor
     create,
-    
+    synchronize,  
+
     # CPU executors only
     get_num_cores,
     get_num_threads_per_core,

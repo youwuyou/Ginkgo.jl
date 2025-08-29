@@ -187,6 +187,15 @@ function create(executor_type::Symbol; device_id::Integer = 0, master::GkoCPUExe
     end
 end
 
+"""
+    synchronize(executor::GkoExecutor)
+
+Synchronize the given executor. This function blocks until all operations associated with the executor are complete.
+"""
+function synchronize(executor::GkoExecutor = EXECUTOR[])
+    API.gko_executor_synchronize(executor.ptr)
+    return nothing
+end
 
 # Getters for all CPU executors
 get_num_cores(exec::GkoCPUExecutor) = Int32(API.gko_executor_cpu_get_num_cores(exec.ptr))
