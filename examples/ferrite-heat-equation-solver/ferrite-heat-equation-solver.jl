@@ -5,7 +5,7 @@ using MatrixMarket
 
 with_ginkgo = true
 
-function assemble_element!(Ke::Matrix, fe::Vector, cellvalues::CellScalarValues)
+function assemble_element!(Ke::Matrix, fe::Vector, cellvalues::CellValues)
     n_basefuncs = getnbasefunctions(cellvalues)
     # Reset to 0
     fill!(Ke, 0)
@@ -16,7 +16,7 @@ function assemble_element!(Ke::Matrix, fe::Vector, cellvalues::CellScalarValues)
         dΩ = getdetJdV(cellvalues, q_point)
         # Loop over test shape functions
         for i in 1:n_basefuncs
-            δu  = shape_value(cellvalues, q_point, i)
+            δu = shape_value(cellvalues, q_point, i)
             ∇δu = shape_gradient(cellvalues, q_point, i)
             # Add contribution to fe
             fe[i] += δu * dΩ
@@ -31,7 +31,7 @@ function assemble_element!(Ke::Matrix, fe::Vector, cellvalues::CellScalarValues)
     return Ke, fe
 end
 
-function assemble_global(cellvalues::CellScalarValues, K::SparseMatrixCSC, dh::DofHandler)
+function assemble_global(cellvalues::CellValues, K::SparseMatrixCSC, dh::DofHandler)
     # Allocate the element stiffness matrix and element force vector
     n_basefuncs = getnbasefunctions(cellvalues)
     Ke = zeros(n_basefuncs, n_basefuncs)
@@ -55,24 +55,23 @@ end
 ############################# Using Ferrite to assemble matrix ####################################
 grid = generate_grid(Quadrilateral, (20, 20));
 
-dim = 2
-ip = Lagrange{dim, RefCube, 1}()
-qr = QuadratureRule{dim, RefCube}(2)
-cellvalues = CellScalarValues(qr, ip);
+ip = Lagrange{RefQuadrilateral, 1}()
+qr = QuadratureRule{RefQuadrilateral}(2)
+cellvalues = CellValues(qr, ip);
 
 dh = DofHandler(grid)
-add!(dh, :u, 1)
+add!(dh, :u, ip)
 close!(dh);
 
-K = create_sparsity_pattern(dh)
+K = allocate_matrix(dh)
 
 ch = ConstraintHandler(dh);
 
 ∂Ω = union(
-    getfaceset(grid, "left"),
-    getfaceset(grid, "right"),
-    getfaceset(grid, "top"),
-    getfaceset(grid, "bottom"),
+    getfacetset(grid, "left"),
+    getfacetset(grid, "right"),
+    getfacetset(grid, "top"),
+    getfacetset(grid, "bottom"),
 );
 
 dbc = Dirichlet(:u, ∂Ω, (x, t) -> 0)
@@ -94,7 +93,7 @@ if with_ginkgo
     exec = create(:omp)
     
     # Provides initial guess
-    u = Vector{Float64}(undef, length(f)); fill!(u, 0.0)
+    u = zeros(Float64, length(f))
 
     # Use CG solver
     solver = GkoIterativeSolver(:cg, K, exec; maxiter = 20, reduction = 1.0e-7)
@@ -104,6 +103,9 @@ else
 end
 
 #################################### Visualization ################################################
-vtk_grid("heat_equation", dh) do vtk
-    vtk_point_data(vtk, dh, u)
+VTKGridFile("heat_equation", dh) do vtk
+    write_solution(vtk, dh, u)
 end
+
+using Test
+@test norm(u) ≈ 3.307743912641305
